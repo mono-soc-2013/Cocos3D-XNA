@@ -1,0 +1,3 @@
+[submodule "cocos2d-xna"]
+	path = cocos2d-xna
+	url = git://github.com/totallyevil/cocos2d-xna.git
