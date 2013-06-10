@@ -25,9 +25,9 @@ namespace Cocos3D
 	{
 		// Private static fields
 
-		private static CC3Vector _CC3VectorZero = new CC3Vector(0f);
-		private static CC3Vector _CC3VectorUnitCube = new CC3Vector(1f);
-        private static CC3Vector _CC3VectorNull = new CC3Vector(float.PositiveInfinity);
+		private static readonly CC3Vector _CC3VectorZero = new CC3Vector(0f);
+        private static readonly CC3Vector _CC3VectorUnitCube = new CC3Vector(1f);
+        private static readonly CC3Vector _CC3VectorNull = new CC3Vector(float.PositiveInfinity);
 
 		// Private instance fields
 
@@ -79,7 +79,7 @@ namespace Cocos3D
         #endregion Properties
 
 
-        #region  Operators
+        #region Operators
 
         public static bool operator ==(CC3Vector value1, CC3Vector value2)
         {
@@ -196,9 +196,7 @@ namespace Cocos3D
         #endregion Vector calculation static methods
 
 
-        #region Public instance methods
-
-		// Constructors
+        #region Constructors
 
 		public CC3Vector(float x, float y, float z)
 		{
@@ -210,8 +208,8 @@ namespace Cocos3D
 
         }
 
-        public CC3Vector(CC3Vector vec3, float xOffset, float yOffSet, float zOffset)
-        : this(vec3.X + xOffset, vec3.Y + yOffSet, vec3.Z + zOffset)
+        public CC3Vector(CC3Vector vec3, float xOffset, float yOffset, float zOffset)
+        : this(vec3.X + xOffset, vec3.Y + yOffset, vec3.Z + zOffset)
         {
 
         }
@@ -221,12 +219,16 @@ namespace Cocos3D
 
         }
 
-		public CC3Vector(Vector3 xnaVec3)
+		internal CC3Vector(Vector3 xnaVec3)
 		{
 			// Structs copy by value so we get new copy
 			_xnaVec3 = xnaVec3;
 		}
 
+        #endregion Constructors
+
+
+        #region Instance methods
 
 		// Equality handling
 
@@ -268,7 +270,7 @@ namespace Cocos3D
             return new CC3Vector(normalizedXnaVec);
         }
 
-        #endregion Public instance methods
+        #endregion Instance methods
 	}
 }
 
