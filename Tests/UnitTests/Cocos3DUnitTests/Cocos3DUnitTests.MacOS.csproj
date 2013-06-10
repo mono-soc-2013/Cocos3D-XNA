@@ -34,12 +34,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreUnitTests\FoundationUnitTests\CC3VectorUnitTests.cs" />
+    <Compile Include="CoreUnitTests\FoundationUnitTests\CC3ViewportUnitTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\..\Cocos3D\Cocos3D.MacOS.csproj">
       <Project>{D6C8E064-F8EB-4B13-AFEF-0C1D8FB5B9B4}</Project>
       <Name>Cocos3D.MacOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
+      <Project>{A83510D8-7AED-411E-9616-DCFEA180969E}</Project>
+      <Name>cocos2d.MacOS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
