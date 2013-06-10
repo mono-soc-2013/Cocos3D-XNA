@@ -25,6 +25,8 @@ namespace Cocos3DTests
     [TestFixture()]
 	public class CC3VectorUnitTests
     {
+        // Private static fields
+
         private static readonly CC3Vector _vec = new CC3Vector(1.0f, 2.0f, 3.0f);
         private static readonly CC3Vector _vecXChange = new CC3Vector(_vec, -1.0f, 0.0f, 0.0f);
         private static readonly CC3Vector _vecYChange = new CC3Vector(_vec, 0.0f, -1.0f, 0.0f);
