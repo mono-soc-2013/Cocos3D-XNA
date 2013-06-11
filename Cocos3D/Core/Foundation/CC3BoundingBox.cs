@@ -28,7 +28,7 @@ namespace Cocos3D
         private static CC3BoundingBox _CC3BoundingBoxZero 
             = new CC3BoundingBox(CC3Vector.CC3VectorZero, CC3Vector.CC3VectorZero);
         private static CC3BoundingBox _CC3BoundingBoxNull
-            = new CC3BoundingBox(CC3Vector.CC3VectorZero, CC3Vector.CC3VectorZero);
+            = new CC3BoundingBox(CC3Vector.CC3VectorNull, CC3Vector.CC3VectorNull);
 
         // Private instance fields
 

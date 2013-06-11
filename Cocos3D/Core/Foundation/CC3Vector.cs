@@ -21,20 +21,20 @@ using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
-	public struct CC3Vector : IEquatable<CC3Vector>
-	{
-		// Private static fields
+    public struct CC3Vector : IEquatable<CC3Vector>
+    {
+        // Private static fields
 
-		private static readonly CC3Vector _CC3VectorZero = new CC3Vector(0f);
+        private static readonly CC3Vector _CC3VectorZero = new CC3Vector(0f);
         private static readonly CC3Vector _CC3VectorUnitCube = new CC3Vector(1f);
         private static readonly CC3Vector _CC3VectorNull = new CC3Vector(float.PositiveInfinity);
 
-		// Private instance fields
+        // Private instance fields
 
-		private Vector3 _xnaVec3;
+        private Vector3 _xnaVec3;
 
         #region Properties
-		
+        
         // Static properties
 
         public static CC3Vector CC3VectorZero
@@ -54,20 +54,20 @@ namespace Cocos3D
 
         // Public instance properties
 
-		public float X
-		{
-			get { return _xnaVec3.X; }
-		}
+        public float X
+        {
+            get { return _xnaVec3.X; }
+        }
 
-		public float Y
-		{
+        public float Y
+        {
             get { return _xnaVec3.Y; }
-		}
+        }
 
-		public float Z
-		{
+        public float Z
+        {
             get { return _xnaVec3.Z; }
-		}
+        }
 
         // Internal instance properties
 
@@ -198,10 +198,10 @@ namespace Cocos3D
 
         #region Constructors
 
-		public CC3Vector(float x, float y, float z)
-		{
-			_xnaVec3 = new Vector3(x, y, z);
-		}
+        public CC3Vector(float x, float y, float z)
+        {
+            _xnaVec3 = new Vector3(x, y, z);
+        }
 
         public CC3Vector(float value) : this(value, value, value)
         {
@@ -219,37 +219,37 @@ namespace Cocos3D
 
         }
 
-		internal CC3Vector(Vector3 xnaVec3)
-		{
-			// Structs copy by value so we get new copy
-			_xnaVec3 = xnaVec3;
-		}
+        internal CC3Vector(Vector3 xnaVec3)
+        {
+            // Structs copy by value so we get new copy
+            _xnaVec3 = xnaVec3;
+        }
 
         #endregion Constructors
 
 
         #region Instance methods
 
-		// Equality handling
+        // Equality handling
 
-		public override bool Equals(object obj)
-		{
-			// Using overloaded == operator
+        public override bool Equals(object obj)
+        {
+            // Using overloaded == operator
             return (obj is CC3Vector) ? this == (CC3Vector)obj : false;
-		}
+        }
 
-		public bool Equals(CC3Vector other)
-		{
-			// Using overloaded == operator
+        public bool Equals(CC3Vector other)
+        {
+            // Using overloaded == operator
             return this == other;
-		}
+        }
 
         public override int GetHashCode()
         {
             return _xnaVec3.GetHashCode();
         }
 
-		// Vector calculation instance methods
+        // Vector calculation instance methods
 
         public float Length()
         {
@@ -271,6 +271,6 @@ namespace Cocos3D
         }
 
         #endregion Instance methods
-	}
+    }
 }
 
