@@ -17,35 +17,41 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.Collections.Generic;
 
 namespace Cocos3D
 {
-    public abstract class CC3Drawable
+    public class CC3Node
     {
         // Instance fields
 
-        protected CC3GraphicsContext _graphicsContext;
-
-
-        #region Properties
-
-        public CC3GraphicsContext GraphicsContext
-        {
-            get { return _graphicsContext; }
-        }
-
-        #endregion Properties
-
+        private List<CC3Node> _nodeChildren;
 
         #region Constructors
 
-        public CC3Drawable(CC3GraphicsContext graphicsContext)
+        public CC3Node()
         {
-            _graphicsContext = graphicsContext;
+
         }
 
         #endregion Constructors
 
+
+        #region Instance methods
+
+        // Child management
+
+        public void addChild(CC3Node childNode)
+        {
+
+        }
+
+        public void removeChild(CC3Node childNode)
+        {
+
+        }
+
+        #endregion Instance methods
     }
 }
 

@@ -73,6 +73,12 @@
     <Folder Include="Resources\" />
     <Folder Include="Core\" />
     <Folder Include="Core\Foundation\" />
+    <Folder Include="Core\GraphicsContext\" />
+    <Folder Include="Core\DrawableResource\" />
+    <Folder Include="Core\DrawableResource\Material\" />
+    <Folder Include="Core\DrawableResource\Shader\" />
+    <Folder Include="Core\Node\" />
+    <Folder Include="Core\Layer\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -84,6 +90,13 @@
     <Compile Include="Core\Foundation\CC3Vector4.cs" />
     <Compile Include="Core\Foundation\CC3Quaternion.cs" />
     <Compile Include="Core\Foundation\CC3Plane.cs" />
+    <Compile Include="Core\GraphicsContext\CC3GraphicsContext.cs" />
+    <Compile Include="Core\DrawableResource\Texture\CC3Texture.cs" />
+    <Compile Include="Core\DrawableResource\CC3DrawableResource.cs" />
+    <Compile Include="Core\DrawableResource\Material\CC3Material.cs" />
+    <Compile Include="Core\DrawableResource\Shader\CC3ShaderProgram.cs" />
+    <Compile Include="Core\Node\CC3Node.cs" />
+    <Compile Include="Core\Layer\CC3Layer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
