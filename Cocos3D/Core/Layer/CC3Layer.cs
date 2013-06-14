@@ -21,11 +21,90 @@ using Cocos2D;
 
 namespace Cocos3D
 {
-    public class CC3Layer : CCLayer
+    public class CC3Layer : CCLayerColor
     {
-        public CC3Layer()
+        // Private instance fields
+
+        private CC3Scene _scene;
+
+        #region Properties
+
+        public CC3Scene Scene
         {
+            get { return _scene; }
+            set { this.CloseScene(); _scene = value; } 
         }
+
+        #endregion Properties
+
+        #region Constructors
+
+        public CC3Layer() : base()
+        {
+
+        }
+
+        #endregion Constructors
+
+
+        #region Updating layer
+       
+        // Overriden update methods from Cocos2D
+
+        public override void OnEnter() 
+        {
+            base.OnEnter();
+        }
+
+        public override void OnExit()
+        {
+
+
+            base.OnExit();
+        }
+
+        public override void Update(float dt)
+        {
+
+        }
+
+        // Protected update layer methods
+
+        protected virtual void OnOpenCC3Layer()
+        {
+
+        }
+
+        protected virtual void OnCloseCC3Layer()
+        {
+
+        }
+
+        // Private update layer methods
+
+        private void OpenScene()
+        {
+            // Set viewport
+        }
+
+        private void CloseScene()
+        {
+
+        }
+       
+        #endregion Updating layer
+
+
+        #region Drawing
+
+        // Overriden drawing methods from Cocos2D
+
+        public override void Draw()
+        {
+
+        }
+
+        #endregion Drawing
     }
 }
 

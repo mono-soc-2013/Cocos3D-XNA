@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cocos2d.MacOS", "cocos2d-xn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "box2d.MacOS", "cocos2d-xna\box2d\box2d.MacOS.csproj", "{A84510D8-7AED-411E-9616-DCFEA180969E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cocos3DShowcase.MacOS", "Samples\Cocos3DShowcase\Cocos3DShowcase.MacOS.csproj", "{ACE036D3-73AA-404B-8AAA-0722F7683E59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -45,6 +47,14 @@ Global
 		{A84510D8-7AED-411E-9616-DCFEA180969E}.Distribution|Any CPU.Build.0 = Distribution|Any CPU
 		{A84510D8-7AED-411E-9616-DCFEA180969E}.Release|x86.ActiveCfg = Release|Any CPU
 		{A84510D8-7AED-411E-9616-DCFEA180969E}.Release|x86.Build.0 = Release|Any CPU
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.AppStore|x86.ActiveCfg = AppStore|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.AppStore|x86.Build.0 = AppStore|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Debug|x86.ActiveCfg = Debug|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Debug|x86.Build.0 = Debug|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Distribution|Any CPU.ActiveCfg = Debug|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Distribution|Any CPU.Build.0 = Debug|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Release|x86.ActiveCfg = Release|x86
+		{ACE036D3-73AA-404B-8AAA-0722F7683E59}.Release|x86.Build.0 = Release|x86
 		{AE483C29-042E-4226-BA52-D247CE7676DA}.AppStore|x86.ActiveCfg = Release|Any CPU
 		{AE483C29-042E-4226-BA52-D247CE7676DA}.AppStore|x86.Build.0 = Release|Any CPU
 		{AE483C29-042E-4226-BA52-D247CE7676DA}.Debug|x86.ActiveCfg = Debug|Any CPU
