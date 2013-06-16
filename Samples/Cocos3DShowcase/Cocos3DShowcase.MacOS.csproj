@@ -79,6 +79,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ShowcaseGame.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ShowcaseGameScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

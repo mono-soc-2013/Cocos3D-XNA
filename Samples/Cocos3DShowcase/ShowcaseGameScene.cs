@@ -17,43 +17,14 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
 
-namespace Cocos3D
+namespace Cocos3DShowcase
 {
-    public class CC3Node
+    public class ShowcaseGameScene
     {
-        // Instance fields
-
-        protected CC3GraphicsContext _graphicsContext;
-        protected List<CC3Node> _nodeChildren;
-
-
-        #region Constructors
-
-        public CC3Node(CC3GraphicsContext graphicsContext)
+        public ShowcaseGameScene()
         {
-            _graphicsContext = graphicsContext;
         }
-
-        #endregion Constructors
-
-
-        #region Instance methods
-
-        // Child management
-
-        public void addChild(CC3Node childNode)
-        {
-
-        }
-
-        public void removeChild(CC3Node childNode)
-        {
-
-        }
-
-        #endregion Instance methods
     }
 }
 

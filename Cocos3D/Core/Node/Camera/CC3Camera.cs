@@ -22,7 +22,7 @@ namespace Cocos3D
 {
     public class CC3Camera : CC3Node
     {
-        public CC3Camera()
+        public CC3Camera(CC3GraphicsContext graphicsContext) : base(graphicsContext)
         {
         }
     }

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Cocos2D;
+using Cocos3D;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,39 +27,44 @@ namespace Cocos3DShowcase
 {
     public partial class AppDelegate : CCApplication
     {
-        public AppDelegate(Game game, GraphicsDeviceManager graphics)
-            : base(game, graphics)
+        private ShowcaseGameScene _scene;
+
+        public AppDelegate(Game game, GraphicsDeviceManager graphicsDeviceManager)
+            : base(game, graphicsDeviceManager)
         {
             s_pSharedApplication = this;
 
             // Calling full screen doesn't do anything on Mac
-            graphics.IsFullScreen = true;
-            graphics.PreferMultiSampling = false;
+            graphicsDeviceManager.IsFullScreen = true;
+            graphicsDeviceManager.PreferMultiSampling = false;
 
             // Instead ask to adapter to give us dimensions of screen
-            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            CCDrawManager.InitializeDisplay(game, graphics, DisplayOrientation.Unknown);
 
+            CCDrawManager.InitializeDisplay(game, graphicsDeviceManager, DisplayOrientation.Unknown);
+
+            // Create the scene.
+            _scene = new ShowcaseGameScene(new CC3GraphicsContext(graphicsDeviceManager));
         }
 
         public override bool ApplicationDidFinishLaunching()
         {
             // Initialize director
-            CCDirector pDirector = CCDirector.SharedDirector;
-            pDirector.SetOpenGlView();
+            CCDirector director = CCDirector.SharedDirector;
+            director.SetOpenGlView();
 
             // Turn on display FPS
-            pDirector.DisplayStats = true;
+            director.DisplayStats = true;
 
             // Set FPS. the default value is 1.0/60 if you don't call this
-            pDirector.AnimationInterval = 1.0 / 60;
+            director.AnimationInterval = 1.0 / 60;
 
-            // Create a scene. it's an autorelease object
-            CCScene pScene = new CCScene();
 
-            pDirector.RunWithScene(pScene);
+
+            // This is an extension method of CCDirector
+            director.RunWithCC3Scene(_scene);
 
             return true;
         }

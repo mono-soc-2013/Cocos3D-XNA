@@ -17,43 +17,17 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
+using Cocos2D;
+using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
-    public class CC3Node
+    public static class CCColor4FCC3Extension
     {
-        // Instance fields
-
-        protected CC3GraphicsContext _graphicsContext;
-        protected List<CC3Node> _nodeChildren;
-
-
-        #region Constructors
-
-        public CC3Node(CC3GraphicsContext graphicsContext)
+        internal static Color XnaColor(this CCColor4F color)
         {
-            _graphicsContext = graphicsContext;
+            return new Color(color.R, color.G, color.B, color.A);
         }
-
-        #endregion Constructors
-
-
-        #region Instance methods
-
-        // Child management
-
-        public void addChild(CC3Node childNode)
-        {
-
-        }
-
-        public void removeChild(CC3Node childNode)
-        {
-
-        }
-
-        #endregion Instance methods
     }
 }
 
