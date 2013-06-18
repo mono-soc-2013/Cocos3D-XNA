@@ -21,14 +21,23 @@ using Cocos2D;
 
 namespace Cocos3D
 {
-    public class CC3Scene : CC3Node
+    public class CC3Scene : CC3DrawableNode
     {
         // Instance fields
 
         private ProxyCCScene _proxy2dCCScene;
 
+        private CC3Camera _activeCamera;
 
         #region Properties
+
+        // Instance properties
+
+        public CC3Camera ActiveCamera
+        {
+            get { return _activeCamera; }
+            set { _activeCamera = value; }
+        }
 
         internal CCScene Proxy2dCCScene
         {
@@ -51,7 +60,20 @@ namespace Cocos3D
 
         #region Drawing
 
-        public virtual void DrawScene()
+        private void PrepareToDrawScence()
+        {
+            if (_activeCamera != null)
+            {
+                _graphicsContext.ViewMatrix = _activeCamera.ViewMatrix;
+                _graphicsContext.ProjectionMatrix = _activeCamera.ProjectionMatrix;
+            }
+
+            // DO TO; Give context lighting info
+
+            this.Draw();
+        }
+
+        public override void Draw()
         {
 
         }
@@ -79,7 +101,7 @@ namespace Cocos3D
 
             public override void Visit()
             {
-                _parentCC3Scene.DrawScene();
+                _parentCC3Scene.PrepareToDrawScence();
             }
 
             public override void Update(float dt)

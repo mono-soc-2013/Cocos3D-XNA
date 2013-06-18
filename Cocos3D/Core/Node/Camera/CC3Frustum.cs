@@ -17,22 +17,17 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using Cocos3D;
-using Cocos2D;
+using Microsoft.Xna.Framework;
 
-namespace Cocos3DShowcase
+namespace Cocos3D
 {
-    public class ShowcaseGameScene : CC3Scene
+    public class CC3Frustum
     {
-        public ShowcaseGameScene(CC3GraphicsContext graphicsContext) : base(graphicsContext)
-        {
+        private BoundingFrustum _xnaBoundingFrustum;
 
-        }
-
-        public override void Draw()
+        internal CC3Frustum(BoundingFrustum xnaBoundingFrustum)
         {
-            _graphicsContext.ClearColor = new CCColor4F(0.2f, 0.5f, 0.3f, 1.0f);
-            _graphicsContext.ClearColorBuffer();
+            _xnaBoundingFrustum = xnaBoundingFrustum;
         }
     }
 }

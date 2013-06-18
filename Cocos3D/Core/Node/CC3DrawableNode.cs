@@ -17,23 +17,29 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using Cocos3D;
-using Cocos2D;
 
-namespace Cocos3DShowcase
+namespace Cocos3D
 {
-    public class ShowcaseGameScene : CC3Scene
+    public class CC3DrawableNode : CC3Node
     {
-        public ShowcaseGameScene(CC3GraphicsContext graphicsContext) : base(graphicsContext)
+        // Instance fields
+
+        protected CC3GraphicsContext _graphicsContext;
+
+        #region Constructors
+
+        public CC3DrawableNode(CC3GraphicsContext graphicsContext)
+        {
+            _graphicsContext = graphicsContext;
+        }
+
+        #endregion Constructors
+
+        public virtual void Draw()
         {
 
         }
 
-        public override void Draw()
-        {
-            _graphicsContext.ClearColor = new CCColor4F(0.2f, 0.5f, 0.3f, 1.0f);
-            _graphicsContext.ClearColorBuffer();
-        }
     }
 }
 

@@ -22,9 +22,31 @@ namespace Cocos3D
 {
     public class CC3Camera : CC3Node
     {
-        public CC3Camera(CC3GraphicsContext graphicsContext) : base(graphicsContext)
+
+        #region Properties
+
+        internal CC3Matrix ViewMatrix
         {
+            get { return null; }
         }
+
+        internal CC3Matrix ProjectionMatrix
+        {
+            get { return null; }
+        }
+
+        #endregion Properties
+
+
+        #region Constructors
+
+        public CC3Camera(CC3Vector globalPosition, CC3Vector cameraDirection, CC3Frustum frustum)
+            : base()
+        {
+
+        }
+
+        #endregion Constructors
     }
 }
 

@@ -25,15 +25,13 @@ namespace Cocos3D
     {
         // Instance fields
 
-        protected CC3GraphicsContext _graphicsContext;
         protected List<CC3Node> _nodeChildren;
 
 
         #region Constructors
 
-        public CC3Node(CC3GraphicsContext graphicsContext)
+        public CC3Node()
         {
-            _graphicsContext = graphicsContext;
         }
 
         #endregion Constructors

@@ -39,6 +39,9 @@ namespace Cocos3D
         private float _clearDepth;
         private int _clearStencil;
 
+        private CC3Matrix _viewMatrix;
+        private CC3Matrix _projectionMatrix;
+
         #region Properties
 
 
@@ -59,6 +62,16 @@ namespace Cocos3D
             set { _clearStencil = value; }
         }
 
+        internal CC3Matrix ViewMatrix
+        {
+            set { _viewMatrix = value; }
+        }
+
+        internal CC3Matrix ProjectionMatrix
+        {
+            set { _projectionMatrix = value; }
+        }
+
         // For testing only. Should remove this altogether
         public GraphicsDeviceManager XnaGraphicsDeviceManager
         {
@@ -77,6 +90,9 @@ namespace Cocos3D
             _xnaClearColor = CC3GraphicsContext._defaultXnaClearColor;
             _clearDepth = CC3GraphicsContext._defaultClearDepth;
             _clearStencil = CC3GraphicsContext._defaultClearStencil;
+
+            _viewMatrix = null; // Make this identity
+            _projectionMatrix = null; // Make this identity
         }
 
         #endregion Constructors
