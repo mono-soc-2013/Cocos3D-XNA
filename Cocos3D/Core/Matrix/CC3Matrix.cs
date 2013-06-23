@@ -17,14 +17,57 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
-    public class CC3Matrix
+    public struct CC3Matrix
     {
-        public CC3Matrix()
+        // Static fields
+
+        private static readonly CC3Matrix _identity = new CC3Matrix(Matrix.Identity);
+
+        // Instance fields
+
+        private Matrix _xnaMatrix;
+
+
+        #region Properties
+
+        // Static properties
+
+        public static CC3Matrix Identity
         {
+            get { return _identity; }
         }
+
+        // Instance properties
+
+        public /* internal */ Matrix XnaMatrix
+        {
+            get { return _xnaMatrix; }
+        }
+
+        #endregion Properties
+
+        #region Constructors
+
+        internal CC3Matrix(Matrix xnaMatrix)
+        {
+            // Structs copy by value
+            _xnaMatrix = xnaMatrix;
+        }
+
+        #endregion Constructors
+
+        #region Calculation methods
+
+        public CC3Matrix Inverse()
+        {
+            return new CC3Matrix(Matrix.Invert(_xnaMatrix));
+        }
+
+        #endregion Calculation methods
     }
 }
 

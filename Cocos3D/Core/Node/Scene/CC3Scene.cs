@@ -17,17 +17,19 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.Collections.Generic;
 using Cocos2D;
 
 namespace Cocos3D
 {
-    public class CC3Scene : CC3DrawableNode
+    public class CC3Scene : CC3DrawableNode, ICC3CameraListener
     {
         // Instance fields
 
         private ProxyCCScene _proxy2dCCScene;
 
         private CC3Camera _activeCamera;
+
 
         #region Properties
 
@@ -36,7 +38,23 @@ namespace Cocos3D
         public CC3Camera ActiveCamera
         {
             get { return _activeCamera; }
-            set { _activeCamera = value; }
+            set 
+            { 
+                if (_activeCamera != null)
+                {
+                    // No longer interested in changes to previous active camera
+                    _activeCamera.CameraListener = null;
+                }
+
+                _activeCamera = value;
+
+                if (_activeCamera != null)
+                {
+                    _activeCamera.CameraListener = this;
+                    this.CameraViewMatrixDidChange(_activeCamera);
+                    this.CameraProjectionMatrixDidChange(_activeCamera);
+                }
+            }
         }
 
         internal CCScene Proxy2dCCScene
@@ -52,24 +70,36 @@ namespace Cocos3D
         public CC3Scene(CC3GraphicsContext graphicsContext) : base(graphicsContext)
         {
             _proxy2dCCScene = new ProxyCCScene(this);
-
         }
 
         #endregion Constructors
+
+
+        #region Camera listener interface methods
+
+        public void CameraViewMatrixDidChange(CC3Camera camera)
+        {
+            if (_activeCamera == camera)
+            {
+                _graphicsContext.ViewMatrix = _activeCamera.ViewMatrix;
+            }
+        }
+
+        public void CameraProjectionMatrixDidChange(CC3Camera camera)
+        {
+            if (_activeCamera == camera)
+            {
+                _graphicsContext.ProjectionMatrix = _activeCamera.ProjectionMatrix;
+            }
+        }
+
+        #endregion Camera listener interface methods
 
 
         #region Drawing
 
         private void PrepareToDrawScence()
         {
-            if (_activeCamera != null)
-            {
-                _graphicsContext.ViewMatrix = _activeCamera.ViewMatrix;
-                _graphicsContext.ProjectionMatrix = _activeCamera.ProjectionMatrix;
-            }
-
-            // DO TO; Give context lighting info
-
             this.Draw();
         }
 

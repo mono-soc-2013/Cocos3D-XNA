@@ -17,23 +17,13 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using Cocos2D;
-using Microsoft.Xna.Framework;
-using MonoMac.OpenGL;
 
-namespace Cocos3DShowcase
+namespace Cocos3D
 {
-    public class ShowcaseGame : Microsoft.Xna.Framework.Game
+    internal interface ICC3CameraListener
     {
-        private readonly GraphicsDeviceManager _graphicsDeviceManager;
-
-        public ShowcaseGame()
-        {
-            _graphicsDeviceManager = new GraphicsDeviceManager(this);
-
-            CCApplication application = new AppDelegate(this, _graphicsDeviceManager);
-            Components.Add(application);
-        }
+        void CameraViewMatrixDidChange(CC3Camera camera);
+        void CameraProjectionMatrixDidChange(CC3Camera camera);
     }
 }
 

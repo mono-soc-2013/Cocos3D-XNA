@@ -17,15 +17,22 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
+
 
 namespace Cocos3D
 {
-    public class CC3Node
+    public abstract class CC3Node
     {
         // Instance fields
 
-        protected List<CC3Node> _nodeChildren;
+        protected CC3Vector _worldPosition;
+        protected CC3Matrix _worldMatrix;
+
+  
+        #region Properties
+
+       
+        #endregion Properties
 
 
         #region Constructors
@@ -39,17 +46,8 @@ namespace Cocos3D
 
         #region Instance methods
 
-        // Child management
 
-        public void addChild(CC3Node childNode)
-        {
 
-        }
-
-        public void removeChild(CC3Node childNode)
-        {
-
-        }
 
         #endregion Instance methods
     }

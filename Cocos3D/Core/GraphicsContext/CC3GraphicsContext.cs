@@ -47,6 +47,11 @@ namespace Cocos3D
 
         // Instance properties
 
+        public float ScreenAspectRatio
+        {
+            get { return _xnaGraphicsDeviceManager.GraphicsDevice.Viewport.AspectRatio; }
+        }
+
         public CCColor4F ClearColor
         {
             set { _xnaClearColor = value.XnaColor(); }
@@ -62,14 +67,16 @@ namespace Cocos3D
             set { _clearStencil = value; }
         }
 
-        internal CC3Matrix ViewMatrix
+        public CC3Matrix ViewMatrix
         {
-            set { _viewMatrix = value; }
+            get { return _viewMatrix; }
+            internal set { _viewMatrix = value; }
         }
 
-        internal CC3Matrix ProjectionMatrix
+        public CC3Matrix ProjectionMatrix
         {
-            set { _projectionMatrix = value; }
+            get { return _projectionMatrix; }
+            internal set { _projectionMatrix = value; }
         }
 
         // For testing only. Should remove this altogether
@@ -91,8 +98,8 @@ namespace Cocos3D
             _clearDepth = CC3GraphicsContext._defaultClearDepth;
             _clearStencil = CC3GraphicsContext._defaultClearStencil;
 
-            _viewMatrix = null; // Make this identity
-            _projectionMatrix = null; // Make this identity
+            _viewMatrix = CC3Matrix.Identity;
+            _projectionMatrix = CC3Matrix.Identity;
         }
 
         #endregion Constructors

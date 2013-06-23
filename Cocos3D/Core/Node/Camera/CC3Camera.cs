@@ -17,36 +17,134 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
-    public class CC3Camera : CC3Node
+    public abstract class CC3Camera : CC3Node
     {
+        // Static fields
+
+        private const float _defaultNearClippingDistance = 1.0f;
+        private const float _defaultFarClippingDistance = 1000.0f;
+
+        // Instance fields
+
+        private ICC3CameraListener _cameraListenter;
+
+        private CC3Matrix _viewMatrix;
+        private CC3Vector _cameraTarget;
+
+        protected CC3Matrix _projectionMatrix;
+        protected float _nearClippingDistance;
+        protected float _farClippingDistance;
 
         #region Properties
 
+        // Static properties
+
+        public static float DefaultNearClippingDistance
+        {
+            get { return _defaultNearClippingDistance; }
+        }
+
+        public static float DefaultFarClippingDistance
+        {
+            get { return _defaultFarClippingDistance; }
+        }
+
+        // Instance properties
+
+        public float NearClippingDistance
+        {
+            get { return _nearClippingDistance; }
+            set 
+            {   _nearClippingDistance = value;
+                this.ShouldUpdateProjectionMatrix(); 
+            }
+        }
+
+        public float FarClippingDistance
+        {
+            get { return _farClippingDistance; }
+            set 
+            {   _farClippingDistance = value;
+                this.ShouldUpdateProjectionMatrix(); 
+            }
+        }
+
+        internal ICC3CameraListener CameraListener
+        {
+            get { return _cameraListenter; }
+            set { _cameraListenter = value; }
+        }
+
         internal CC3Matrix ViewMatrix
         {
-            get { return null; }
+            get { return _viewMatrix; }
         }
 
         internal CC3Matrix ProjectionMatrix
         {
-            get { return null; }
+            get { return _projectionMatrix; }
         }
 
         #endregion Properties
 
 
+        #region Static camera view calculation methods
+
+        private static CC3Matrix CameraViewMatrix(CC3Vector cameraPosition, CC3Vector cameraTarget)
+        {
+            Matrix xnaViewMatrix = Matrix.CreateLookAt(cameraPosition.XnaVector, 
+                                                       cameraTarget.XnaVector, 
+                                                       CC3Vector.CC3VectorUp.XnaVector);
+            
+            return new CC3Matrix(xnaViewMatrix);
+        }
+
+        #endregion Static camera view calculation methods
+
+
         #region Constructors
 
-        public CC3Camera(CC3Vector globalPosition, CC3Vector cameraDirection, CC3Frustum frustum)
-            : base()
+        // Users should only create camera via corresponding builder class
+        internal CC3Camera(CC3Vector cameraPosition, CC3Vector cameraTarget) : base()
         {
+            _worldPosition = cameraPosition;
+            _cameraTarget = cameraTarget;
 
+            this.UpdateViewMatrix();
         }
 
         #endregion Constructors
+
+
+        #region Updating view and projection matrices
+
+        protected void ShouldUpdateProjectionMatrix()
+        {
+            this.UpdateProjectionMatrix();
+
+            _cameraListenter.CameraProjectionMatrixDidChange(this);
+        }
+
+        protected abstract void UpdateProjectionMatrix();
+
+
+        private void ShouldUpdateViewMatrix()
+        {
+            this.UpdateViewMatrix();
+
+            _cameraListenter.CameraViewMatrixDidChange(this);
+        }
+
+        private void UpdateViewMatrix()
+        {
+            _viewMatrix = CC3Camera.CameraViewMatrix(_worldPosition, _cameraTarget);
+        }
+
+        #endregion Updating view and projection matrices
     }
 }
 

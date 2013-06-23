@@ -112,6 +112,12 @@
     <Compile Include="Core\Node\Camera\CC3Frustum.cs" />
     <Compile Include="Core\Matrix\CC3Matrix.cs" />
     <Compile Include="Core\Node\CC3DrawableNode.cs" />
+    <Compile Include="Core\Node\Camera\CC3CameraBuilder.cs" />
+    <Compile Include="Core\Node\Camera\CC3CameraPerspectiveBuilder.cs" />
+    <Compile Include="Core\Node\Camera\CC3CameraPerspective.cs" />
+    <Compile Include="Core\Node\Camera\ICC3CameraListener.cs" />
+    <Compile Include="Core\Node\Camera\CC3CameraOrthographicBuilder.cs" />
+    <Compile Include="Core\Node\Camera\CC3CameraOrthographic.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

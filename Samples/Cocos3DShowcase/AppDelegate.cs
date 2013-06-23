@@ -25,32 +25,29 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3DShowcase
 {
-    public partial class AppDelegate : CCApplication
+    public class AppDelegate : CCApplication
     {
-        private ShowcaseGameScene _scene;
+        private Game _game;
+        private GraphicsDeviceManager _graphicsDeviceManager;
 
         public AppDelegate(Game game, GraphicsDeviceManager graphicsDeviceManager)
             : base(game, graphicsDeviceManager)
         {
             s_pSharedApplication = this;
+            _graphicsDeviceManager = graphicsDeviceManager;
 
-            // Calling full screen doesn't do anything on Mac
-            graphicsDeviceManager.IsFullScreen = true;
-            graphicsDeviceManager.PreferMultiSampling = false;
-
-            // Instead ask to adapter to give us dimensions of screen
-            graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
-
-            CCDrawManager.InitializeDisplay(game, graphicsDeviceManager, DisplayOrientation.Unknown);
-
-            // Create the scene.
-            _scene = new ShowcaseGameScene(new CC3GraphicsContext(graphicsDeviceManager));
+            _game = game;
         }
 
         public override bool ApplicationDidFinishLaunching()
         {
+            _graphicsDeviceManager.IsFullScreen = true;
+            _graphicsDeviceManager.PreferMultiSampling = false;
+
+            // Ask to adapter to give us dimensions of screen
+            _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
             // Initialize director
             CCDirector director = CCDirector.SharedDirector;
             director.SetOpenGlView();
@@ -61,10 +58,17 @@ namespace Cocos3DShowcase
             // Set FPS. the default value is 1.0/60 if you don't call this
             director.AnimationInterval = 1.0 / 60;
 
+            CCDrawManager.InitializeDisplay(_game, _graphicsDeviceManager, DisplayOrientation.Default);
 
+            CCDrawManager.SetDesignResolutionSize(_graphicsDeviceManager.PreferredBackBufferWidth, 
+                                                  _graphicsDeviceManager.PreferredBackBufferHeight, 
+                                                  CCResolutionPolicy.ShowAll);
+
+            // Create the scene.
+            CC3Scene scene = new ShowcaseGameScene(new CC3GraphicsContext(_graphicsDeviceManager));
 
             // This is an extension method of CCDirector
-            director.RunWithCC3Scene(_scene);
+            director.RunWithCC3Scene(scene);
 
             return true;
         }
