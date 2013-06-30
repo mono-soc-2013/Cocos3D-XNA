@@ -41,7 +41,7 @@ namespace Cocos3D
 
         #region Building camera methods
 
-        public override CC3Camera Build()
+        public new CC3CameraPerspective Build()
         {
             CC3CameraPerspective camera 
                 = new CC3CameraPerspective(_cameraPostion, _cameraTarget, 

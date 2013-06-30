@@ -78,13 +78,17 @@
     <Folder Include="Core\DrawableResource\Material\" />
     <Folder Include="Core\DrawableResource\Shader\" />
     <Folder Include="Core\Node\" />
-    <Folder Include="Core\Layer\" />
     <Folder Include="Core\Node\Camera\" />
     <Folder Include="Core\Node\Scene\" />
     <Folder Include="Core\Extensions\" />
     <Folder Include="Core\Extensions\Cocos2dExtensions\" />
     <Folder Include="Core\Extensions\EnumExtensions\" />
     <Folder Include="Core\Matrix\" />
+    <Folder Include="Core\Animation\" />
+    <Folder Include="Core\Animation\Action\" />
+    <Folder Include="Core\Animation\ActionRunner\" />
+    <Folder Include="Core\Animation\Action\CameraAction\" />
+    <Folder Include="Core\Animation\ActionRunner\CameraActionRunner\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -102,7 +106,6 @@
     <Compile Include="Core\DrawableResource\Material\CC3Material.cs" />
     <Compile Include="Core\DrawableResource\Shader\CC3ShaderProgram.cs" />
     <Compile Include="Core\Node\CC3Node.cs" />
-    <Compile Include="Core\Layer\CC3Layer.cs" />
     <Compile Include="Core\Node\Camera\CC3Camera.cs" />
     <Compile Include="Core\Node\Scene\CC3Scene.cs" />
     <Compile Include="Core\Extensions\Cocos2dExtensions\CCDirectorCC3Extension.cs" />
@@ -115,9 +118,20 @@
     <Compile Include="Core\Node\Camera\CC3CameraBuilder.cs" />
     <Compile Include="Core\Node\Camera\CC3CameraPerspectiveBuilder.cs" />
     <Compile Include="Core\Node\Camera\CC3CameraPerspective.cs" />
-    <Compile Include="Core\Node\Camera\ICC3CameraListener.cs" />
     <Compile Include="Core\Node\Camera\CC3CameraOrthographicBuilder.cs" />
     <Compile Include="Core\Node\Camera\CC3CameraOrthographic.cs" />
+    <Compile Include="Core\Node\ICC3NodeTransformObserver.cs" />
+    <Compile Include="Core\Node\Camera\ICC3CameraObserver.cs" />
+    <Compile Include="Core\Animation\CC3Animation.cs" />
+    <Compile Include="Core\Animation\Action\CC3TransformAction.cs" />
+    <Compile Include="Core\Animation\ActionRunner\CC3ActionRunner.cs" />
+    <Compile Include="Core\Animation\ActionRunner\CC3TransformActionRunner.cs" />
+    <Compile Include="Core\Animation\Action\CC3Action.cs" />
+    <Compile Include="Core\Animation\ActionRunner\CC3GroupActionRunner.cs" />
+    <Compile Include="Core\Animation\Action\CameraAction\CC3CameraAction.cs" />
+    <Compile Include="Core\Animation\ActionRunner\CameraActionRunner\CC3CameraActionRunner.cs" />
+    <Compile Include="Core\Animation\ActionRunner\CameraActionRunner\CC3CameraPerspectiveActionRunner.cs" />
+    <Compile Include="Core\Animation\Action\CameraAction\CC3CameraPerspectiveAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

@@ -81,7 +81,7 @@ Global
 		{D9B36726-EAA2-40A6-9AB0-13129742C98E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Cocos3D\Cocos3D.MacOS.csproj
+		StartupItem = Samples\Cocos3DShowcase\Cocos3DShowcase.MacOS.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

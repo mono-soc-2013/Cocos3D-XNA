@@ -40,7 +40,7 @@ namespace Cocos3D
 
         #region Building camera methods
 
-        public override CC3Camera Build()
+        public new CC3CameraOrthographic Build()
         {
             CC3CameraOrthographic camera 
                 = new CC3CameraOrthographic(_cameraPostion, _cameraTarget, 

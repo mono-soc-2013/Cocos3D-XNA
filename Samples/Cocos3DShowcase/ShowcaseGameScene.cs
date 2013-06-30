@@ -31,7 +31,9 @@ namespace Cocos3DShowcase
     {
         // Instance fields
 
-        private CC3Camera _camera;
+        private CC3CameraPerspective _camera;
+        private CC3CameraPerspectiveAction _cameraAction;
+        private CC3ActionRunner _cameraActionRunner;
 
         private BasicEffect _basicEffect;
         private List<Matrix> _listOfCubeWorldMatrices;
@@ -47,6 +49,7 @@ namespace Cocos3DShowcase
             this.InitializeEffect();
             this.InitializeCubeDrawingData();
             this.InitializeCubes();
+            this.InitializeCameraAction();
         }
 
         #endregion Constructors
@@ -84,6 +87,22 @@ namespace Cocos3DShowcase
             this.ActiveCamera = _camera;
         }
 
+        private void InitializeCameraAction()
+        {
+            CC3Quaternion cameraActionRotaion 
+                = CC3Quaternion.CreateFromAxisAngle(new CC3Vector(0.0f,1.0f, 0.0f), 
+                                                    MathHelper.ToRadians(179.0f));
+
+            _cameraAction = new CC3CameraPerspectiveAction(CC3Vector.CC3VectorZero, 
+                                                           CC3Vector.CC3VectorZero,
+                                                           cameraActionRotaion,                                                         
+                                                           0.0f, 0.0f, 0.0f);
+          
+            _cameraActionRunner = new CC3CameraPerspectiveActionRunner(_cameraAction, _camera, 4.0f);
+
+            _cameraActionRunner.RunAction();
+        }
+
         private void InitializeEffect()
         {
             GraphicsDevice graphicsDevice = _graphicsContext.XnaGraphicsDeviceManager.GraphicsDevice;
@@ -92,8 +111,6 @@ namespace Cocos3DShowcase
             _basicEffect.TextureEnabled = false;
             _basicEffect.VertexColorEnabled = true;
 
-            _basicEffect.View = _graphicsContext.ViewMatrix.XnaMatrix;
-            _basicEffect.Projection = _graphicsContext.ProjectionMatrix.XnaMatrix;
 
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             graphicsDevice.BlendState = BlendState.Opaque;
@@ -165,7 +182,7 @@ namespace Cocos3DShowcase
             for(int i=0; i < 4; i++)
             {
                 _listOfCubeWorldMatrices.Add(
-                    Matrix.CreateRotationY(MathHelper.ToRadians(45.0f)) * Matrix.CreateTranslation(cubePosition));
+                Matrix.CreateRotationY(MathHelper.ToRadians(45.0f)) * Matrix.CreateTranslation(cubePosition));
                 cubePosition.X += 4.0f;
                 cubePosition.Z += 4.0f;
             }
@@ -191,6 +208,8 @@ namespace Cocos3DShowcase
             foreach (Matrix cubeWorldMatrix in _listOfCubeWorldMatrices)
             {
                 _basicEffect.World = cubeWorldMatrix;
+                _basicEffect.View = _graphicsContext.ViewMatrix.XnaMatrix;
+                _basicEffect.Projection = _graphicsContext.ProjectionMatrix.XnaMatrix;
 
                 foreach (EffectPass effectPass in _basicEffect.CurrentTechnique.Passes)
                 {

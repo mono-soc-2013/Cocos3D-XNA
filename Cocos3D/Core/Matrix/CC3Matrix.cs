@@ -36,7 +36,7 @@ namespace Cocos3D
 
         // Static properties
 
-        public static CC3Matrix Identity
+        public static CC3Matrix CC3MatrixIdentity
         {
             get { return _identity; }
         }
@@ -49,6 +49,49 @@ namespace Cocos3D
         }
 
         #endregion Properties
+
+
+        #region Static matrix construction methods
+
+        public static CC3Matrix CreateWorldMatrix(CC3Vector worldPosition, 
+                                                  CC3Vector worldScale,
+                                                  CC3Quaternion localRotation,
+                                                  CC3Quaternion rotationRelativeToAnchor,
+                                                  CC3Vector anchorPointRelativeToPosition)
+        {
+            Matrix xnaTranslationMatrix = Matrix.CreateTranslation(worldPosition.XnaVector);
+            Matrix xnaScaleMatrix = Matrix.CreateScale(worldScale.XnaVector);
+            Matrix xnaLocalRotationMatrix = Matrix.CreateFromQuaternion(localRotation.XnaQuaternion);
+            Matrix xnaRotationRelativeToAnchorMatrix = Matrix.CreateFromQuaternion(rotationRelativeToAnchor.XnaQuaternion);
+            Matrix xnaRotationAnchorTranslationMatrix = Matrix.CreateTranslation(anchorPointRelativeToPosition.XnaVector);
+
+            return new CC3Matrix(xnaTranslationMatrix *
+                                 Matrix.Invert(xnaRotationAnchorTranslationMatrix) *
+                                 xnaRotationRelativeToAnchorMatrix * 
+                                 xnaRotationAnchorTranslationMatrix * 
+                                 xnaLocalRotationMatrix *
+                                 xnaScaleMatrix);
+        }
+
+        public static CC3Matrix CreateCameraViewMatrix(CC3Vector cameraPosition, 
+                                                       CC3Vector cameraTarget,
+                                                       CC3Quaternion cameraRotationRelativeToTarget)
+        {
+            Vector3 xnaCameraPosAfterRotation 
+                = Vector3.Transform(cameraPosition.XnaVector - cameraTarget.XnaVector, 
+                                    cameraRotationRelativeToTarget.XnaQuaternion);
+
+            xnaCameraPosAfterRotation += cameraTarget.XnaVector;
+
+            Matrix xnaViewMatrix = Matrix.CreateLookAt(xnaCameraPosAfterRotation,
+                                                       cameraTarget.XnaVector, 
+                                                       CC3Vector.CC3VectorUp.XnaVector);
+            
+            return new CC3Matrix(xnaViewMatrix);
+        }
+       
+        #endregion Static camera view calculation methods
+
 
         #region Constructors
 
@@ -65,6 +108,26 @@ namespace Cocos3D
         public CC3Matrix Inverse()
         {
             return new CC3Matrix(Matrix.Invert(_xnaMatrix));
+        }
+
+        public CC3Vector TranslationOfTransformMatrix()
+        {
+            return new CC3Vector(_xnaMatrix.Translation);
+        }
+
+        public CC3Quaternion LocalRotationOfTransformMatrix()
+        {
+            CC3Quaternion localRotation = CC3Quaternion.CC3QuaternionIdentity;
+            Vector3 xnaTranslation;
+            Vector3 xnaScale;
+            Quaternion xnaRotation;
+
+            if (this.XnaMatrix.Decompose(out xnaScale, out xnaRotation, out xnaTranslation) == true)
+            {
+                localRotation = new CC3Quaternion(xnaRotation);
+            }
+
+            return localRotation;
         }
 
         #endregion Calculation methods

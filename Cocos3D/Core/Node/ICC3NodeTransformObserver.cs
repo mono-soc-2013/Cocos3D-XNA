@@ -17,36 +17,16 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
-
 
 namespace Cocos3D
 {
-    public abstract class CC3DrawableNode : CC3Node
+    internal interface ICC3NodeTransformObserver
     {
-        // Instance fields
-
-        protected CC3GraphicsContext _graphicsContext;
-        protected List<CC3DrawableNode> _drawableNodeChildren;
-
-   
-        #region Constructors
-
-        public CC3DrawableNode(CC3GraphicsContext graphicsContext)
-        {
-            _graphicsContext = graphicsContext;
-            _drawableNodeChildren = new List<CC3DrawableNode>();
-        }
-
-        #endregion Constructors
-
-
-
-        public virtual void Draw()
-        {
-
-        }
-
+        void ObservedNodeWorldTransformDidChange(CC3Node node, 
+                                                 CC3Vector translationChange,
+                                                 CC3Vector scaleChange,
+                                                 CC3Quaternion rotationChangeRelativeToAnchor,
+                                                 CC3Vector rotationAnchorPointRelativeToPosition);
     }
 }
 

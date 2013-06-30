@@ -20,10 +20,22 @@ using System;
 
 namespace Cocos3D
 {
-    internal interface ICC3CameraListener
+    public class CC3GroupActionRunner : CC3ActionRunner
     {
-        void CameraViewMatrixDidChange(CC3Camera camera);
-        void CameraProjectionMatrixDidChange(CC3Camera camera);
+        public CC3GroupActionRunner(float actionDuration) : base(actionDuration)
+        {
+
+        }
+
+        // Create actionrunners
+        // Tie proxy node to single one
+        // Add actions while paused
+        // Unpause when finished
+
+        protected override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
+        {
+
+        }
     }
 }
 

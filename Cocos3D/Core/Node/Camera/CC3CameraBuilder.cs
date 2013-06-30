@@ -44,7 +44,11 @@ namespace Cocos3D
 
         #region Building camera methods
 
-        public abstract CC3Camera Build();
+        public CC3Camera Build()
+        {
+            // Return type and implementation set by subclasses
+            return null;
+        }
 
         #endregion Building camera methods
 
@@ -61,6 +65,7 @@ namespace Cocos3D
         
         public CC3CameraBuilder PositionAtNode(CC3Node node, CC3Vector offset)
         {
+            _cameraPostion = node.WorldPosition + offset;
             return this;
         }
 
@@ -80,12 +85,20 @@ namespace Cocos3D
 
         public CC3CameraBuilder LookingInDirection(CC3Vector worldDirection)
         {
+            // This assumes camera position has been set prior
+            _cameraTarget = _cameraPostion + worldDirection.NormalizedVector();
+            return this;
+        }
+
+        public CC3CameraBuilder LookingAtNode(CC3Node node, CC3Vector offset)
+        {
+            _cameraTarget = node.WorldPosition + offset;
             return this;
         }
 
         public CC3CameraBuilder LookingAtNode(CC3Node node)
         {
-            return this;
+            return this.LookingAtNode(node, CC3Vector.CC3VectorZero);
         }
 
         #endregion Setting up camera view matrix

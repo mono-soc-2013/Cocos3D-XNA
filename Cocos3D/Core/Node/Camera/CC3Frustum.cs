@@ -23,12 +23,29 @@ namespace Cocos3D
 {
     public class CC3Frustum
     {
+        // Instance fields
+
         private BoundingFrustum _xnaBoundingFrustum;
+
+        #region Constructors
 
         internal CC3Frustum(BoundingFrustum xnaBoundingFrustum)
         {
             _xnaBoundingFrustum = xnaBoundingFrustum;
         }
+
+        #endregion Constructors
+
+
+        #region Intersection with bounding volumes methods
+
+        internal bool Intersects(CC3BoundingBox boundingBox)
+        {
+            return _xnaBoundingFrustum.Intersects(boundingBox.XnaBoundingBox);
+        }
+
+        #endregion Intersection with bounding volumes methods
+
     }
 }
 

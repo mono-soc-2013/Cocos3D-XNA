@@ -98,8 +98,8 @@ namespace Cocos3D
             _clearDepth = CC3GraphicsContext._defaultClearDepth;
             _clearStencil = CC3GraphicsContext._defaultClearStencil;
 
-            _viewMatrix = CC3Matrix.Identity;
-            _projectionMatrix = CC3Matrix.Identity;
+            _viewMatrix = CC3Matrix.CC3MatrixIdentity;
+            _projectionMatrix = CC3Matrix.CC3MatrixIdentity;
         }
 
         #endregion Constructors

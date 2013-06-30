@@ -17,35 +17,21 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
-
 
 namespace Cocos3D
 {
-    public abstract class CC3DrawableNode : CC3Node
+    public abstract class CC3CameraActionRunner : CC3ActionRunner
     {
         // Instance fields
 
-        protected CC3GraphicsContext _graphicsContext;
-        protected List<CC3DrawableNode> _drawableNodeChildren;
-
-   
         #region Constructors
 
-        public CC3DrawableNode(CC3GraphicsContext graphicsContext)
+        internal CC3CameraActionRunner(float actionDuration) 
+            : base(actionDuration)
         {
-            _graphicsContext = graphicsContext;
-            _drawableNodeChildren = new List<CC3DrawableNode>();
         }
 
         #endregion Constructors
-
-
-
-        public virtual void Draw()
-        {
-
-        }
 
     }
 }

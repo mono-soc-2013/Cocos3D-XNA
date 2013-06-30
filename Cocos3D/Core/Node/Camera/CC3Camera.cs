@@ -30,10 +30,12 @@ namespace Cocos3D
 
         // Instance fields
 
-        private ICC3CameraListener _cameraListenter;
+        private ICC3CameraObserver _cameraObserver;
 
         private CC3Matrix _viewMatrix;
         private CC3Vector _cameraTarget;
+
+        private CC3Quaternion _cameraRotationChangeRelativeToTargetNeededToUpdate;
 
         protected CC3Matrix _projectionMatrix;
         protected float _nearClippingDistance;
@@ -55,6 +57,16 @@ namespace Cocos3D
 
         // Instance properties
 
+        public override CC3Vector WorldScale
+        {
+            get { return CC3Vector.CC3VectorUnitCube; }
+        }
+
+        public override CC3Quaternion LocalRotation
+        {
+            get { return base.LocalRotation; }
+        }
+
         public float NearClippingDistance
         {
             get { return _nearClippingDistance; }
@@ -73,10 +85,10 @@ namespace Cocos3D
             }
         }
 
-        internal ICC3CameraListener CameraListener
+        internal ICC3CameraObserver CameraObserver
         {
-            get { return _cameraListenter; }
-            set { _cameraListenter = value; }
+            get { return _cameraObserver; }
+            set { _cameraObserver = value; }
         }
 
         internal CC3Matrix ViewMatrix
@@ -92,26 +104,11 @@ namespace Cocos3D
         #endregion Properties
 
 
-        #region Static camera view calculation methods
-
-        private static CC3Matrix CameraViewMatrix(CC3Vector cameraPosition, CC3Vector cameraTarget)
-        {
-            Matrix xnaViewMatrix = Matrix.CreateLookAt(cameraPosition.XnaVector, 
-                                                       cameraTarget.XnaVector, 
-                                                       CC3Vector.CC3VectorUp.XnaVector);
-            
-            return new CC3Matrix(xnaViewMatrix);
-        }
-
-        #endregion Static camera view calculation methods
-
-
         #region Constructors
 
         // Users should only create camera via corresponding builder class
-        internal CC3Camera(CC3Vector cameraPosition, CC3Vector cameraTarget) : base()
+        internal CC3Camera(CC3Vector cameraPosition, CC3Vector cameraTarget) : base(cameraPosition)
         {
-            _worldPosition = cameraPosition;
             _cameraTarget = cameraTarget;
 
             this.UpdateViewMatrix();
@@ -120,29 +117,65 @@ namespace Cocos3D
         #endregion Constructors
 
 
-        #region Updating view and projection matrices
+        #region Updating world, view and projection matrices
 
-        protected void ShouldUpdateProjectionMatrix()
+        // Update world matrix methods
+        
+        protected override void ShouldUpdateWorldMatrix()
         {
-            this.UpdateProjectionMatrix();
-
-            _cameraListenter.CameraProjectionMatrixDidChange(this);
+            // Instead of updating world, we update the view
+            this.ShouldUpdateViewMatrix();
         }
 
-        protected abstract void UpdateProjectionMatrix();
+        // Update view matrix methods
 
+        internal void IncrementallyUpdateViewTransform(CC3Vector cameraTranslationChange, 
+                                                       CC3Vector cameraTargetTranslationChange,
+                                                       CC3Quaternion cameraRotationChangeRelativeToTarget)
+        {
+            _cameraRotationChangeRelativeToTargetNeededToUpdate = cameraRotationChangeRelativeToTarget;
+            _cameraTarget += cameraTargetTranslationChange;
+
+            this.IncrementallyUpdateWorldTransform(cameraTranslationChange, 
+                                                   CC3Vector.CC3VectorZero, 
+                                                   CC3Quaternion.CC3QuaternionIdentity,
+                                                   CC3Vector.CC3VectorZero);
+        }
 
         private void ShouldUpdateViewMatrix()
         {
             this.UpdateViewMatrix();
 
-            _cameraListenter.CameraViewMatrixDidChange(this);
+            _cameraObserver.CameraViewMatrixDidChange(this);
         }
 
         private void UpdateViewMatrix()
         {
-            _viewMatrix = CC3Camera.CameraViewMatrix(_worldPosition, _cameraTarget);
+            _viewMatrix 
+                = CC3Matrix.CreateCameraViewMatrix(this.WorldTranslation, 
+                                                   _cameraTarget, 
+                                                   _cameraRotationChangeRelativeToTargetNeededToUpdate);
+            _worldMatrix = _viewMatrix.Inverse();
+
+            this.FinishedUpdatingViewMatrix();
         }
+
+        private void FinishedUpdatingViewMatrix()
+        {
+            _cameraRotationChangeRelativeToTargetNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
+        }
+
+        // Update projectiom matrix methods
+
+        protected void ShouldUpdateProjectionMatrix()
+        {
+            this.UpdateProjectionMatrix();
+
+            _cameraObserver.CameraProjectionMatrixDidChange(this);
+        }
+
+        protected abstract void UpdateProjectionMatrix();
+
 
         #endregion Updating view and projection matrices
     }

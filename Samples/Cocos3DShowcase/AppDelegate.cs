@@ -42,7 +42,7 @@ namespace Cocos3DShowcase
         public override bool ApplicationDidFinishLaunching()
         {
             _graphicsDeviceManager.IsFullScreen = true;
-            _graphicsDeviceManager.PreferMultiSampling = false;
+            _graphicsDeviceManager.PreferMultiSampling = true;
 
             // Ask to adapter to give us dimensions of screen
             _graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;

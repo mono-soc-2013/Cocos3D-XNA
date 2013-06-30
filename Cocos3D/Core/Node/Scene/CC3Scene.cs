@@ -22,7 +22,7 @@ using Cocos2D;
 
 namespace Cocos3D
 {
-    public class CC3Scene : CC3DrawableNode, ICC3CameraListener
+    public class CC3Scene : CC3DrawableNode, ICC3CameraObserver
     {
         // Instance fields
 
@@ -43,14 +43,14 @@ namespace Cocos3D
                 if (_activeCamera != null)
                 {
                     // No longer interested in changes to previous active camera
-                    _activeCamera.CameraListener = null;
+                    _activeCamera.CameraObserver = null;
                 }
 
                 _activeCamera = value;
 
                 if (_activeCamera != null)
                 {
-                    _activeCamera.CameraListener = this;
+                    _activeCamera.CameraObserver = this;
                     this.CameraViewMatrixDidChange(_activeCamera);
                     this.CameraProjectionMatrixDidChange(_activeCamera);
                 }
