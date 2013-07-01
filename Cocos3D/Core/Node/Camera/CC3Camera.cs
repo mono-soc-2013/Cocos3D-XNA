@@ -57,16 +57,6 @@ namespace Cocos3D
 
         // Instance properties
 
-        public override CC3Vector WorldScale
-        {
-            get { return CC3Vector.CC3VectorUnitCube; }
-        }
-
-        public override CC3Quaternion LocalRotation
-        {
-            get { return base.LocalRotation; }
-        }
-
         public float NearClippingDistance
         {
             get { return _nearClippingDistance; }
@@ -133,13 +123,20 @@ namespace Cocos3D
                                                        CC3Vector cameraTargetTranslationChange,
                                                        CC3Quaternion cameraRotationChangeRelativeToTarget)
         {
+            this.WorldTranslationChangeNeededToUpdate = cameraTranslationChange;
             _cameraRotationChangeRelativeToTargetNeededToUpdate = cameraRotationChangeRelativeToTarget;
             _cameraTarget += cameraTargetTranslationChange;
 
-            this.IncrementallyUpdateWorldTransform(cameraTranslationChange, 
-                                                   CC3Vector.CC3VectorZero, 
-                                                   CC3Quaternion.CC3QuaternionIdentity,
-                                                   CC3Vector.CC3VectorZero);
+            this.ShouldUpdateViewMatrix();
+
+            foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
+            {
+                transformObserver.ObservedNodeWorldTransformDidChange(this, 
+                                                                      cameraTranslationChange, 
+                                                                      CC3Vector.CC3VectorUnitCube, 
+                                                                      _cameraRotationChangeRelativeToTargetNeededToUpdate,
+                                                                      _cameraTarget - this.WorldPosition - cameraTranslationChange);
+            }
         }
 
         private void ShouldUpdateViewMatrix()
@@ -152,7 +149,7 @@ namespace Cocos3D
         private void UpdateViewMatrix()
         {
             _viewMatrix 
-                = CC3Matrix.CreateCameraViewMatrix(this.WorldTranslation, 
+                = CC3Matrix.CreateCameraViewMatrix(this.WorldPosition + this.WorldTranslationChangeNeededToUpdate, 
                                                    _cameraTarget, 
                                                    _cameraRotationChangeRelativeToTargetNeededToUpdate);
             _worldMatrix = _viewMatrix.Inverse();
@@ -163,6 +160,8 @@ namespace Cocos3D
         private void FinishedUpdatingViewMatrix()
         {
             _cameraRotationChangeRelativeToTargetNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
+
+            base.FinishedUpdatingWorldMatrix();
         }
 
         // Update projectiom matrix methods

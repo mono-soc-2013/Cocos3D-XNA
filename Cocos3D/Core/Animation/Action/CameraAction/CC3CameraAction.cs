@@ -20,11 +20,12 @@ using System;
 
 namespace Cocos3D
 {
-    public abstract class CC3CameraAction : CC3TransformAction
+    public abstract class CC3CameraAction : CC3TranslationAction
     {
         // Instance fields
 
         private CC3Vector _cameraTargetTranslationChange;
+        private CC3Quaternion _cameraRotationChangeRelativeToCameraTarget;
         private float  _cameraNearClippingDistanceChange;
         private float _cameraFarClippingDistanceChange;
 
@@ -57,12 +58,10 @@ namespace Cocos3D
                                CC3Quaternion cameraRotationChangeRelativeToCameraTarget,
                                float cameraNearClippingDistanceChange,
                                float cameraFarClippingDistanceChange) 
-            : base(cameraTranslationChange, 
-                   CC3Vector.CC3VectorZero, 
-                   cameraRotationChangeRelativeToCameraTarget, 
-                   CC3Vector.CC3VectorZero)
+            : base(cameraTranslationChange)
         {
             _cameraTargetTranslationChange = cameraTargetTranslationChange;
+            _cameraRotationChangeRelativeToCameraTarget = cameraRotationChangeRelativeToCameraTarget;
             _cameraNearClippingDistanceChange = cameraNearClippingDistanceChange;
             _cameraFarClippingDistanceChange = cameraFarClippingDistanceChange;
         }
@@ -75,6 +74,11 @@ namespace Cocos3D
         internal CC3Vector IncrementalCameraTargetTranslationChange(float timeElapsedFraction, float timeIncrementFraction)
         {
             return _cameraTargetTranslationChange * timeIncrementFraction;
+        }
+
+        internal CC3Quaternion IncrementalCameraRotationChangeRelativeToCameraTarget(float timeElapsedFraction, float timeIncrementFraction)
+        {
+            return CC3Quaternion.CC3QuaternionSlerp(CC3Quaternion.CC3QuaternionIdentity, _cameraRotationChangeRelativeToCameraTarget, timeIncrementFraction);
         }
 
         #endregion Getting transform changes for a subinterval of time

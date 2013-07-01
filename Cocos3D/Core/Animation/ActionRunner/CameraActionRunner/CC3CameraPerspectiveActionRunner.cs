@@ -42,7 +42,7 @@ namespace Cocos3D
                 _perspectiveCameraAction.IncrementalTranslationChange(timeElapsedFraction, timeIncrementFraction);
 
             CC3Quaternion incrementalCameraRotationChangeRelativeToTarget =
-                _perspectiveCameraAction.IncrementalRotationChangeRelativeToAnchor(timeElapsedFraction, timeIncrementFraction);
+                _perspectiveCameraAction.IncrementalCameraRotationChangeRelativeToCameraTarget(timeElapsedFraction, timeIncrementFraction);
 
             CC3Vector incrementalCameraTargetTranslationChange = 
                 _perspectiveCameraAction.IncrementalCameraTargetTranslationChange(timeElapsedFraction, timeIncrementFraction);

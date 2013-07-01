@@ -27,14 +27,11 @@ namespace Cocos3D
         // Instance fields
 
         protected CC3Matrix _worldMatrix;
-        protected CC3Vector _worldScale;
-
         private CC3Vector _worldTranslationChangeNeededToUpdate;
-        private CC3Quaternion _rotationChangeRelativeToAnchorNeededToUpdate;
-        private CC3Vector _rotationAnchorPointRelativeToPositionUsedForUpdate;
 
-        private CC3Node _nodeBeingObservedForTransformChanges;
-        private List<ICC3NodeTransformObserver> _listOfNodeTransformObservers;
+        protected CC3Node _nodeBeingObservedForTransformChanges;
+        protected List<ICC3NodeTransformObserver> _listOfNodeTransformObservers;
+
 
         #region Properties
 
@@ -46,44 +43,16 @@ namespace Cocos3D
             set
             {
                 CC3Vector positionChange = value - this.WorldPosition;
-                this.IncrementallyUpdateWorldTransform(positionChange, 
-                                                       CC3Vector.CC3VectorZero,
-                                                       CC3Quaternion.CC3QuaternionZero,
-                                                       CC3Vector.CC3VectorZero);
+                this.IncrementallyUpdateWorldTranslation(positionChange);                              
             }
-        }
-
-        public virtual CC3Quaternion LocalRotation
-        {
-            get { return _worldMatrix.LocalRotationOfTransformMatrix(); }
-            set
-            {
-                CC3Quaternion rotationChange = this.LocalRotation.Inverse() * value;
-                this.IncrementallyUpdateWorldTransform(CC3Vector.CC3VectorZero,
-                                                       CC3Vector.CC3VectorZero,
-                                                       rotationChange,
-                                                       CC3Vector.CC3VectorZero);
-            }
-        }
-
-        public virtual CC3Vector WorldScale
-        {
-            get { return _worldScale; }
-            set
-            {
-                CC3Vector scaleChange = value - _worldScale;
-                this.IncrementallyUpdateWorldTransform(CC3Vector.CC3VectorZero, 
-                                                       scaleChange,
-                                                       CC3Quaternion.CC3QuaternionZero,
-                                                       CC3Vector.CC3VectorZero);
-            }
-        }
-
-        protected CC3Vector WorldTranslation
-        {
-            get { return this.WorldPosition + _worldTranslationChangeNeededToUpdate; }
         }
        
+        protected CC3Vector WorldTranslationChangeNeededToUpdate
+        {
+            get { return _worldTranslationChangeNeededToUpdate; }
+            set { _worldTranslationChangeNeededToUpdate = value; }
+        }
+
         #endregion Properties
 
 
@@ -92,21 +61,13 @@ namespace Cocos3D
         public CC3Node()
         {
             _worldTranslationChangeNeededToUpdate = CC3Vector.CC3VectorZero;
-            _rotationChangeRelativeToAnchorNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
-            _rotationAnchorPointRelativeToPositionUsedForUpdate = CC3Vector.CC3VectorZero;
-
-            _worldScale = CC3Vector.CC3VectorUnitCube;
             _worldMatrix = CC3Matrix.CC3MatrixIdentity;
             _listOfNodeTransformObservers = new List<ICC3NodeTransformObserver>();
         }
 
         public CC3Node(CC3Vector worldPosition) : this()
         {
-            _worldMatrix = CC3Matrix.CreateWorldMatrix(worldPosition,
-                                                       _worldScale,
-                                                       CC3Quaternion.CC3QuaternionIdentity,
-                                                       CC3Quaternion.CC3QuaternionIdentity,
-                                                       CC3Vector.CC3VectorZero);
+            _worldMatrix = CC3Matrix.CreateTranslationMatrix(worldPosition);
         }
 
         #endregion Constructors
@@ -114,26 +75,15 @@ namespace Cocos3D
 
         #region Updating world matrix methods
 
-        internal void IncrementallyUpdateWorldTransform(CC3Vector translationChange, 
-                                                        CC3Vector scaleChange, 
-                                                        CC3Quaternion rotationChangeRelativeToAnchor,
-                                                        CC3Vector rotationAnchorPointRelativeToPosition)
+        internal void IncrementallyUpdateWorldTranslation(CC3Vector translationChange)
         {
             _worldTranslationChangeNeededToUpdate = translationChange;
-            _rotationChangeRelativeToAnchorNeededToUpdate = rotationChangeRelativeToAnchor;
-            _rotationAnchorPointRelativeToPositionUsedForUpdate = rotationAnchorPointRelativeToPosition;
-
-            _worldScale += scaleChange;
 
             this.ShouldUpdateWorldMatrix();
 
             foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
             {
-                transformObserver.ObservedNodeWorldTransformDidChange(this, 
-                                                                      translationChange, 
-                                                                      scaleChange, 
-                                                                      rotationChangeRelativeToAnchor,
-                                                                      rotationAnchorPointRelativeToPosition);
+                transformObserver.ObservedNodeWorldTranslationDidChange(this, translationChange);
             }
         }
 
@@ -143,22 +93,14 @@ namespace Cocos3D
             this.UpdateWorldMatrix();
         }
 
-        protected void UpdateWorldMatrix()
+        protected virtual void UpdateWorldMatrix()
         {
-            _worldMatrix = CC3Matrix.CreateWorldMatrix(this.WorldTranslation,
-                                                       _worldScale,
-                                                       this.LocalRotation,
-                                                       _rotationChangeRelativeToAnchorNeededToUpdate,
-                                                       _rotationAnchorPointRelativeToPositionUsedForUpdate);
-
-            this.FinishedUpdatingWorldMatrix();
+            _worldMatrix = CC3Matrix.CreateTranslationMatrix(this.WorldPosition + this.WorldTranslationChangeNeededToUpdate);
         }
 
-        private void FinishedUpdatingWorldMatrix()
+        protected virtual void FinishedUpdatingWorldMatrix()
         {
             _worldTranslationChangeNeededToUpdate = CC3Vector.CC3VectorZero;
-            _rotationChangeRelativeToAnchorNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
-            _rotationAnchorPointRelativeToPositionUsedForUpdate = CC3Vector.CC3VectorZero;
         }
 
         #endregion Updating world matrix methods
@@ -203,19 +145,22 @@ namespace Cocos3D
 
         #region Node transform listener interface methods
 
+        public void ObservedNodeWorldTranslationDidChange(CC3Node node, 
+                                                          CC3Vector translationChange)
+        {
+            if (node == _nodeBeingObservedForTransformChanges)
+            {
+                this.IncrementallyUpdateWorldTranslation(translationChange);
+            }
+        }
+
         public void ObservedNodeWorldTransformDidChange(CC3Node node, 
                                                         CC3Vector translationChange,
                                                         CC3Vector scaleChange,
                                                         CC3Quaternion rotationChangeRelativeToPosition,
                                                         CC3Vector rotationAnchorPointRelativeToPosition)
         {
-            if (node == _nodeBeingObservedForTransformChanges)
-            {
-                this.IncrementallyUpdateWorldTransform(translationChange, 
-                                                       scaleChange, 
-                                                       rotationChangeRelativeToPosition,
-                                                       rotationAnchorPointRelativeToPosition);
-            }
+            this.ObservedNodeWorldTranslationDidChange(node, translationChange);
         }
 
         #endregion Node transform listener interface methods

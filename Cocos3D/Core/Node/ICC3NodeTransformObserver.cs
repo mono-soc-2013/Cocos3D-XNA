@@ -20,8 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    internal interface ICC3NodeTransformObserver
+    public interface ICC3NodeTransformObserver
     {
+        void ObservedNodeWorldTranslationDidChange(CC3Node node, 
+                                                   CC3Vector translationChange);
+
         void ObservedNodeWorldTransformDidChange(CC3Node node, 
                                                  CC3Vector translationChange,
                                                  CC3Vector scaleChange,

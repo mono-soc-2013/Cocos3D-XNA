@@ -73,6 +73,13 @@ namespace Cocos3D
                                  xnaScaleMatrix);
         }
 
+        public static CC3Matrix CreateTranslationMatrix(CC3Vector worldTranslation)
+        {
+            Matrix xnaTranslationMatrix = Matrix.CreateTranslation(worldTranslation.XnaVector);
+
+            return new CC3Matrix(xnaTranslationMatrix);
+        }
+
         public static CC3Matrix CreateCameraViewMatrix(CC3Vector cameraPosition, 
                                                        CC3Vector cameraTarget,
                                                        CC3Quaternion cameraRotationRelativeToTarget)

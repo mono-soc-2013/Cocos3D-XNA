@@ -25,16 +25,16 @@ namespace Cocos3D
         // Instance fields
 
         private CC3TransformAction _transformAction;
-        private CC3Node _targetNode;
+        private CC3DrawableNode _targetDrawableNode;
 
 
         #region Constructors
 
-        public CC3TransformActionRunner(CC3TransformAction transformAction, CC3Node targetNode, float actionDuration)
+        public CC3TransformActionRunner(CC3TransformAction transformAction, CC3DrawableNode targetDrawableNode, float actionDuration)
             : base(actionDuration)
         {
             _transformAction = transformAction;
-            _targetNode = targetNode;
+            _targetDrawableNode = targetDrawableNode;
         }
 
         #endregion Constructors
@@ -52,10 +52,10 @@ namespace Cocos3D
                 _transformAction.IncrementalRotationChangeRelativeToAnchor(timeElapsedFraction, timeIncrementFraction);
             CC3Vector rotationAnchorPoint = _transformAction.RotationAnchorPointRelativeToPosition;
 
-            _targetNode.IncrementallyUpdateWorldTransform(incrementalTranslationChange, 
-                                                          incrementalScaleChange, 
-                                                          incrementalRotationChange,
-                                                          rotationAnchorPoint);
+            _targetDrawableNode.IncrementallyUpdateWorldTransform(incrementalTranslationChange, 
+                                                                  incrementalScaleChange, 
+                                                                  incrementalRotationChange,
+                                                                  rotationAnchorPoint);
         }
 
         #endregion Running action methods

@@ -29,18 +29,95 @@ namespace Cocos3D
         protected CC3GraphicsContext _graphicsContext;
         protected List<CC3DrawableNode> _drawableNodeChildren;
 
-   
+        private CC3Vector _worldScale;
+        private CC3Quaternion _rotationChangeRelativeToAnchorNeededToUpdate;
+        private CC3Vector _rotationAnchorPointRelativeToPositionUsedForUpdate;
+
+        #region Properties
+
+        public virtual CC3Quaternion LocalRotation
+        {
+            get { return _worldMatrix.LocalRotationOfTransformMatrix(); }
+            set
+            {
+                CC3Quaternion rotationChange = this.LocalRotation.Inverse() * value;
+                this.IncrementallyUpdateWorldTransform(CC3Vector.CC3VectorZero,
+                                                       CC3Vector.CC3VectorZero,
+                                                       rotationChange,
+                                                       CC3Vector.CC3VectorZero);
+            }
+        }
+
+        public virtual CC3Vector WorldScale
+        {
+            get { return _worldScale; }
+            set
+            {
+                CC3Vector scaleChange = value - _worldScale;
+                this.IncrementallyUpdateWorldTransform(CC3Vector.CC3VectorZero, 
+                                                       scaleChange,
+                                                       CC3Quaternion.CC3QuaternionZero,
+                                                       CC3Vector.CC3VectorZero);
+            }
+        }
+
+        #endregion Properties
+
         #region Constructors
 
         public CC3DrawableNode(CC3GraphicsContext graphicsContext)
         {
             _graphicsContext = graphicsContext;
             _drawableNodeChildren = new List<CC3DrawableNode>();
+
+            _worldScale = CC3Vector.CC3VectorUnitCube;
+            _rotationChangeRelativeToAnchorNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
+            _rotationAnchorPointRelativeToPositionUsedForUpdate = CC3Vector.CC3VectorZero;
         }
 
         #endregion Constructors
 
+        internal void IncrementallyUpdateWorldTransform(CC3Vector translationChange, 
+                                                        CC3Vector scaleChange, 
+                                                        CC3Quaternion rotationChangeRelativeToAnchor,
+                                                        CC3Vector rotationAnchorPointRelativeToPosition)
+        {
+            this.WorldTranslationChangeNeededToUpdate = translationChange;
+            _rotationChangeRelativeToAnchorNeededToUpdate = rotationChangeRelativeToAnchor;
+            _rotationAnchorPointRelativeToPositionUsedForUpdate = rotationAnchorPointRelativeToPosition;
 
+            _worldScale += scaleChange;
+
+            this.ShouldUpdateWorldMatrix();
+
+            foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
+            {
+                transformObserver.ObservedNodeWorldTransformDidChange(this, 
+                                                                      translationChange, 
+                                                                      scaleChange, 
+                                                                      rotationChangeRelativeToAnchor,
+                                                                      rotationAnchorPointRelativeToPosition);
+            }
+        }
+
+        protected override void UpdateWorldMatrix()
+        {
+            _worldMatrix = CC3Matrix.CreateWorldMatrix(this.WorldPosition + this.WorldTranslationChangeNeededToUpdate,
+                                                       _worldScale,
+                                                       this.LocalRotation,
+                                                       _rotationChangeRelativeToAnchorNeededToUpdate,
+                                                       _rotationAnchorPointRelativeToPositionUsedForUpdate);
+
+            this.FinishedUpdatingWorldMatrix();
+        }
+
+        protected override void FinishedUpdatingWorldMatrix()
+        {
+            _rotationChangeRelativeToAnchorNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
+            _rotationAnchorPointRelativeToPositionUsedForUpdate = CC3Vector.CC3VectorZero;
+
+            base.FinishedUpdatingWorldMatrix();
+        }
 
         public virtual void Draw()
         {

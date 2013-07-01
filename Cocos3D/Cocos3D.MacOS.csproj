@@ -132,6 +132,7 @@
     <Compile Include="Core\Animation\ActionRunner\CameraActionRunner\CC3CameraActionRunner.cs" />
     <Compile Include="Core\Animation\ActionRunner\CameraActionRunner\CC3CameraPerspectiveActionRunner.cs" />
     <Compile Include="Core\Animation\Action\CameraAction\CC3CameraPerspectiveAction.cs" />
+    <Compile Include="Core\Animation\Action\CC3TranslationAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

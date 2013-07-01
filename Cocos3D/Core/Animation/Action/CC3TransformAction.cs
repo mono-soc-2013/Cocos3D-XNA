@@ -20,11 +20,10 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3TransformAction : CC3Action
+    public class CC3TransformAction : CC3TranslationAction
     {
         // Instance fields
 
-        private CC3Vector _translationChange;
         private CC3Vector _scaleChange;
         private CC3Quaternion _rotationChangeRelativeToAnchor;
         private CC3Vector _rotationAnchorPointRelativeToPosition;
@@ -32,11 +31,6 @@ namespace Cocos3D
         #region Properties
 
         // Instance properties
-
-        public CC3Vector TranslationChange
-        {
-            get { return _translationChange; }
-        }
 
         public CC3Vector ScaleChange
         {
@@ -62,9 +56,8 @@ namespace Cocos3D
                                   CC3Vector scaleChange, 
                                   CC3Quaternion rotationChangeRelativeToAnchor,
                                   CC3Vector rotationAnchorPointRelativeToPosition)
-            : base ()
+            : base (translationChange)
         {
-            _translationChange = translationChange;
             _scaleChange = scaleChange;
             _rotationChangeRelativeToAnchor = rotationChangeRelativeToAnchor;
             _rotationAnchorPointRelativeToPosition = rotationAnchorPointRelativeToPosition;
@@ -74,11 +67,6 @@ namespace Cocos3D
 
 
         #region Getting transform changes for a subinterval of time
-
-        internal CC3Vector IncrementalTranslationChange(float timeElapsedFraction, float timeIncrementFraction)
-        {
-            return _translationChange * timeIncrementFraction;
-        }
 
         internal CC3Vector IncrementalScaleChange(float timeElapsedFraction, float timeIncrementFraction)
         {
