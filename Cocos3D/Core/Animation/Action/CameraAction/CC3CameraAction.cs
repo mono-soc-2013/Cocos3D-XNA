@@ -25,7 +25,7 @@ namespace Cocos3D
         // Instance fields
 
         private CC3Vector _cameraTargetTranslationChange;
-        private CC3Quaternion _cameraRotationChangeRelativeToCameraTarget;
+        private CC3AnimatableRotation _cameraRotationChangeRelativeToCameraTarget;
         private float  _cameraNearClippingDistanceChange;
         private float _cameraFarClippingDistanceChange;
 
@@ -55,13 +55,14 @@ namespace Cocos3D
 
         public CC3CameraAction(CC3Vector cameraTranslationChange, 
                                CC3Vector cameraTargetTranslationChange,
-                               CC3Quaternion cameraRotationChangeRelativeToCameraTarget,
+                               CC3Vector4 cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget,
                                float cameraNearClippingDistanceChange,
                                float cameraFarClippingDistanceChange) 
             : base(cameraTranslationChange)
         {
             _cameraTargetTranslationChange = cameraTargetTranslationChange;
-            _cameraRotationChangeRelativeToCameraTarget = cameraRotationChangeRelativeToCameraTarget;
+            _cameraRotationChangeRelativeToCameraTarget 
+                = new CC3AnimatableRotation(cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget);
             _cameraNearClippingDistanceChange = cameraNearClippingDistanceChange;
             _cameraFarClippingDistanceChange = cameraFarClippingDistanceChange;
         }
@@ -78,7 +79,7 @@ namespace Cocos3D
 
         internal CC3Quaternion IncrementalCameraRotationChangeRelativeToCameraTarget(float timeElapsedFraction, float timeIncrementFraction)
         {
-            return CC3Quaternion.CC3QuaternionSlerp(CC3Quaternion.CC3QuaternionIdentity, _cameraRotationChangeRelativeToCameraTarget, timeIncrementFraction);
+            return _cameraRotationChangeRelativeToCameraTarget.IncrementalRotationChange(timeElapsedFraction, timeIncrementFraction);
         }
 
         #endregion Getting transform changes for a subinterval of time

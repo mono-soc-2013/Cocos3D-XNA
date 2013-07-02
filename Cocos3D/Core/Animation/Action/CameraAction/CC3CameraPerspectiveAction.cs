@@ -43,13 +43,13 @@ namespace Cocos3D
 
         public CC3CameraPerspectiveAction(CC3Vector cameraTranslationChange, 
                                           CC3Vector cameraTargetTranslationChange,
-                                          CC3Quaternion cameraRotationChangeRelativeToCameraTarget,
+                                          CC3Vector4 cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget,
                                           float cameraNearClippingDistanceChange,
                                           float cameraFarClippingDistanceChange,
                                           float cameraFieldOfViewInRadiansChange) 
             : base(cameraTranslationChange, 
                    cameraTargetTranslationChange,
-                   cameraRotationChangeRelativeToCameraTarget,
+                   cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget,
                    cameraNearClippingDistanceChange, 
                    cameraFarClippingDistanceChange)
         {

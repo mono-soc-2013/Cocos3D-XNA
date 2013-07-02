@@ -59,8 +59,8 @@ namespace Cocos3DShowcase
 
         private void InitializeCamera()
         {
-            CC3Vector cameraPos = new CC3Vector(0.0f, 5.0f, 10.0f);
-            CC3Vector cameraTarget = CC3Vector.CC3VectorZero;
+            CC3Vector cameraPos = new CC3Vector(0.0f, 10.0f, 10.0f);
+            CC3Vector cameraTarget = new CC3Vector(0.0f, 0.0f, -10.0f);
             float cameraFieldOfViewInDegrees = 60.0f;
             float cameraAspectRatio = _graphicsContext.ScreenAspectRatio;
             float cameraNearClippingDistance = 1.0f;
@@ -89,16 +89,16 @@ namespace Cocos3DShowcase
 
         private void InitializeCameraAction()
         {
-            CC3Quaternion cameraActionRotaion 
-                = CC3Quaternion.CreateFromAxisAngle(new CC3Vector(0.0f,1.0f, 0.0f), 
-                                                    MathHelper.ToRadians(179.0f));
+            CC3Vector cameraRotationAxis = (new CC3Vector(1.0f, 0.0f, 1.0f)).NormalizedVector();
+            CC3Vector4 cameraActionRotaion = new CC3Vector4(cameraRotationAxis, 360.0f);
+
 
             _cameraAction = new CC3CameraPerspectiveAction(CC3Vector.CC3VectorZero, 
                                                            CC3Vector.CC3VectorZero,
                                                            cameraActionRotaion,                                                         
                                                            0.0f, 0.0f, 0.0f);
           
-            _cameraActionRunner = new CC3CameraPerspectiveActionRunner(_cameraAction, _camera, 4.0f);
+            _cameraActionRunner = new CC3CameraPerspectiveActionRunner(_cameraAction, _camera, 8.0f);
 
             _cameraActionRunner.RunAction();
         }
@@ -184,7 +184,7 @@ namespace Cocos3DShowcase
                 _listOfCubeWorldMatrices.Add(
                 Matrix.CreateRotationY(MathHelper.ToRadians(45.0f)) * Matrix.CreateTranslation(cubePosition));
                 cubePosition.X += 4.0f;
-                cubePosition.Z += 4.0f;
+                cubePosition.Z += 0.0f;
             }
         }
 

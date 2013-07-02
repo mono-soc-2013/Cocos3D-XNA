@@ -34,7 +34,7 @@ namespace Cocos3D
 
         private CC3Matrix _viewMatrix;
         private CC3Vector _cameraTarget;
-
+        private CC3Vector _cameraUpDirection;
         private CC3Quaternion _cameraRotationChangeRelativeToTargetNeededToUpdate;
 
         protected CC3Matrix _projectionMatrix;
@@ -100,6 +100,13 @@ namespace Cocos3D
         internal CC3Camera(CC3Vector cameraPosition, CC3Vector cameraTarget) : base(cameraPosition)
         {
             _cameraTarget = cameraTarget;
+            _cameraRotationChangeRelativeToTargetNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
+
+            float distBetweenCameraAndTarget = (cameraPosition - cameraTarget).Length();
+            float angleBetweenCameraAndTarget = (float)Math.Asin((cameraTarget.Y - cameraPosition.Y) / distBetweenCameraAndTarget);
+
+            _cameraUpDirection 
+                    = CC3Vector.CC3VectorUp.RotatedVector(CC3Quaternion.CreateFromXAxisRotation(angleBetweenCameraAndTarget));
 
             this.UpdateViewMatrix();
         }
@@ -126,6 +133,7 @@ namespace Cocos3D
             this.WorldTranslationChangeNeededToUpdate = cameraTranslationChange;
             _cameraRotationChangeRelativeToTargetNeededToUpdate = cameraRotationChangeRelativeToTarget;
             _cameraTarget += cameraTargetTranslationChange;
+            _cameraUpDirection = _cameraUpDirection.RotatedVector(cameraRotationChangeRelativeToTarget);
 
             this.ShouldUpdateViewMatrix();
 
@@ -151,7 +159,8 @@ namespace Cocos3D
             _viewMatrix 
                 = CC3Matrix.CreateCameraViewMatrix(this.WorldPosition + this.WorldTranslationChangeNeededToUpdate, 
                                                    _cameraTarget, 
-                                                   _cameraRotationChangeRelativeToTargetNeededToUpdate);
+                                                   _cameraRotationChangeRelativeToTargetNeededToUpdate,
+                                                   _cameraUpDirection);
             _worldMatrix = _viewMatrix.Inverse();
 
             this.FinishedUpdatingViewMatrix();
@@ -174,7 +183,6 @@ namespace Cocos3D
         }
 
         protected abstract void UpdateProjectionMatrix();
-
 
         #endregion Updating view and projection matrices
     }

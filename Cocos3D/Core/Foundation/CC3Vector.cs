@@ -276,6 +276,12 @@ namespace Cocos3D
             return new CC3Vector(normalizedXnaVec);
         }
 
+        public CC3Vector RotatedVector(CC3Quaternion quaternion)
+        {
+            Vector3 xnaRotatedVec = Vector3.Transform(_xnaVec3, quaternion.XnaQuaternion);
+            return new CC3Vector(xnaRotatedVec);
+        }
+
         #endregion Instance methods
     }
 }

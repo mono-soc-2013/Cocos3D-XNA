@@ -82,7 +82,8 @@ namespace Cocos3D
 
         public static CC3Matrix CreateCameraViewMatrix(CC3Vector cameraPosition, 
                                                        CC3Vector cameraTarget,
-                                                       CC3Quaternion cameraRotationRelativeToTarget)
+                                                       CC3Quaternion cameraRotationRelativeToTarget,
+                                                       CC3Vector cameraUpDirection)
         {
             Vector3 xnaCameraPosAfterRotation 
                 = Vector3.Transform(cameraPosition.XnaVector - cameraTarget.XnaVector, 
@@ -92,7 +93,7 @@ namespace Cocos3D
 
             Matrix xnaViewMatrix = Matrix.CreateLookAt(xnaCameraPosAfterRotation,
                                                        cameraTarget.XnaVector, 
-                                                       CC3Vector.CC3VectorUp.XnaVector);
+                                                       cameraUpDirection.XnaVector);
             
             return new CC3Matrix(xnaViewMatrix);
         }

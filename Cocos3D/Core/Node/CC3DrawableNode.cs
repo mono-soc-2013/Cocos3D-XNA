@@ -35,6 +35,8 @@ namespace Cocos3D
 
         #region Properties
 
+        // Instance properties
+
         public virtual CC3Quaternion LocalRotation
         {
             get { return _worldMatrix.LocalRotationOfTransformMatrix(); }
@@ -63,9 +65,10 @@ namespace Cocos3D
 
         #endregion Properties
 
+
         #region Constructors
 
-        public CC3DrawableNode(CC3GraphicsContext graphicsContext)
+        public CC3DrawableNode(CC3GraphicsContext graphicsContext) : base()
         {
             _graphicsContext = graphicsContext;
             _drawableNodeChildren = new List<CC3DrawableNode>();
@@ -76,6 +79,9 @@ namespace Cocos3D
         }
 
         #endregion Constructors
+
+
+        #region Updating world matrix methods
 
         internal void IncrementallyUpdateWorldTransform(CC3Vector translationChange, 
                                                         CC3Vector scaleChange, 
@@ -118,6 +124,9 @@ namespace Cocos3D
 
             base.FinishedUpdatingWorldMatrix();
         }
+
+        #endregion Updating world matrix methods
+
 
         public virtual void Draw()
         {
