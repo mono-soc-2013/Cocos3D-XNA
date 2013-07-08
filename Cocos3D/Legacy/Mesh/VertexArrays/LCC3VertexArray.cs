@@ -20,21 +20,15 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3GroupActionRunner : CC3ActionRunner
+    public class LCC3VertexArray
     {
-        public CC3GroupActionRunner(float actionDuration) : base(actionDuration)
+        public LCC3VertexArray()
         {
-
         }
 
-        // Create actionrunners
-        // Tie proxy node to single one
-        // Add actions while paused
-        // Unpause when finished
-
-        protected override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
+        public void BindContentToAttributeAtIndexWithVisitor(int vaIdx, LCC3NodeDrawingVisitor visitor)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

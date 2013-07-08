@@ -102,11 +102,8 @@ namespace Cocos3D
             _cameraTarget = cameraTarget;
             _cameraRotationChangeRelativeToTargetNeededToUpdate = CC3Quaternion.CC3QuaternionIdentity;
 
-            float distBetweenCameraAndTarget = (cameraPosition - cameraTarget).Length();
-            float angleBetweenCameraAndTarget = (float)Math.Asin((cameraTarget.Y - cameraPosition.Y) / distBetweenCameraAndTarget);
-
             _cameraUpDirection 
-                    = CC3Vector.CC3VectorUp.RotatedVector(CC3Quaternion.CreateFromXAxisRotation(angleBetweenCameraAndTarget));
+                = CC3Vector.CC3VectorUp + (cameraPosition - cameraTarget).NormalizedVector();
 
             this.UpdateViewMatrix();
         }
@@ -136,15 +133,6 @@ namespace Cocos3D
             _cameraUpDirection = _cameraUpDirection.RotatedVector(cameraRotationChangeRelativeToTarget);
 
             this.ShouldUpdateViewMatrix();
-
-            foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
-            {
-                transformObserver.ObservedNodeWorldTransformDidChange(this, 
-                                                                      cameraTranslationChange, 
-                                                                      CC3Vector.CC3VectorUnitCube, 
-                                                                      _cameraRotationChangeRelativeToTargetNeededToUpdate,
-                                                                      _cameraTarget - this.WorldPosition - cameraTranslationChange);
-            }
         }
 
         private void ShouldUpdateViewMatrix()

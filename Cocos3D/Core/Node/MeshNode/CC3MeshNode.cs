@@ -17,29 +17,53 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
-using System.Collections.Generic;
+using Cocos2D;
 
 namespace Cocos3D
 {
-    public class CC3Material
+    public class CC3MeshNode : CC3DrawableNode
     {
         // Instance fields
 
+        private CC3Mesh _mesh;
+        private CC3Material _material;
+
         #region Properties
 
+        public CC3Mesh Mesh
+        {
+            get { return _mesh; }
+        }
 
+        public CC3Material Material
+        {
+            get { return _material; }
+        }
 
         #endregion Properties
 
 
         #region Constructors
 
-        public CC3Material(List<CC3Texture> materialTextures)
-            : base()
+        public CC3MeshNode(CC3GraphicsContext graphicsContext, CC3Mesh mesh, CC3Material material) 
+            : base(graphicsContext)
         {
-
+            _mesh = mesh;
+            _material = material;
         }
 
         #endregion Constructors
+
+
+        #region Drawing methods
+
+        public override void Draw()
+        {
+            _graphicsContext.BindMesh(_mesh);
+            _graphicsContext.BindMaterial(_material);
+        }
+
+        #endregion Drawing methods
     }
 }
+

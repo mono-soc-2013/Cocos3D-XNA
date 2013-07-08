@@ -151,16 +151,14 @@ namespace Cocos3D
             return CC3Quaternion.CreateFromAxisAngle(new CC3Vector(1.0f, 0.0f, 0.0f), angle);
         }
 
+        public static CC3Quaternion CreateFromZAxisRotation(float angle)
+        {
+            return CC3Quaternion.CreateFromAxisAngle(new CC3Vector(0.0f, 0.0f, 1.0f), angle);
+        }
+
         public static float CC3QuaternionDot(CC3Quaternion q1, CC3Quaternion q2)
         {
             return Quaternion.Dot(q1._xnaQuat, q2._xnaQuat);
-        }
-
-        public static CC3Quaternion CC3QuaternionLerp(CC3Quaternion q1, CC3Quaternion q2, float amount)
-        {
-            Quaternion xnaLerpQuat = Quaternion.Lerp(q1._xnaQuat, q2._xnaQuat, amount);
-
-            return new CC3Quaternion(xnaLerpQuat);
         }
 
         public static CC3Quaternion CC3QuaternionSlerp(CC3Quaternion q1, CC3Quaternion q2, float amount)

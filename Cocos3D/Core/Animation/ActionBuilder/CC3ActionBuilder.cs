@@ -20,16 +20,14 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3ShaderProgram
+    public abstract class CC3ActionBuilder
     {
-
-        #region Constructors
-
-        public CC3ShaderProgram(string programFilename) : base()
+        public CC3ActionBuilder()
         {
-
+            this.Reset();
         }
 
-        #endregion Constructors
+        public abstract void Reset();
     }
 }
+

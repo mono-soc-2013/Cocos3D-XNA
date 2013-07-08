@@ -58,7 +58,7 @@ namespace Cocos3D
         #region Static camera projection calculation methods
 
         private static CC3Matrix CameraOrthographicProjectionMatrix(float cameraViewWidth, float cameraViewHeight, 
-                                                                   float cameraNearClippingDistance, float cameraFarClippingDistance)
+                                                                    float cameraNearClippingDistance, float cameraFarClippingDistance)
         {
             Matrix xnaProjMatrix 
                 = Matrix.CreateOrthographic(cameraViewWidth, cameraViewHeight, 

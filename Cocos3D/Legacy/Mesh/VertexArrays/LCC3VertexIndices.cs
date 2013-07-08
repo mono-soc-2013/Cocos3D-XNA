@@ -20,16 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3ShaderProgram
+    public class LCC3VertexIndices : LCC3DrawableVertexArray
     {
-
-        #region Constructors
-
-        public CC3ShaderProgram(string programFilename) : base()
+        public LCC3VertexIndices()
         {
-
         }
-
-        #endregion Constructors
     }
 }
+

@@ -95,7 +95,7 @@ namespace Cocos3D
 
         internal CC3AnimatableRotation(CC3Vector rotationAxis, float rotationInDegrees)
         {
-            _rotationAxis = rotationAxis;
+            _rotationAxis = rotationAxis.NormalizedVector();
             _rotationInDegrees = rotationInDegrees;
             _listOfRotationTimingInfo = new List<RotationTimingInfo>();
 

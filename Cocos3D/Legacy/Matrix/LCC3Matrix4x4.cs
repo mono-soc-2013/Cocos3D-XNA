@@ -20,37 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public abstract class CC3DrawableResource
+    public class LCC3Matrix4x4
     {
-        // Instance fields
-
-        protected CC3GraphicsContext _graphicsContext;
-
-
-        #region Properties
-
-        public CC3GraphicsContext GraphicsContext
+        public LCC3Matrix4x4()
         {
-            get { return _graphicsContext; }
         }
-
-        #endregion Properties
-
-
-        #region Constructors
-
-        public CC3DrawableResource()
-        {
-            // Use default graphics context
-        }
-
-        public CC3DrawableResource(CC3GraphicsContext graphicsContext)
-        {
-            _graphicsContext = graphicsContext;
-        }
-
-        #endregion Constructors
-
     }
 }
 

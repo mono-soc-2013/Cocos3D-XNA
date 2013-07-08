@@ -20,16 +20,13 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3ShaderProgram
+    public class CC3Mesh
     {
+        // Instance fields
 
-        #region Constructors
-
-        public CC3ShaderProgram(string programFilename) : base()
+        public CC3Mesh()
         {
-
         }
-
-        #endregion Constructors
     }
 }
+

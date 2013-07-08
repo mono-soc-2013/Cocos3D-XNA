@@ -20,16 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3ShaderProgram
+    public class LCC3NodeDrawingVisitor
     {
-
-        #region Constructors
-
-        public CC3ShaderProgram(string programFilename) : base()
+        public LCC3NodeDrawingVisitor()
         {
-
         }
-
-        #endregion Constructors
     }
 }
+

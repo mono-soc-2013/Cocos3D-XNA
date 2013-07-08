@@ -42,7 +42,7 @@ namespace Cocos3D
 
         #region Running action methods
 
-        protected override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
+        protected internal override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
         {
             CC3Vector incrementalTranslationChange = 
                 _transformAction.IncrementalTranslationChange(timeElapsedFraction, timeIncrementFraction);

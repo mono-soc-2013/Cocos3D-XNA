@@ -98,6 +98,13 @@ namespace Cocos3D
 
         #region Updating projection matrix
 
+        internal void IncrementallyUpdateProjectionTransform(float fieldOfViewChangeInRadians)
+        {
+            _fieldOfView += fieldOfViewChangeInRadians;
+
+            this.ShouldUpdateProjectionMatrix();
+        }
+
         // Subclasses should not call this directly
         // Instead call ShouldUpdateProjectionMatrix() inherited from base
         protected override void UpdateProjectionMatrix()

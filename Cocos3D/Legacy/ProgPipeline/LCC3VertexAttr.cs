@@ -20,16 +20,8 @@ using System;
 
 namespace Cocos3D
 {
-    public interface ICC3NodeTransformObserver
+    public struct LCC3VertexAttr
     {
-        void ObservedNodeWorldTranslationDidChange(CC3Node node, 
-                                                   CC3Vector translationChange);
-
-        void ObservedNodeWorldTransformDidChange(CC3Node node, 
-                                                 CC3Vector translationChange,
-                                                 CC3Vector scaleChange,
-                                                 CC3Quaternion rotationChangeRelativeToAnchor,
-                                                 CC3Vector rotationAnchorPointRelativeToPosition);
     }
 }
 

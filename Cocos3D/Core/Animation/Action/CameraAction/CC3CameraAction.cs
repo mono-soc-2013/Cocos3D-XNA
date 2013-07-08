@@ -26,8 +26,6 @@ namespace Cocos3D
 
         private CC3Vector _cameraTargetTranslationChange;
         private CC3AnimatableRotation _cameraRotationChangeRelativeToCameraTarget;
-        private float  _cameraNearClippingDistanceChange;
-        private float _cameraFarClippingDistanceChange;
 
         #region Properties
 
@@ -38,16 +36,6 @@ namespace Cocos3D
             get { return _cameraTargetTranslationChange; }
         }
 
-        public float CameraNearClippingDistanceChange
-        {
-            get { return _cameraNearClippingDistanceChange; }
-        }
-
-        public float CameraFarClippingDistanceChange
-        {
-            get { return _cameraFarClippingDistanceChange; }
-        }
-
         #endregion Properties
 
 
@@ -55,16 +43,12 @@ namespace Cocos3D
 
         public CC3CameraAction(CC3Vector cameraTranslationChange, 
                                CC3Vector cameraTargetTranslationChange,
-                               CC3Vector4 cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget,
-                               float cameraNearClippingDistanceChange,
-                               float cameraFarClippingDistanceChange) 
+                               CC3Vector4 cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget) 
             : base(cameraTranslationChange)
         {
             _cameraTargetTranslationChange = cameraTargetTranslationChange;
             _cameraRotationChangeRelativeToCameraTarget 
                 = new CC3AnimatableRotation(cameraAxisAndRotationInDegreesChangeRelativeToCameraTarget);
-            _cameraNearClippingDistanceChange = cameraNearClippingDistanceChange;
-            _cameraFarClippingDistanceChange = cameraFarClippingDistanceChange;
         }
 
         #endregion Constructors

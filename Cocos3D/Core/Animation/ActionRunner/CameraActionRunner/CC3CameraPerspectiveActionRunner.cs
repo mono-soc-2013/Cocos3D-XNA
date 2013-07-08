@@ -36,20 +36,17 @@ namespace Cocos3D
             _targetPerspectiveCamera = targetPerspectiveCamera;
         }
 
-        protected override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
+        protected internal override void UpdateAction(float timeElapsedFraction, float timeIncrementFraction)
         {
-            CC3Vector incrementalCameraTranslationChange = 
-                _perspectiveCameraAction.IncrementalTranslationChange(timeElapsedFraction, timeIncrementFraction);
+            CC3CameraActionRunner.UpdateActionForCameraViewMatrix(_perspectiveCameraAction, 
+                                                                  _targetPerspectiveCamera, 
+                                                                  timeElapsedFraction, 
+                                                                  timeIncrementFraction);
 
-            CC3Quaternion incrementalCameraRotationChangeRelativeToTarget =
-                _perspectiveCameraAction.IncrementalCameraRotationChangeRelativeToCameraTarget(timeElapsedFraction, timeIncrementFraction);
+            float incrementalCameraFieldOfViewChange = 
+                _perspectiveCameraAction.IncrementalCameraFieldOfViewInRadiansChange(timeElapsedFraction, timeIncrementFraction);
 
-            CC3Vector incrementalCameraTargetTranslationChange = 
-                _perspectiveCameraAction.IncrementalCameraTargetTranslationChange(timeElapsedFraction, timeIncrementFraction);
-
-            _targetPerspectiveCamera.IncrementallyUpdateViewTransform(incrementalCameraTranslationChange, 
-                                                                      incrementalCameraTargetTranslationChange,
-                                                                      incrementalCameraRotationChangeRelativeToTarget);
+            _targetPerspectiveCamera.IncrementallyUpdateProjectionTransform(incrementalCameraFieldOfViewChange);
         }
     }
 }

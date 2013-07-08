@@ -20,16 +20,25 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3ShaderProgram
+    public class LCC3Mesh
     {
+        // Instance fields
 
-        #region Constructors
+        LCC3VertexIndices _vertexIndices;
 
-        public CC3ShaderProgram(string programFilename) : base()
+        #region Properties
+
+        public LCC3VertexIndices LCC3VertexIndices
         {
-
+            get { return _vertexIndices; }
         }
 
-        #endregion Constructors
+        #endregion Properties
+
+
+        public LCC3Mesh()
+        {
+        }
     }
 }
+

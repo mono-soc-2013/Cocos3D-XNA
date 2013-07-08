@@ -199,6 +199,11 @@ namespace Cocos3D
             return new CC3Vector(Vector3.Cross(v1._xnaVec3, v2._xnaVec3));
         }
 
+        public static float CC3VectorAngle(CC3Vector v1, CC3Vector v2)
+        {
+            return (float)Math.Acos(CC3Vector.CC3VectorDot(v1, v2) / (v1.Length() * v2.Length()));
+        }
+
         #endregion Vector calculation static methods
 
 

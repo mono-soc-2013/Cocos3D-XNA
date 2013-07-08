@@ -25,7 +25,7 @@ namespace Cocos3D
         // Instance fields
 
         private CC3Vector _scaleChange;
-        private CC3Quaternion _rotationChangeRelativeToAnchor;
+        private CC3AnimatableRotation _rotationChangeRelativeToAnchor;
         private CC3Vector _rotationAnchorPointRelativeToPosition;
 
         #region Properties
@@ -35,11 +35,6 @@ namespace Cocos3D
         public CC3Vector ScaleChange
         {
             get { return _scaleChange; }
-        }
-
-        public CC3Quaternion RotationChangeRelativeToAnchor
-        {
-            get { return _rotationChangeRelativeToAnchor; }
         }
 
         public CC3Vector RotationAnchorPointRelativeToPosition
@@ -54,12 +49,12 @@ namespace Cocos3D
 
         public CC3TransformAction(CC3Vector translationChange, 
                                   CC3Vector scaleChange, 
-                                  CC3Quaternion rotationChangeRelativeToAnchor,
+                                  CC3Vector4 axisAndRotationInDegreesChangeRelativeToAnchor,
                                   CC3Vector rotationAnchorPointRelativeToPosition)
             : base (translationChange)
         {
             _scaleChange = scaleChange;
-            _rotationChangeRelativeToAnchor = rotationChangeRelativeToAnchor;
+            _rotationChangeRelativeToAnchor = new CC3AnimatableRotation(axisAndRotationInDegreesChangeRelativeToAnchor);
             _rotationAnchorPointRelativeToPosition = rotationAnchorPointRelativeToPosition;
         }
 
@@ -75,7 +70,7 @@ namespace Cocos3D
 
         internal CC3Quaternion IncrementalRotationChangeRelativeToAnchor(float timeElapsedFraction, float timeIncrementFraction)
         {
-            return CC3Quaternion.CC3QuaternionSlerp(CC3Quaternion.CC3QuaternionIdentity, _rotationChangeRelativeToAnchor, timeIncrementFraction);
+            return _rotationChangeRelativeToAnchor.IncrementalRotationChange(timeElapsedFraction, timeIncrementFraction);
         }
 
         #endregion Getting transform changes for a subinterval of time

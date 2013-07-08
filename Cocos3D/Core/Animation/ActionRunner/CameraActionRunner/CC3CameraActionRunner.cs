@@ -24,6 +24,29 @@ namespace Cocos3D
     {
         // Instance fields
 
+
+        #region Static update camera view matrix methods
+
+        protected static void UpdateActionForCameraViewMatrix(CC3CameraAction cameraAction, CC3Camera cameraTarget, 
+                                                              float timeElapsedFraction, float timeIncrementFraction)
+        {
+            CC3Vector incrementalCameraTranslationChange = 
+                cameraAction.IncrementalTranslationChange(timeElapsedFraction, timeIncrementFraction);
+
+            CC3Quaternion incrementalCameraRotationChangeRelativeToTarget =
+                cameraAction.IncrementalCameraRotationChangeRelativeToCameraTarget(timeElapsedFraction, timeIncrementFraction);
+
+            CC3Vector incrementalCameraTargetTranslationChange = 
+                cameraAction.IncrementalCameraTargetTranslationChange(timeElapsedFraction, timeIncrementFraction);
+
+            cameraTarget.IncrementallyUpdateViewTransform(incrementalCameraTranslationChange, 
+                                                          incrementalCameraTargetTranslationChange,
+                                                          incrementalCameraRotationChangeRelativeToTarget);
+        }
+
+        #endregion Static update camera view matrix methods
+
+
         #region Constructors
 
         internal CC3CameraActionRunner(float actionDuration) 

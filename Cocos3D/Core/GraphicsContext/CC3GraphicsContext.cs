@@ -42,8 +42,10 @@ namespace Cocos3D
         private CC3Matrix _viewMatrix;
         private CC3Matrix _projectionMatrix;
 
-        #region Properties
+        private CC3Mesh _currentlyBoundMesh;
+        private CC3Material _currentlyBoundMaterial;
 
+        #region Properties
 
         // Instance properties
 
@@ -128,6 +130,27 @@ namespace Cocos3D
         }
 
         #endregion Clearing buffers
+
+
+        #region Binding drawing resources
+
+        public void BindMesh(CC3Mesh mesh)
+        {
+            if (_currentlyBoundMesh != mesh)
+            {
+                _currentlyBoundMesh = mesh;
+            }
+        }
+
+        public void BindMaterial(CC3Material material)
+        {
+            if (_currentlyBoundMaterial != material)
+            {
+                _currentlyBoundMaterial = material;
+            }
+        }
+
+        #endregion Binding drawing resources
     }
 }
 

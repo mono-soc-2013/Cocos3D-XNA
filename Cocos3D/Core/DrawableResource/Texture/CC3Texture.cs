@@ -20,18 +20,12 @@ using System;
 
 namespace Cocos3D
 {
-    public class CC3Texture : CC3DrawableResource
+    public class CC3Texture
     {
         #region Constructors
 
         public CC3Texture(string filePath) 
             : base()
-        {
-
-        }
-
-        public CC3Texture(CC3GraphicsContext graphicsContext, string filePath) 
-            : base(graphicsContext)
         {
 
         }

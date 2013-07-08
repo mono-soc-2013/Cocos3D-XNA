@@ -32,8 +32,6 @@ namespace Cocos3DShowcase
         // Instance fields
 
         private CC3CameraPerspective _camera;
-        private CC3CameraPerspectiveAction _cameraAction;
-        private CC3ActionRunner _cameraActionRunner;
 
         private BasicEffect _basicEffect;
         private List<Matrix> _listOfCubeWorldMatrices;
@@ -61,7 +59,7 @@ namespace Cocos3DShowcase
         {
             CC3Vector cameraPos = new CC3Vector(0.0f, 10.0f, 10.0f);
             CC3Vector cameraTarget = new CC3Vector(0.0f, 0.0f, -10.0f);
-            float cameraFieldOfViewInDegrees = 60.0f;
+            float cameraFieldOfViewInDegrees = 45.0f;
             float cameraAspectRatio = _graphicsContext.ScreenAspectRatio;
             float cameraNearClippingDistance = 1.0f;
             float cameraFarClippingDistance = 1000.0f;
@@ -89,18 +87,67 @@ namespace Cocos3DShowcase
 
         private void InitializeCameraAction()
         {
-            CC3Vector cameraRotationAxis = (new CC3Vector(1.0f, 0.0f, 1.0f)).NormalizedVector();
-            CC3Vector4 cameraActionRotaion = new CC3Vector4(cameraRotationAxis, 360.0f);
+            CC3CameraPerspectiveActionBuilder cameraActionBuilder = new CC3CameraPerspectiveActionBuilder();
 
+            List<CC3CameraPerspectiveAction> listOfCameraActions = new List<CC3CameraPerspectiveAction>();
 
-            _cameraAction = new CC3CameraPerspectiveAction(CC3Vector.CC3VectorZero, 
-                                                           CC3Vector.CC3VectorZero,
-                                                           cameraActionRotaion,                                                         
-                                                           0.0f, 0.0f, 0.0f);
-          
-            _cameraActionRunner = new CC3CameraPerspectiveActionRunner(_cameraAction, _camera, 8.0f);
+            cameraActionBuilder.PanCameraLeftByAmount(10.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
 
-            _cameraActionRunner.RunAction();
+            cameraActionBuilder.PanCameraRightByAmount(10.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.PanCameraUpByAmount(10.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.PanCameraDownByAmount(10.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.SetCameraFieldOfViewChangeInDegrees(-600.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.SetCameraFieldOfViewChangeInDegrees(600.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(0.0f, 1.0f, 0.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(1.0f, 0.0f, 0.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(0.0f, 0.0f, 1.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(1.0f, 0.0f, 1.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(0.0f, 1.0f, 1.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(1.0f, 1.0f, 0.0f), 360.0f);
+            listOfCameraActions.Add(cameraActionBuilder.Build());
+            cameraActionBuilder.Reset();
+
+            CC3SequenceActionRunner sequenceRunner = new CC3SequenceActionRunner(12.0f);
+
+            foreach (CC3CameraPerspectiveAction action in listOfCameraActions)
+            {
+                sequenceRunner.AddActionWithTarget(action, _camera, 1.0f);
+            }
+
+            sequenceRunner.RunAction();
+
         }
 
         private void InitializeEffect()
@@ -177,7 +224,7 @@ namespace Cocos3DShowcase
         {
             _listOfCubeWorldMatrices = new List<Matrix>();
 
-            Vector3 cubePosition = new Vector3(-10.0f, 0.0f, -10.0f);
+            Vector3 cubePosition = new Vector3(-5.0f, 0.0f, -10.0f);
 
             for(int i=0; i < 4; i++)
             {

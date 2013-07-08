@@ -87,7 +87,7 @@ namespace Cocos3D
             _proxy2dCCNodeActionTarget.ActionIsRunning = true;
         }
 
-        protected abstract void UpdateAction(float timeElapsedFraction, float timeIncrementFraction);
+        protected internal abstract void UpdateAction(float timeElapsedFraction, float timeIncrementFraction);
 
         private void ShouldUpdateAction(float timeIncrement)
         {

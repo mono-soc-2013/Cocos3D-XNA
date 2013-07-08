@@ -22,15 +22,12 @@ using System.Diagnostics;
 
 namespace Cocos3D
 {
-    public abstract class CC3Node : ICC3NodeTransformObserver
+    public abstract class CC3Node
     {
         // Instance fields
 
         protected CC3Matrix _worldMatrix;
         private CC3Vector _worldTranslationChangeNeededToUpdate;
-
-        protected CC3Node _nodeBeingObservedForTransformChanges;
-        protected List<ICC3NodeTransformObserver> _listOfNodeTransformObservers;
 
 
         #region Properties
@@ -62,7 +59,6 @@ namespace Cocos3D
         {
             _worldTranslationChangeNeededToUpdate = CC3Vector.CC3VectorZero;
             _worldMatrix = CC3Matrix.CC3MatrixIdentity;
-            _listOfNodeTransformObservers = new List<ICC3NodeTransformObserver>();
         }
 
         public CC3Node(CC3Vector worldPosition) : this()
@@ -81,10 +77,6 @@ namespace Cocos3D
 
             this.ShouldUpdateWorldMatrix();
 
-            foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
-            {
-                transformObserver.ObservedNodeWorldTranslationDidChange(this, translationChange);
-            }
         }
 
         // Give subclasses an opportunity to do something else. e.g. see CC3Camera
@@ -105,65 +97,6 @@ namespace Cocos3D
 
         #endregion Updating world matrix methods
 
-
-        #region Transform observer management methods
-
-        public void RegisterToObserveTransformChangesOfNode(CC3Node nodeToObserveTransformChanges)
-        {
-            Debug.Assert(_listOfNodeTransformObservers.Contains(nodeToObserveTransformChanges) == true, 
-                         @"Attempting to register to observe a node that is itself observing this object, 
-                            which would create a circular dependency.");
-
-            if (_nodeBeingObservedForTransformChanges != null)
-            {
-                _nodeBeingObservedForTransformChanges.RemoveTransformObserver(this);
-            }
-
-            _nodeBeingObservedForTransformChanges = nodeToObserveTransformChanges;
-
-            if(_nodeBeingObservedForTransformChanges != null)
-            {
-                _nodeBeingObservedForTransformChanges.AddTransformObserver(this);
-            }
-        }
-
-        internal void AddTransformObserver(ICC3NodeTransformObserver transformObserver)
-        {
-            if (_listOfNodeTransformObservers.Contains(transformObserver) == false)
-            {
-                _listOfNodeTransformObservers.Add(transformObserver);
-            }
-        }
-
-        internal void RemoveTransformObserver(ICC3NodeTransformObserver transformObserver)
-        {
-            _listOfNodeTransformObservers.Remove(transformObserver);
-        }
-
-        #endregion Transform listening management methods
-
-
-        #region Node transform listener interface methods
-
-        public void ObservedNodeWorldTranslationDidChange(CC3Node node, 
-                                                          CC3Vector translationChange)
-        {
-            if (node == _nodeBeingObservedForTransformChanges)
-            {
-                this.IncrementallyUpdateWorldTranslation(translationChange);
-            }
-        }
-
-        public void ObservedNodeWorldTransformDidChange(CC3Node node, 
-                                                        CC3Vector translationChange,
-                                                        CC3Vector scaleChange,
-                                                        CC3Quaternion rotationChangeRelativeToPosition,
-                                                        CC3Vector rotationAnchorPointRelativeToPosition)
-        {
-            this.ObservedNodeWorldTranslationDidChange(node, translationChange);
-        }
-
-        #endregion Node transform listener interface methods
     }
 }
 

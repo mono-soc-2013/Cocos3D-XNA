@@ -95,15 +95,6 @@ namespace Cocos3D
             _worldScale += scaleChange;
 
             this.ShouldUpdateWorldMatrix();
-
-            foreach (ICC3NodeTransformObserver transformObserver in _listOfNodeTransformObservers)
-            {
-                transformObserver.ObservedNodeWorldTransformDidChange(this, 
-                                                                      translationChange, 
-                                                                      scaleChange, 
-                                                                      rotationChangeRelativeToAnchor,
-                                                                      rotationAnchorPointRelativeToPosition);
-            }
         }
 
         protected override void UpdateWorldMatrix()
@@ -128,10 +119,14 @@ namespace Cocos3D
         #endregion Updating world matrix methods
 
 
+        #region Drawing methods
+
         public virtual void Draw()
         {
-
+            // To be overriden by subclass
         }
+
+        #endregion Drawing methods
 
     }
 }
