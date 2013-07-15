@@ -17,13 +17,16 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
+using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public static class CCRectExtension
     {
-        public LCC3NodeDrawingVisitor()
+        internal static Rectangle XnaRect(this CCRect rect)
         {
+            return new Rectangle((int)rect.Origin.X, (int)rect.Origin.Y, (int)rect.Size.Width, (int)rect.Size.Height);
         }
     }
 }

@@ -20,11 +20,12 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3DrawMode
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        TriangleList = 0,
+        TriangleStrip = 1,
+        LineList = 2,
+        LineStrip = 3
     }
 }
 

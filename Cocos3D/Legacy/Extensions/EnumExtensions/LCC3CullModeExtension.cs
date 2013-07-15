@@ -17,13 +17,26 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public static class LCC3CullModeExtention
     {
-        public LCC3NodeDrawingVisitor()
+        internal static CullMode XnaCullMode(this LCC3CullMode cullMode)
         {
+            CullMode xnaCullMode = CullMode.None;
+
+            if (cullMode == LCC3CullMode.CullClockwiseFace)
+            {
+                xnaCullMode = CullMode.CullClockwiseFace;
+            }
+            else if (cullMode == LCC3CullMode.CullCounterClockwiseFace)
+            {
+                xnaCullMode = CullMode.CullCounterClockwiseFace;
+            }
+
+            return xnaCullMode;
         }
     }
 }

@@ -17,11 +17,82 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
-    public struct LCC3VertexAttr
+    public class LCC3VertexAttr
     {
+        // Instance fields
+
+        private LCC3VertexAttrElementType _elementType;
+        private uint _elementSize;
+        private uint _vertexStride;
+        private object[] _vertices;
+        private bool _shouldNormalize;
+        private bool _isKnown;
+        private bool _isEnabled;
+        private bool _isEnabledKnown;
+        private bool _wasBound;
+
+
+        #region Properties
+
+        internal LCC3VertexAttrElementType ElementType
+        {
+            get { return _elementType; }
+            set { _elementType = value; }
+        }
+
+        internal uint ElementSize
+        {
+            get { return _elementSize; }
+            set { _elementSize = value; }
+        }
+
+        internal uint VertexStride
+        {
+            get { return _vertexStride; }
+            set { _vertexStride = value; }
+        }
+
+        internal object[] Vertices
+        {
+            get { return _vertices; }
+            set { _vertices = value; }
+        }
+
+        internal bool ShouldNormalize
+        {
+            get { return _shouldNormalize; }
+            set { _shouldNormalize = value; }
+        }
+
+        internal bool IsKnown
+        {
+            get { return _isKnown; }
+            set { _isKnown = value; }
+        }
+
+        internal bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set { _isEnabled = value; }
+        }
+
+        internal bool IsEnabledKnown
+        {
+            get { return _isEnabledKnown; }
+            set { _isEnabledKnown = value; }
+        }
+
+        internal bool WasBound
+        {
+            get { return _wasBound; }
+            set { _wasBound = value; }
+        }
+
+        #endregion Properties
     }
 }
 

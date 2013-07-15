@@ -20,11 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3VertexAttrIndex
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        VertexAttribPosition = 0,
+        VertexAttribColor = 1,
+        VertexAttribTexCoords = 2
     }
 }
 

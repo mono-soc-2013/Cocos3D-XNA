@@ -22,6 +22,37 @@ namespace Cocos3D
 {
     public class LCC3ShaderVariable
     {
+        // Instance fields
+
+        private string _name;
+        private int _location;
+        private LCC3SemanticVertex _semanticVertex;
+        private uint _semanticVertexIndex;
+
+        #region Properties
+
+        public string Name
+        {
+            get { return _name; }
+        }
+
+        public int Location
+        {
+            get { return _location; }
+        }
+
+        public LCC3SemanticVertex SemanticVertex
+        {
+            get { return _semanticVertex; }
+        }
+
+        public uint SemanticVertexIndex
+        {
+            get { return _semanticVertexIndex; }
+        }
+
+        #endregion Properties
+
         public LCC3ShaderVariable()
         {
         }

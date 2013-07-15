@@ -20,11 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3CullMode
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        None = 0,
+        CullClockwiseFace = 1,
+        CullCounterClockwiseFace = 2
     }
 }
 

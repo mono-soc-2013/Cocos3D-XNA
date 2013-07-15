@@ -28,7 +28,7 @@ namespace Cocos3D
 
         #region Properties
 
-        public LCC3VertexIndices LCC3VertexIndices
+        public LCC3VertexIndices VertexIndices
         {
             get { return _vertexIndices; }
         }
@@ -39,6 +39,13 @@ namespace Cocos3D
         public LCC3Mesh()
         {
         }
+
+        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3SemanticVertex vertexSemantic, uint semanticIndex)
+        {
+            return null;
+        }
+
+        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
     }
 }
 

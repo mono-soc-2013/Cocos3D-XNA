@@ -20,11 +20,9 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3TextureFormat
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        Color = 0
     }
 }
 

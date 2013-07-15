@@ -17,13 +17,25 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public static class LCC3TextureFormatExtension
     {
-        public LCC3NodeDrawingVisitor()
+        internal static SurfaceFormat XnaSurfaceFormat(this LCC3TextureFormat textureFormat)
         {
+            SurfaceFormat xnaSurfaceFormat = SurfaceFormat.Color;
+
+            switch (textureFormat)
+            {
+                case LCC3TextureFormat.Color:
+                    xnaSurfaceFormat = SurfaceFormat.Color;
+                    break;
+            }
+
+            return xnaSurfaceFormat;
         }
     }
 }

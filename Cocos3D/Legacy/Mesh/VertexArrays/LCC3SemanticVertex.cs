@@ -20,11 +20,18 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3SemanticVertex
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        SemanticNone = 0,                       
+        SemanticVertexLocation = 1,                 
+        SemanticVertexNormal = 2,                  
+        SemanticVertexTangent = 3,                 
+        SemanticVertexBitangent = 4,                
+        SemanticVertexColor = 5,                    
+        SemanticVertexWeights = 6,                  
+        SemanticVertexMatrixIndices = 7,            
+        SemanticVertexPointSize = 8,                
+        SemanticVertexTexture = 9 
     }
 }
 

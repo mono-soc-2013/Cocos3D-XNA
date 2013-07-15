@@ -20,11 +20,9 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public interface ILCC3ShaderSemanticDelegate
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+
     }
 }
 

@@ -20,9 +20,24 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public class LCC3MeshNode : LCC3Node
     {
-        public LCC3NodeDrawingVisitor()
+        // Instance fields
+
+        LCC3Mesh _mesh;
+
+
+        #region Properties
+
+        public LCC3Mesh Mesh
+        {
+            get { return _mesh; }
+        }
+
+        #endregion Properties
+
+
+        public LCC3MeshNode()
         {
         }
     }

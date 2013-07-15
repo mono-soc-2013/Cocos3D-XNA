@@ -104,6 +104,9 @@
     <Folder Include="Legacy\Shader\Shader variables\" />
     <Folder Include="Legacy\Matrix\" />
     <Folder Include="Legacy\Foundation\" />
+    <Folder Include="Legacy\Extensions\" />
+    <Folder Include="Legacy\Extensions\EnumExtensions\" />
+    <Folder Include="Legacy\Identifiable\Node\Texture\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -168,6 +171,29 @@
     <Compile Include="Legacy\Shader\LCC3ShaderProgram.cs" />
     <Compile Include="Legacy\Foundation\LCC3Viewport.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3VertexAttr.cs" />
+    <Compile Include="Legacy\Foundation\LCC3CullMode.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3CullModeExtension.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\CCRectExtension.cs" />
+    <Compile Include="Legacy\ProgPipeline\LCC3BufferMask.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3BufferMaskExtension.cs" />
+    <Compile Include="Legacy\Foundation\LCC3DepthStencilFuncMode.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3DepthStencilFuncModeExtension.cs" />
+    <Compile Include="Legacy\ProgPipeline\LCC3StencilOperation.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3StencilOperationExtension.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3SemanticVertex.cs" />
+    <Compile Include="Legacy\Identifiable\Node\LCC3NodeVisitor.cs" />
+    <Compile Include="Legacy\Identifiable\Node\LCC3Node.cs" />
+    <Compile Include="Legacy\Identifiable\Node\LCC3MeshNode.cs" />
+    <Compile Include="Legacy\ProgPipeline\LCC3VertexAttrElementType.cs" />
+    <Compile Include="Legacy\ProgPipeline\LCC3VertexAttrIndex.cs" />
+    <Compile Include="Legacy\Foundation\LCC3Vector.cs" />
+    <Compile Include="Legacy\Foundation\LCC3Vector4.cs" />
+    <Compile Include="Legacy\ProgPipeline\LCC3DrawMode.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3DrawModeExtension.cs" />
+    <Compile Include="Legacy\Identifiable\Node\Texture\LCC3TextureFormat.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFormatExtension.cs" />
+    <Compile Include="Legacy\Shader\ILCC3ShaderSemanticDelegate.cs" />
+    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderUniform.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

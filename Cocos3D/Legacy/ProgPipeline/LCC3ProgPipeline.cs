@@ -17,41 +17,46 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Cocos2D;
 
 namespace Cocos3D
 {
-    public class LCC3ProgPipeline
+    public class LCC3ProgPipeline : ICC3VertexTypeDataSource
     {
         // Static fields
+
+        public const int VertexAttributeIndexUnavailable = -1;
 
         private static LCC3ProgPipeline _sharedProgPipeline;
 
         // Instance fields
 
         private GraphicsDevice _xnaGraphicsDevice;
+        private VertexBuffer _xnaVertexBuffer;
         private BlendState _xnaBlendState;
         private CullMode _xnaCullMode;
         private DepthStencilState _xnaDepthStencilState;
         private float _xnaDepthBias;
         private float _xnaSlopeScaleDepthBias;
 
+        private Color _xnaClearColor;
+        private float _xnaClearDepth;
+        private int _xnaClearStencil;
+
+        private Texture2D[] _xnaTextureUnits;
+        private int _xnaCurrentlyActiveTextureUnitIndex;
+
         private List<LCC3VertexAttr> _vertexAttributes;
+        private CC3VertexType[] _vertexData;
 
-        private List<uint> _valueTextureBinding2d;
-        private List<uint> _valueTextureBindingCubeMap;
-
-
-        #region Convenience methods
-
-        public static void SetCapability(bool value)
-        {
-
-        }
-
-        #endregion Convenience methods
+        private Stack<LCC3Matrix4x4> _modelMatrixStack;
+        private Stack<LCC3Matrix4x4> _viewMatrixStack;
+        private Stack<LCC3Matrix4x4> _projMatrixStack;
 
 
         #region Allocation and initialization
@@ -68,6 +73,8 @@ namespace Cocos3D
 
         public LCC3ProgPipeline(GraphicsDevice xnaGraphicsDevice)
         {
+            CC3VertexType.DataSource = this;
+
             _xnaGraphicsDevice = xnaGraphicsDevice;
             _xnaBlendState = BlendState.Opaque;
             _xnaCullMode = CullMode.None;
@@ -75,15 +82,12 @@ namespace Cocos3D
             _xnaDepthBias = 0.0f;
             _xnaSlopeScaleDepthBias = 0.0f;
 
-            this.InitPlatformLimits();
+            _modelMatrixStack = new Stack<LCC3Matrix4x4>();
+            _viewMatrixStack = new Stack<LCC3Matrix4x4>();
+            _projMatrixStack = new Stack<LCC3Matrix4x4>();
+
             this.InitVertexAttributes();
             this.InitTextureUnits();
-        }
-
-        public void InitPlatformLimits()
-        {
-            // Get the GL vendor, renderer and version
-            // Can't include in port
         }
 
         public void InitVertexAttributes()
@@ -93,11 +97,31 @@ namespace Cocos3D
 
         public void InitTextureUnits()
         {
-            _valueTextureBinding2d = new List<uint>();
-            _valueTextureBindingCubeMap = new List<uint>();
+            _xnaTextureUnits = new Texture2D[(int)LCC3ProgPipeline.MaxNumberOfTextureUnits()];
+            _xnaCurrentlyActiveTextureUnitIndex = 0;
         }
 
         #endregion Allocation and initialization
+
+
+        #region ICC3VertexTypeDataSource methods
+
+        public bool VertexPositionEnabled()
+        {
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].WasBound;
+        }
+
+        public bool VertexTexCoordEnabled()
+        {
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].WasBound;
+        }
+
+        public bool VertexColorEnabled()
+        {
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].WasBound;
+        }
+       
+        #endregion ICC3VertexTypeDataSource
 
 
         #region Capabilities
@@ -130,12 +154,6 @@ namespace Cocos3D
         {
             _xnaDepthStencilState.DepthBufferEnable = onOrOff;
             _xnaGraphicsDevice.DepthStencilState = _xnaDepthStencilState;
-        }
-
-        public void EnableDither(bool onOrOff)
-        {
-            // Dithering not supported by XNA
-            throw new NotSupportedException("Dithering is not currently supported");
         }
 
         public void EnablePolygonOffset(bool onOrOff)
@@ -171,98 +189,112 @@ namespace Cocos3D
         public void BindMeshWithVisitor(LCC3Mesh mesh, 
                                         LCC3NodeDrawingVisitor visitor)
         {
-
+            mesh.VertexIndices.BindContentToAttributeAtIndexWithVisitor(LCC3ProgPipeline.VertexAttributeIndexUnavailable, visitor);
         }
 
         public void BindVertexAttributeWithVisitor(LCC3ShaderAttribute attribute, 
                                                    LCC3NodeDrawingVisitor visitor)
         {
+            LCC3VertexArray vertexArray = this.VertexArrayForAttributeWithVisitor(attribute, visitor);
+            vertexArray.BindContentToAttributeAtIndexWithVisitor(attribute.Location, visitor);
         }
 
         public void EnableVertexAttributeAtIndex(bool onOrOff, int vaIndex)
         {
+            if (vaIndex >= 0)
+            {
+                LCC3VertexAttr vertexAttribute = _vertexAttributes[vaIndex];
 
+                vertexAttribute.IsEnabled = onOrOff;
+                vertexAttribute.IsEnabledKnown = true;
+            }
         }
 
-        public LCC3VertexArray VertexArrayForAttributeWithVisitor(LCC3ShaderAttribute Attribute, 
+        public LCC3VertexArray VertexArrayForAttributeWithVisitor(LCC3ShaderAttribute attribute, 
                                                                   LCC3NodeDrawingVisitor visitor)
         {
-            return null;
+            return visitor.CurrentMesh.VertexArrayForSemanticAtIndex(attribute.SemanticVertex, attribute.SemanticVertexIndex);
         }
 
-        public void SetVertexAttributeEnablementAtIndex(int vaIndex)
-        {
 
-        }
-
-        public void BindVertexContentToAttributeAtIndex(object pData, 
-                                                        int elemSize, 
-                                                        int elemType, 
-                                                        int vertexStride, 
+        public void BindVertexContentToAttributeAtIndex(object[] pData, 
+                                                        uint elemSize, 
+                                                        LCC3VertexAttrElementType elemType, 
+                                                        uint vertexStride, 
                                                         bool shouldNormalize, 
                                                         int vaIndex)
         {
+            if (vaIndex >= 0)
+            {
+                LCC3VertexAttr vertexAttribute = _vertexAttributes[vaIndex];
 
-        }
-
-        public void BindVertexContentToAttributeAtIndex(int vaIndex)
-        {
-
+                vertexAttribute.Vertices = pData;
+                vertexAttribute.ElementSize = elemSize;
+                vertexAttribute.ElementType = elemType;
+                vertexAttribute.VertexStride = vertexStride;
+                vertexAttribute.ShouldNormalize = shouldNormalize;
+                vertexAttribute.WasBound = true;
+            }
         }
 
         public void ClearUnboundVertexAttributes()
         {
-
+            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            {
+                vertexAttribute.WasBound = false;
+            }
         }
 
         public void EnableBoundVertexAttributes()
         {
-
+            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            {
+                this.EnableVertexAttributeAtIndex(vertexAttribute.WasBound, _vertexAttributes.IndexOf(vertexAttribute));
+            }
         }
 
         public void Enable2DVertexAttributes()
         {
+            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            {
+                this.EnableVertexAttributeAtIndex(false, _vertexAttributes.IndexOf(vertexAttribute));
+            }
 
+            _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].WasBound = true;
+            _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].WasBound = true;
+            _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].WasBound = true;
         }
 
-        public int GenerateBuffer()
+        public void GenerateVertexBuffer()
         {
-            return 0;
+            int numOfVertices = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices.Length;
+            _vertexData = new CC3VertexType[numOfVertices];
+
+            for (int i=0; i < numOfVertices; i++)
+            {
+                LCC3Vector position = (LCC3Vector)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices[i];
+                CCPoint texCoord = (CCPoint)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].Vertices[i];
+                LCC3Vector4 color = (LCC3Vector4)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].Vertices[i];
+
+                _vertexData[i] = new CC3VertexType(position, texCoord, color);
+            }
+
+            _xnaVertexBuffer = new VertexBuffer(_xnaGraphicsDevice, 
+                                                typeof(CC3VertexType), 
+                                                _vertexData.Length, 
+                                                BufferUsage.None);
+
+            _xnaVertexBuffer.SetData<CC3VertexType>( _vertexData );
         }
 
-        public void DeleteBuffer(int buffId)
+        public void BindVertexBuffer()
         {
-
+            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
         }
 
-        public void BindBufferToTarget(int buffId, int target)
+        public void DrawVertices(LCC3DrawMode drawMode, int startIndex, int length)
         {
-
-        }
-
-        public void UnbindBufferTarget(int target)
-        {
-
-        }
-
-        public void LoadBufferTarget(int target, object buffData, long buffLength, int buffUsage)
-        {
-
-        }
-
-        public void UpdateBufferTarget(int target, object buffData, long buffLength)
-        {
-
-        }
-
-        public void DrawVertices(int drawMode, int startIndex, int length)
-        {
-
-        }
-
-        public void DrawIndices(object indices, int length, int type, int drawMode)
-        {
-
+            _xnaGraphicsDevice.DrawPrimitives(drawMode.XnaPrimitiveType(), startIndex, length);
         }
 
         #endregion Vertex attributes
@@ -272,96 +304,90 @@ namespace Cocos3D
 
         public void SetClearColor(CCColor4F color)
         {
+            _xnaClearColor = color.XnaColor();
         }
 
         public void SetClearDepth(float val)
         {
-
+            _xnaClearDepth = val;
         }
 
         public void SetClearStencil(int val)
         {
-
+            _xnaClearStencil = val;
         }
 
-        public void SetColorMask(CCColor4F mask)
+        public void SetCullFace(LCC3CullMode cullMode)
         {
-
+            _xnaCullMode = cullMode.XnaCullMode();
+            this.EnableCullFace(true);
         }
 
-        public void SetCullFace(int val)
+        public void SetDepthFunc(LCC3DepthStencilFuncMode depthFuncMode)
         {
-
-        }
-
-        public void SetDepthFunc(int val)
-        {
-
+            _xnaDepthStencilState.DepthBufferFunction = depthFuncMode.XnaCompareFunc();
+            this.EnableDepthTest(true);
         }
 
         public void SetDepthMask(bool writable)
         {
-
-        }
-
-        public void SetFrontFace(int val)
-        {
-
-        }
-
-        public void SetLineWidth(float val)
-        {
-            
-        }
-
-        public void SetPolygonOffsetFactor(float factor, float units)
-        {
-
+            _xnaDepthStencilState.DepthBufferWriteEnable = writable;
+            this.EnableDepthTest(true);
         }
 
         public void SetScissor(LCC3Viewport viewport)
         {
-
+            _xnaGraphicsDevice.ScissorRectangle = viewport.ToCCRect().XnaRect();
+            this.EnableScissorTest(true);
         }
 
-        public void SetStencilFunc(int func, int reference, uint mask)
+        public void SetStencilFunc(LCC3DepthStencilFuncMode stencilFuncMode, int reference, uint mask)
         {
-
+            _xnaDepthStencilState.StencilFunction = stencilFuncMode.XnaCompareFunc();
+            _xnaDepthStencilState.ReferenceStencil = reference;
+            _xnaDepthStencilState.StencilMask = (int)mask;
+            this.EnableStencilTest(true);
         }
 
         public void SetStencilMask(uint mask)
         {
-
+            _xnaDepthStencilState.StencilMask = (int)mask;
+            this.EnableStencilTest(true);
         }
 
-        public void SetOpOnStencilFail(int sFail, int zFail, int zPass)
+        public void SetOpOnStencilFail(LCC3StencilOperation stencilFailOp, 
+                                       LCC3StencilOperation stencilPassDepthFailOp, 
+                                       LCC3StencilOperation stencilAndDepthPass)
         {
-
+            _xnaDepthStencilState.StencilFail = stencilFailOp.XnaStencilOperation();
+            _xnaDepthStencilState.StencilDepthBufferFail = stencilPassDepthFailOp.XnaStencilOperation();
+            _xnaDepthStencilState.StencilPass = stencilAndDepthPass.XnaStencilOperation();
+            this.EnableStencilTest(true);
         }
 
         public void SetViewport(LCC3Viewport viewport)
         {
-
+            _xnaGraphicsDevice.Viewport = viewport.XnaViewport;
         }
 
-        public void ClearBuffers(uint mask)
+        public void ClearBuffers(LCC3BufferMask bufferMask)
         {
-
+            _xnaGraphicsDevice.Clear(bufferMask.XnaBufferMask(), _xnaClearColor, _xnaClearDepth, _xnaClearStencil);
         }
 
         public void ClearColorBuffer()
         {
-
+            this.ClearBuffers(LCC3BufferMask.ColorBuffer);
         }
 
         public void ClearDepthBuffer()
         {
-
+            this.ClearBuffers(LCC3BufferMask.DepthBuffer);
         }
 
         public void ClearStencilBuffer()
         {
-
+            this.ClearBuffers(LCC3BufferMask.StencilBuffer);
         }
 
         #endregion State
@@ -379,65 +405,23 @@ namespace Cocos3D
 
         #region Textures
 
-        public uint GenerateTextureId()
+        public void LoadTextureImage<T>(T[] imageData, 
+                                        int width, 
+                                        int height,
+                                        LCC3TextureFormat textureFormat,
+                                        uint texUnitIndex) where T : struct
         {
-            return 0;
+            this.ActivateTextureUnit(texUnitIndex);
+
+            _xnaTextureUnits[_xnaCurrentlyActiveTextureUnitIndex] 
+                = new Texture2D(_xnaGraphicsDevice, width, height, false, textureFormat.XnaSurfaceFormat());
+
+            _xnaTextureUnits[_xnaCurrentlyActiveTextureUnitIndex].SetData<T>(imageData);
         }
-
-        public void DeleteTextureId()
-        {
-
-        }
-
-        public void LoadTextureImageIntoTarget(object imageData, 
-                                               int target, 
-                                               float width, 
-                                               float height,
-                                               int texelFormat,
-                                               int texelType,
-                                               int byteAlignment,
-                                               uint texUnitIndex)
-        {
-
-        }
-
+       
         public void ActivateTextureUnit(uint texUnitIndex)
         {
-
-        }
-
-        public void BindTextureToTarget(uint texId, uint target, uint texUnitIndex)
-        {
-
-        }
-
-        public void SetTexParamEnum(uint pName, uint target, uint val, uint texUnitIndex)
-        {
-
-        }
-
-        public void SetTextureMinifyFuncInTarget(uint func, uint target, uint texUnitIndex)
-        {
-
-        }
-
-        public void SetTextureMagnifyFuncInTarget(uint func, uint target, uint texUnitIndex)
-        {
-
-        }
-
-        public void SetTextureHorizWrapFuncInTarget(uint func, uint target, uint texUnitIndex)
-        {
-
-        }
-
-        public void SetTextureVertWrapFuncInTarget(uint func, uint target, uint texUnitIndex)
-        {
-
-        }
-
-        public void GenerateMipmapForTarget(uint target, uint texUnitIndex)
-        {
+            _xnaCurrentlyActiveTextureUnitIndex = (int)texUnitIndex;
         }
 
         #endregion Textures
@@ -445,89 +429,69 @@ namespace Cocos3D
 
         #region Matrices
 
-        public void ActivateMatrixStack(int mode)
+        public void PushModelMatrixStack(LCC3Matrix4x4 matrix)
         {
-
+            _modelMatrixStack.Push(matrix);
         }
 
-        public void LoadModelviewMatrix(LCC3Matrix4x3 matrix)
+        public void PopModelMatrixStack()
         {
-
+            _modelMatrixStack.Pop();
         }
 
-        public void LoadProjectionMatrix(LCC3Matrix4x4 matrix)
+        public void PushViewMatrixStack(LCC3Matrix4x4 matrix)
         {
-
+            _viewMatrixStack.Push(matrix);
         }
 
-        public void PushModelviewMatrixStack()
+        public void PopViewMatrixStack()
         {
-
+            _viewMatrixStack.Pop();
         }
 
-        public void PopModelviewMatrixStack()
+        public void PushProjectionMatrixStack(LCC3Matrix4x4 matrix)
         {
-
-        }
-
-        public void PushProjectionMatrixStack()
-        {
-
+            _projMatrixStack.Push(matrix);
         }
 
         public void PopProjectionMatrixStack()
         {
-
+            _projMatrixStack.Pop();
         }
 
         #endregion Matrices
 
 
-        #region Hints
-
-        public void SetGenerateMipmapHint(uint hint)
-        {
-
-        }
-
-        #endregion Hints
-
-
         #region Platform limits
 
-        public uint MaxNumberOfLights()
+        public static uint MaxNumberOfLights()
         {
-            return 0;
+            return 8;
         }
 
-        public uint MaxNumberOfClipPlanes()
+        public static uint MaxNumberOfClipPlanes()
         {
-            return 0;
+            return 6;
         }
 
-        public uint MaxNumberOfPaletteMatrices()
+        public static uint MaxNumberOfPaletteMatrices()
         {
-            return 0;
+            return 12;
         }
 
-        public uint MaxNumberOfTextureUnits()
+        public static uint MaxNumberOfTextureUnits()
         {
-            return 0;
+            return 5;
         }
 
-        public uint MaxNumberOfVertexAttributes()
+        public static uint MaxNumberOfVertexAttributes()
         {
-            return 0;
+            return 4;
         }
 
-        public uint MaxNumberOfVertexUnits()
+        public static uint MaxNumberOfVertexUnits()
         {
-            return 0;
-        }
-
-        public uint MaxNumberOfPixelSamples()
-        {
-            return 0;
+            return 4;
         }
 
         #endregion Platform limits
@@ -537,7 +501,13 @@ namespace Cocos3D
 
         public void BindProgramWithVisitor(LCC3ShaderProgram program, LCC3NodeDrawingVisitor visitor)
         {
+            program.BindWithVisitor(visitor);
 
+            this.ClearUnboundVertexAttributes();
+            program.PopulateVertexAttributesWithVisitor(visitor);
+            this.EnableBoundVertexAttributes();
+
+            program.PopulateNodeScopeUniformsWithVisitor(visitor);
         }
 
         public string DefaultShaderPreamble()
@@ -555,17 +525,100 @@ namespace Cocos3D
 
         }
 
-        public void align3DStateCache()
+        public void Align3DStateCache()
         {
-
+            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            {
+                vertexAttribute.IsEnabledKnown = false;
+                vertexAttribute.IsKnown = false;
+            }
         }
 
         #endregion Aligning 2D & 3D caches
 
-
-        #region State management functions
-
-        #endregion State management functions
     }
+
+    #region Private custom vertex declaration
+
+    internal interface ICC3VertexTypeDataSource
+    {
+        bool VertexPositionEnabled();
+        bool VertexTexCoordEnabled();
+        bool VertexColorEnabled();
+    }
+
+    internal struct CC3VertexType : IVertexType
+    {
+        private static ICC3VertexTypeDataSource _dataSource;
+
+        private Vector3 _position;
+        private Vector2 _texCoord;
+        private Vector4 _color;
+
+        public static ICC3VertexTypeDataSource DataSource
+        {
+            get { return _dataSource; }
+            set { _dataSource = value; }
+        }
+
+        public VertexDeclaration VertexDeclaration 
+        { 
+            get
+            {
+                int currentOffset = 0;
+
+                List<VertexElement> vertexElements = new List<VertexElement>();
+
+                if (_dataSource.VertexPositionEnabled())
+                {
+                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Position, 0));
+                    currentOffset += Marshal.SizeOf(Vector3.Zero);
+                }
+
+                if (_dataSource.VertexTexCoordEnabled())
+                {
+                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0));
+                    currentOffset += Marshal.SizeOf(Vector2.Zero);
+                }
+
+                if (_dataSource.VertexColorEnabled())
+                {
+                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector4, VertexElementUsage.Color, 0));
+                    currentOffset += Marshal.SizeOf(Vector4.Zero);
+                }
+
+                VertexDeclaration vertexDec = new VertexDeclaration(vertexElements.ToArray());
+
+                return vertexDec;
+            }
+        }
+
+        public CC3VertexType(LCC3Vector position, CCPoint texCoord, LCC3Vector4 color)
+        {
+            _position = position.XnaVector;
+            _texCoord = new Vector2(texCoord.X, texCoord.Y);
+            _color = color.XnaVector4;
+        }
+
+        public Vector3 Position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
+
+        public Vector2 TextureCoordinate
+        {
+            get { return _texCoord; }
+            set { _texCoord = value; }
+        }
+
+        public Vector4 Color
+        {
+            get { return _color; }
+            set { _color = value; }
+        }
+    }
+
+    #endregion Private custom vertex declaration
 }
 

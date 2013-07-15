@@ -20,11 +20,8 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public enum LCC3VertexAttrElementType
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
     }
 }
 

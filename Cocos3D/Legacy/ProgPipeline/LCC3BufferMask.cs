@@ -20,11 +20,13 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    [Flags]
+    public enum LCC3BufferMask
     {
-        public LCC3NodeDrawingVisitor()
-        {
-        }
+        NoneBuffer = 0,
+        ColorBuffer = 1,
+        DepthBuffer = 2,
+        StencilBuffer = 4
     }
 }
 
