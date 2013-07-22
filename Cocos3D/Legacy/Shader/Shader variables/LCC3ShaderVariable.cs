@@ -24,12 +24,21 @@ namespace Cocos3D
     {
         // Instance fields
 
-        private string _name;
+        protected LCC3ShaderProgram _program;
+        protected string _name;
         private int _location;
-        private LCC3SemanticVertex _semanticVertex;
-        private uint _semanticVertexIndex;
+        protected int _index;
+        protected LCC3SemanticVertex _semanticVertex;
+        protected uint _semanticVertexIndex;
+        private LCC3ShaderVariableScope _scope;
+        private uint _size;
 
         #region Properties
+
+        public LCC3ShaderProgram Program
+        {
+            get { return _program; }
+        }
 
         public string Name
         {
@@ -51,11 +60,66 @@ namespace Cocos3D
             get { return _semanticVertexIndex; }
         }
 
+        public LCC3ShaderVariableScope Scope
+        {
+            get { return _scope; }
+        }
+
+        public uint Size
+        {
+            get { return _size; }
+        }
+
         #endregion Properties
+
+
+        #region Allocation and initialization
 
         public LCC3ShaderVariable()
         {
+
         }
+
+        public LCC3ShaderVariable(LCC3ShaderProgram program, int index) : this()
+        {
+            this.LoadInProgramAtIndex(program, index);
+        }
+
+        internal void LoadInProgramAtIndex(LCC3ShaderProgram program, int index)
+        {
+            _index = index;
+            _semanticVertex = LCC3SemanticVertex.SemanticNone;
+            _semanticVertexIndex = 0;
+            _scope = LCC3ShaderVariableScope.ScopeUnknown;
+            _program = program;
+            this.PopulateFromProgram();
+        }
+
+        public T CloneVariable<T>() where T : LCC3ShaderVariable, new()
+        {
+            T clonedVariable = new T();
+            clonedVariable.LoadInProgramAtIndex(_program, _index);
+            clonedVariable.PopulateFrom(this);
+            return clonedVariable;
+        }
+
+        public virtual void PopulateFromProgram()
+        {
+            // Overriden by subclasses
+        }
+
+        public virtual void PopulateFrom(LCC3ShaderVariable variable)
+        {
+            _name = variable.Name;
+            _location = variable.Location;
+            _size = variable.Size;
+            _semanticVertex = variable.SemanticVertex;
+            _semanticVertexIndex = variable._semanticVertexIndex;
+            _scope = variable.Scope;
+        }
+
+        #endregion Allocation and initialization
+
     }
 }
 

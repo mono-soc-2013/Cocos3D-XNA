@@ -22,7 +22,8 @@ namespace Cocos3D
 {
     public interface ILCC3ShaderSemanticDelegate
     {
-
+        bool ConfigureVariable(LCC3ShaderVariable variable);
+        bool PopulateUniformWithVisitor(LCC3ShaderUniform uniform, LCC3NodeDrawingVisitor visitor);
     }
 }
 

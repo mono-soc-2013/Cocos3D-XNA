@@ -36,6 +36,7 @@ namespace Cocos3D
 
         // Instance fields
 
+        private Game _xnaGame;
         private GraphicsDevice _xnaGraphicsDevice;
         private VertexBuffer _xnaVertexBuffer;
         private BlendState _xnaBlendState;
@@ -51,6 +52,7 @@ namespace Cocos3D
         private Texture2D[] _xnaTextureUnits;
         private int _xnaCurrentlyActiveTextureUnitIndex;
 
+        private LCC3ShaderProgram _currentlyActiveShader;
         private List<LCC3VertexAttr> _vertexAttributes;
         private CC3VertexType[] _vertexData;
 
@@ -59,22 +61,39 @@ namespace Cocos3D
         private Stack<LCC3Matrix4x4> _projMatrixStack;
 
 
+        #region Properties
+
+        public LCC3ShaderProgram CurrentlyActiveShader
+        {
+            get { return _currentlyActiveShader; }
+            set { _currentlyActiveShader = value; }
+        }
+
+        internal Game XnaGame
+        {
+            get { return _xnaGame; }
+        }
+
+        #endregion Properties
+
+
         #region Allocation and initialization
 
         public static LCC3ProgPipeline SharedPipeline()
         {
             if (_sharedProgPipeline == null)
             {
-                _sharedProgPipeline = new LCC3ProgPipeline(null);
+                _sharedProgPipeline = new LCC3ProgPipeline(null, null);
             }
 
             return _sharedProgPipeline;
         }
 
-        public LCC3ProgPipeline(GraphicsDevice xnaGraphicsDevice)
+        internal LCC3ProgPipeline(Game xnaGame, GraphicsDevice xnaGraphicsDevice)
         {
             CC3VertexType.DataSource = this;
 
+            _xnaGame = xnaGame;
             _xnaGraphicsDevice = xnaGraphicsDevice;
             _xnaBlendState = BlendState.Opaque;
             _xnaCullMode = CullMode.None;
@@ -120,7 +139,29 @@ namespace Cocos3D
         {
             return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].WasBound;
         }
-       
+
+        public List<LCC3VertexAttrIndex> EnabledVertexAttributeIndices()
+        {
+            List<LCC3VertexAttrIndex> vertexAttrIndices = new List<LCC3VertexAttrIndex>();
+
+            if (this.VertexPositionEnabled())
+            {
+                vertexAttrIndices.Add(LCC3VertexAttrIndex.VertexAttribPosition);
+            }
+
+            if (this.VertexTexCoordEnabled())
+            {
+                vertexAttrIndices.Add(LCC3VertexAttrIndex.VertexAttribTexCoords);
+            }
+
+            if (this.VertexColorEnabled())
+            {
+                vertexAttrIndices.Add(LCC3VertexAttrIndex.VertexAttribColor);
+            }
+
+            return vertexAttrIndices;
+        }
+
         #endregion ICC3VertexTypeDataSource
 
 

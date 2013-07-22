@@ -107,6 +107,7 @@
     <Folder Include="Legacy\Extensions\" />
     <Folder Include="Legacy\Extensions\EnumExtensions\" />
     <Folder Include="Legacy\Identifiable\Node\Texture\" />
+    <Folder Include="Legacy\Identifiable\Material\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -194,6 +195,10 @@
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFormatExtension.cs" />
     <Compile Include="Legacy\Shader\ILCC3ShaderSemanticDelegate.cs" />
     <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderUniform.cs" />
+    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderVariableScope.cs" />
+    <Compile Include="Legacy\Identifiable\Material\LCC3Material.cs" />
+    <Compile Include="Legacy\Shader\LCC3ShaderProgramContext.cs" />
+    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderUniformOverride.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

@@ -88,9 +88,9 @@ namespace Cocos3D
 
         }
 
-        public LCC3Identifiable(string name) : this(LCC3Identifiable.NextTag(), name)
+        public LCC3Identifiable(string name) : this(0, name)
         {
-
+            _tag = this.NextTag();
         }
 
         public LCC3Identifiable() : this(null)
@@ -108,7 +108,7 @@ namespace Cocos3D
             LCC3Identifiable._lastAssignedTag = 0; 
         }
 
-        protected static int NextTag()
+        protected virtual int NextTag()
         {
             return ++LCC3Identifiable._lastAssignedTag;
         }

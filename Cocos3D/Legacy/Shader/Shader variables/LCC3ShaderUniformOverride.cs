@@ -20,29 +20,16 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3ShaderAttribute : LCC3ShaderVariable
+    public class LCC3ShaderUniformOverride : LCC3ShaderUniform
     {
-        public static LCC3ShaderAttribute VariableInProgram(LCC3ShaderProgram program, LCC3VertexAttrIndex attrIndex)
-        {
-            return new LCC3ShaderAttribute(program, attrIndex);
-        }
-
-        #region Allocation and initialization
-
-        public LCC3ShaderAttribute() : base()
+        public LCC3ShaderUniformOverride()
         {
         }
 
-        public LCC3ShaderAttribute(LCC3ShaderProgram program, LCC3VertexAttrIndex attrIndex) : base(program, (int)attrIndex)
+        public override bool UpdateValue()
         {
+            return false;
         }
-
-        public override void PopulateFromProgram()
-        {
-            _semanticVertex = LCC3SemanticVertex.SemanticNone;
-        }
-
-        #endregion Allocation and initialization
     }
 }
 

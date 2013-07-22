@@ -17,25 +17,66 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
-    public class LCC3ShaderProgram
+    public class LCC3ShaderProgram : LCC3Identifiable
     {
         // Static fields
 
-        private static uint _lastAssignedProgramTag = 0;
+        private static int _lastAssignedProgramTag = 0;
+        private static Dictionary<string, LCC3ShaderProgram> _programsByName 
+            = new Dictionary<string, LCC3ShaderProgram>();
 
         // Instance fields
 
+        private Effect _xnaShaderEffect;
+
+        private ILCC3ShaderSemanticDelegate _semanticDelegate;
+
+        private List<LCC3ShaderUniform> _uniformsSceneScope;
+        private List<LCC3ShaderUniform> _uniformsNodeScope;
+        private List<LCC3ShaderUniform> _uniformsDrawScope;
+        private List<LCC3ShaderAttribute> _attributes;
+
+        private string _shaderPreamble;
+
+        private bool _isSceneScopeDirty;
+
+        #region Properties
+
+        public string PlatformPreamble
+        {
+            get { return LCC3ProgPipeline.SharedPipeline().DefaultShaderPreamble(); }
+        }
+
+        #endregion Properties
+
+
         #region Allocation and initialization
 
-        public LCC3ShaderProgram(uint tag, string name)
+        public LCC3ShaderProgram(int tag, string name) : base(tag, name)
         {
+            _uniformsSceneScope = new List<LCC3ShaderUniform>();
+            _uniformsNodeScope = new List<LCC3ShaderUniform>();
+            _uniformsDrawScope = new List<LCC3ShaderUniform>();
+            _attributes = new List<LCC3ShaderAttribute>();
+
+            _shaderPreamble = this.PlatformPreamble;
+
+            _isSceneScopeDirty = true;
         }
 
         public LCC3ShaderProgram(string name, ILCC3ShaderSemanticDelegate semanticDelegate, string shaderFilename)
+            : base(name)
         {
+            _semanticDelegate = semanticDelegate;
+            this.CompileAndLinkShaderFile(shaderFilename);
         }
 
         #endregion Allocation and initialization
@@ -43,12 +84,12 @@ namespace Cocos3D
 
         #region Tag allocation
 
-        public static void ResetTagAllocation()
+        public new static void ResetTagAllocation()
         {
             _lastAssignedProgramTag = 0;
         }
 
-        public uint NextTag()
+        protected override int NextTag()
         {
             return ++_lastAssignedProgramTag;
         }
@@ -58,49 +99,166 @@ namespace Cocos3D
 
         #region Variables
 
+        public string UniformNameAtIndex(int indexIn)
+        {
+            EffectParameter _xnaEffectParam = _xnaShaderEffect.Parameters[indexIn];
+            return _xnaEffectParam.Name;
+        }
+
         public LCC3ShaderUniform UniformNamed(string varName)
         {
+            foreach (LCC3ShaderUniform uniform in _uniformsSceneScope)
+            {
+                if (uniform.Name == varName)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsNodeScope)
+            {
+                if (uniform.Name == varName)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsDrawScope)
+            {
+                if (uniform.Name == varName)
+                {
+                    return uniform;
+                }
+            }
+
             return null;
         }
 
         public LCC3ShaderUniform UniformAtLocation(int uniformLocation)
         {
+            foreach (LCC3ShaderUniform uniform in _uniformsSceneScope)
+            {
+                if (uniform.Location == uniformLocation)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsNodeScope)
+            {
+                if (uniform.Location == uniformLocation)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsDrawScope)
+            {
+                if (uniform.Location == uniformLocation)
+                {
+                    return uniform;
+                }
+            }
+           
             return null;
         }
 
         public LCC3ShaderUniform UniformForSemantic(LCC3SemanticVertex semantic)
         {
+            return this.UniformForSemantic(semantic, 0);
+        }
+
+        public LCC3ShaderUniform UniformForSemantic(LCC3SemanticVertex semantic, int semanticIndex)
+        {
+            foreach (LCC3ShaderUniform uniform in _uniformsSceneScope)
+            {
+                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsNodeScope)
+            {
+                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                {
+                    return uniform;
+                }
+            }
+
+            foreach (LCC3ShaderUniform uniform in _uniformsDrawScope)
+            {
+                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                {
+                    return uniform;
+                }
+            }
+
             return null;
+        }
+
+        internal void UpdateUniformValue(LCC3ShaderUniform uniform)
+        {
+            EffectParameter _xnaEffectParam = _xnaShaderEffect.Parameters[uniform.Name];
+
+            if (_xnaEffectParam != null)
+            {
+                //_xnaEffectParam.SetValue(LCC3ShaderUniform.XnaUniformValue(uniform));
+            }
         }
 
         public LCC3ShaderAttribute AttributeNamed(string varName)
         {
+            foreach (LCC3ShaderAttribute attribute in _attributes)
+            {
+                if (attribute.Name == varName)
+                {
+                    return attribute;
+                }
+            }
+
             return null;
         }
 
         public LCC3ShaderAttribute AttributeAtLocation(int attributeLocation)
         {
+            foreach (LCC3ShaderAttribute attribute in _attributes)
+            {
+                if (attribute.Location == attributeLocation)
+                {
+                    return attribute;
+                }
+            }
+
             return null;
         }
 
         public LCC3ShaderAttribute AttributeForSemantic(LCC3SemanticVertex semantic)
         {
-            return null;
+            return this.AttributeForSemantic(semantic, 0);
         }
 
         public LCC3ShaderAttribute AttributeForSemantic(LCC3SemanticVertex semantic, uint semanticIndex)
         {
+            foreach (LCC3ShaderAttribute attribute in _attributes)
+            {
+                if (attribute.SemanticVertex == semantic && attribute.SemanticVertexIndex == semanticIndex)
+                {
+                    return attribute;
+                }
+            }
+
             return null;
         }
 
         public void MarkSceneScopeDirty()
         {
-
+            _isSceneScopeDirty = true;
         }
 
         public void WillBeginDrawingScene()
         {
-
+            this.MarkSceneScopeDirty();
         }
 
         #endregion Variables
@@ -110,26 +268,53 @@ namespace Cocos3D
 
         public void CompileAndLinkShaderFile(string shaderFilename)
         {
-
-        }
-
-        public string PlatformPreamble()
-        {
-            return null;
+            GameServiceContainer xnaServices = LCC3ProgPipeline.SharedPipeline().XnaGame.Services;
+            _xnaShaderEffect = new ContentManager(xnaServices).Load<Effect>(shaderFilename);
         }
 
         public void ConfigureUniforms()
         {
+            _uniformsSceneScope.Clear();
+            _uniformsNodeScope.Clear();
+            _uniformsDrawScope.Clear();
 
+            for (int i = 0; i < _xnaShaderEffect.Parameters.Count; i++)
+            {
+                // Find out type
+                LCC3ShaderUniform uniform = LCC3ShaderUniform.VariableInProgram(this, i);
+                _semanticDelegate.ConfigureVariable(uniform);
+                this.AddUniform(uniform);
+            }
         }
 
         public void AddUniform(LCC3ShaderUniform uniform)
         {
-
+            switch (uniform.Scope)
+            {
+                case LCC3ShaderVariableScope.ScopeScene:
+                    _uniformsSceneScope.Add(uniform);
+                    break;
+                case LCC3ShaderVariableScope.ScopeDraw:
+                    _uniformsDrawScope.Add(uniform);
+                    break;
+                default:
+                    _uniformsNodeScope.Add(uniform);
+                    break;
+            }
         }
 
         public void ConfigureAttributes()
         {
+            _attributes.Clear();
+
+            LCC3ProgPipeline pipeline = LCC3ProgPipeline.SharedPipeline();
+
+            foreach(LCC3VertexAttrIndex vertexAttrIndex in pipeline.EnabledVertexAttributeIndices())
+            {
+                LCC3ShaderAttribute attr = LCC3ShaderAttribute.VariableInProgram(this, vertexAttrIndex);
+                _semanticDelegate.ConfigureVariable(attr);
+                _attributes.Add(attr);
+            }
 
         }
 
@@ -140,32 +325,55 @@ namespace Cocos3D
 
         public void BindWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
+            visitor.CurrentShaderProgram = this;
 
+            LCC3ProgPipeline.SharedPipeline().CurrentlyActiveShader = this;
         }
 
         public void PopulateVertexAttributesWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
+            LCC3ProgPipeline pipeline = LCC3ProgPipeline.SharedPipeline();
 
+            foreach (LCC3ShaderAttribute attribute in _attributes)
+            {
+                pipeline.BindVertexAttributeWithVisitor(attribute, visitor);
+            }
         }
 
         public void PopulateSceneScopeUniformsWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
+            if (_isSceneScopeDirty == true)
+            {
+                this.PopulateUniformsWithVisitor(_uniformsSceneScope, visitor);
 
+                _isSceneScopeDirty = false;
+            }
         }
 
         public void PopulateNodeScopeUniformsWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
+            this.PopulateSceneScopeUniformsWithVisitor(visitor);
 
+            this.PopulateUniformsWithVisitor(_uniformsNodeScope, visitor);
         }
 
         public void PopulateDrawScopeUniformsWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
-
+            this.PopulateUniformsWithVisitor(_uniformsDrawScope, visitor);
         }
 
-        public void PopulateUniformsWithVisitor(LCC3ShaderUniform[] uniforms, LCC3NodeDrawingVisitor visitor)
+        public void PopulateUniformsWithVisitor(List<LCC3ShaderUniform> uniforms, LCC3NodeDrawingVisitor visitor)
         {
+            LCC3ShaderProgramContext progCtx = visitor.CurrentMaterial.ShaderContext;
 
+            foreach (LCC3ShaderUniform uniform in uniforms)
+            {
+                if (progCtx.PopulateUniformWithVisitor(uniform, visitor) 
+                    || _semanticDelegate.PopulateUniformWithVisitor(uniform, visitor))
+                {
+                    uniform.UpdateValue();
+                } 
+            }
         }
 
         #endregion Binding
@@ -175,24 +383,30 @@ namespace Cocos3D
 
         public static void AddProgram(LCC3ShaderProgram program)
         {
+            if (program == null)
+                return;
 
+            Debug.Assert(LCC3ShaderProgram.GetProgramNamed(program.Name) !=null,
+                         String.Format(@"Already contains a program named {0} 
+                            Remove it first before adding another", program.Name));
+
+            LCC3ShaderProgram._programsByName.Add(program.Name, program);
         }
 
         public static LCC3ShaderProgram GetProgramNamed(string name)
         {
-            return null;
+            return LCC3ShaderProgram._programsByName[name];
         }
 
         public static void RemoveProgram(LCC3ShaderProgram program)
         {
-
+            LCC3ShaderProgram.RemoveProgramNamed(program.Name);
         }
 
         public static void RemoveProgramNamed(string name)
         {
-
+            LCC3ShaderProgram._programsByName.Remove(name);
         }
-
 
         #endregion Program cache
     }

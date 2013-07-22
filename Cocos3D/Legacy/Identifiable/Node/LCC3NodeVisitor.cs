@@ -34,6 +34,11 @@ namespace Cocos3D
             get { return _currentNode as LCC3MeshNode; }
         }
 
+        public LCC3Material CurrentMaterial
+        {
+            get { return this.CurrentMeshNode.Material; }
+        }
+
         public LCC3Mesh CurrentMesh
         {
             get { return this.CurrentMeshNode.Mesh; }

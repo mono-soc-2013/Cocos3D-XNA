@@ -24,14 +24,19 @@ namespace Cocos3D
     {
         // Instance fields
 
-        LCC3Mesh _mesh;
-
+        private LCC3Mesh _mesh;
+        private LCC3Material _material;
 
         #region Properties
 
         public LCC3Mesh Mesh
         {
             get { return _mesh; }
+        }
+
+        public LCC3Material Material
+        {
+            get { return _material; }
         }
 
         #endregion Properties

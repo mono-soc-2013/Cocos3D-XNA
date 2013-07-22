@@ -22,6 +22,20 @@ namespace Cocos3D
 {
     public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
     {
+        // Instance fields
+
+        private LCC3ShaderProgram _currentShaderProgram;
+
+        #region Properties
+
+        public LCC3ShaderProgram CurrentShaderProgram
+        {
+            get { return _currentShaderProgram; }
+            set { _currentShaderProgram = value; }
+        }
+
+        #endregion Properties
+
         public LCC3NodeDrawingVisitor()
         {
         }
