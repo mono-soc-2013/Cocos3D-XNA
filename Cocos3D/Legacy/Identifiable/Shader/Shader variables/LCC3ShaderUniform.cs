@@ -28,13 +28,13 @@ namespace Cocos3D
 
         private object _varValue;
 
+
         #region Properties
 
         public object VarValue
         {
             get { return _varValue; }
         }
-
 
         #endregion Properties
 
@@ -90,8 +90,6 @@ namespace Cocos3D
         }
 
         #endregion Accessing uniform values
-
-
 
     }
 }

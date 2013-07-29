@@ -100,14 +100,12 @@
     <Folder Include="Legacy\Identifiable\Node\" />
     <Folder Include="Legacy\Mesh\" />
     <Folder Include="Legacy\Mesh\VertexArrays\" />
-    <Folder Include="Legacy\Shader\" />
-    <Folder Include="Legacy\Shader\Shader variables\" />
     <Folder Include="Legacy\Matrix\" />
     <Folder Include="Legacy\Foundation\" />
     <Folder Include="Legacy\Extensions\" />
     <Folder Include="Legacy\Extensions\EnumExtensions\" />
-    <Folder Include="Legacy\Identifiable\Node\Texture\" />
     <Folder Include="Legacy\Identifiable\Material\" />
+    <Folder Include="Legacy\Identifiable\Texture\GraphicsTexture\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -165,11 +163,8 @@
     <Compile Include="Legacy\Mesh\VertexArrays\LCC3DrawableVertexArray.cs" />
     <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexArray.cs" />
     <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexIndices.cs" />
-    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderAttribute.cs" />
-    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderVariable.cs" />
     <Compile Include="Legacy\Matrix\LCC3Matrix4x3.cs" />
     <Compile Include="Legacy\Matrix\LCC3Matrix4x4.cs" />
-    <Compile Include="Legacy\Shader\LCC3ShaderProgram.cs" />
     <Compile Include="Legacy\Foundation\LCC3Viewport.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3VertexAttr.cs" />
     <Compile Include="Legacy\Foundation\LCC3CullMode.cs" />
@@ -191,14 +186,29 @@
     <Compile Include="Legacy\Foundation\LCC3Vector4.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3DrawMode.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3DrawModeExtension.cs" />
-    <Compile Include="Legacy\Identifiable\Node\Texture\LCC3TextureFormat.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFormatExtension.cs" />
-    <Compile Include="Legacy\Shader\ILCC3ShaderSemanticDelegate.cs" />
-    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderUniform.cs" />
-    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderVariableScope.cs" />
     <Compile Include="Legacy\Identifiable\Material\LCC3Material.cs" />
-    <Compile Include="Legacy\Shader\LCC3ShaderProgramContext.cs" />
-    <Compile Include="Legacy\Shader\Shader variables\LCC3ShaderUniformOverride.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3TextureFormat.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3Texture.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\TextureUnit\LCC3TextureUnit.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderAttribute.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariable.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgram.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\ILCC3ShaderSemanticDelegate.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderUniform.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariableScope.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgramContext.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderUniformOverride.cs" />
+    <Compile Include="Legacy\Foundation\LCC3IntSize.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\GraphicsTexture\LCC3GraphicsTexture.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\GraphicsTexture\LCC3GraphicsTextureTarget.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\GraphicsTexture\LCC3TextureContent.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\GraphicsTexture\LCC3GraphicsTexture2D.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3TextureFilter.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3TextureWrapMode.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3TextureParams.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFilterExtension.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureWrapModeExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

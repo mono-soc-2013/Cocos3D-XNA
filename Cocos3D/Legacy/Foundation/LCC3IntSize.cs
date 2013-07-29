@@ -20,39 +20,37 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public struct LCC3IntSize
     {
         // Instance fields
 
-        private LCC3ProgPipeline _progPipeline;
-        private LCC3ShaderProgram _currentShaderProgram;
-        private uint _currentTextureUnitIndex;
+        private int _width;
+        private int _height;
 
         #region Properties
 
-        public LCC3ProgPipeline ProgramPipeline
+        public int Width
         {
-            get { return _progPipeline; }
-            set { _progPipeline = value; }
+            get { return _width; }
         }
 
-        public LCC3ShaderProgram CurrentShaderProgram
+        public int Height
         {
-            get { return _currentShaderProgram; }
-            set { _currentShaderProgram = value; }
-        }
-
-        public uint CurrentTextureUnitIndex
-        {
-            get { return _currentTextureUnitIndex; }
-            set { _currentTextureUnitIndex = value; }
+            get { return _height; }
         }
 
         #endregion Properties
 
-        public LCC3NodeDrawingVisitor()
+
+        #region Constructors
+
+        public LCC3IntSize(int width, int height)
         {
+            _width = width;
+            _height = height;
         }
+
+        #endregion Constructors
     }
 }
 

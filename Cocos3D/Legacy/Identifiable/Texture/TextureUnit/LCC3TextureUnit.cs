@@ -20,38 +20,36 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public class LCC3TextureUnit
     {
-        // Instance fields
-
-        private LCC3ProgPipeline _progPipeline;
-        private LCC3ShaderProgram _currentShaderProgram;
-        private uint _currentTextureUnitIndex;
-
         #region Properties
 
-        public LCC3ProgPipeline ProgramPipeline
+        public LCC3Vector LightDirection
         {
-            get { return _progPipeline; }
-            set { _progPipeline = value; }
+            get { return LCC3Vector.CC3VectorZero; }
+            set { }
         }
 
-        public LCC3ShaderProgram CurrentShaderProgram
+        public bool IsBumpMap
         {
-            get { return _currentShaderProgram; }
-            set { _currentShaderProgram = value; }
-        }
-
-        public uint CurrentTextureUnitIndex
-        {
-            get { return _currentTextureUnitIndex; }
-            set { _currentTextureUnitIndex = value; }
+            get { return false; }
         }
 
         #endregion Properties
 
-        public LCC3NodeDrawingVisitor()
+
+        public LCC3TextureUnit()
         {
+        }
+
+        public static void BindDefaultWithVisitor(LCC3NodeDrawingVisitor visitor)
+        {
+
+        }
+
+        public void BindWithVisitor(LCC3NodeDrawingVisitor visitor)
+        {
+
         }
     }
 }

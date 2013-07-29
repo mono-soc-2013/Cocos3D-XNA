@@ -49,7 +49,6 @@ namespace Cocos3D
         private float _xnaClearDepth;
         private int _xnaClearStencil;
 
-        private Texture2D[] _xnaTextureUnits;
         private int _xnaCurrentlyActiveTextureUnitIndex;
 
         private LCC3ShaderProgram _currentlyActiveShader;
@@ -69,7 +68,12 @@ namespace Cocos3D
             set { _currentlyActiveShader = value; }
         }
 
-        internal Game XnaGame
+        public GraphicsDevice XnaGraphicsDevice
+        {
+            get { return _xnaGraphicsDevice; }
+        }
+
+        public Game XnaGame
         {
             get { return _xnaGame; }
         }
@@ -79,22 +83,27 @@ namespace Cocos3D
 
         #region Allocation and initialization
 
-        public static LCC3ProgPipeline SharedPipeline()
+        public static LCC3ProgPipeline SharedPipeline(Game game)
         {
             if (_sharedProgPipeline == null)
             {
-                _sharedProgPipeline = new LCC3ProgPipeline(null, null);
+                _sharedProgPipeline = new LCC3ProgPipeline(game);
             }
 
             return _sharedProgPipeline;
         }
 
-        internal LCC3ProgPipeline(Game xnaGame, GraphicsDevice xnaGraphicsDevice)
+        public static LCC3ProgPipeline SharedPipeline()
+        {
+            return _sharedProgPipeline;
+        }
+
+        internal LCC3ProgPipeline(Game xnaGame)
         {
             CC3VertexType.DataSource = this;
 
             _xnaGame = xnaGame;
-            _xnaGraphicsDevice = xnaGraphicsDevice;
+            _xnaGraphicsDevice = xnaGame.GraphicsDevice;
             _xnaBlendState = BlendState.Opaque;
             _xnaCullMode = CullMode.None;
             _xnaDepthStencilState = DepthStencilState.None;
@@ -116,7 +125,6 @@ namespace Cocos3D
 
         public void InitTextureUnits()
         {
-            _xnaTextureUnits = new Texture2D[(int)LCC3ProgPipeline.MaxNumberOfTextureUnits()];
             _xnaCurrentlyActiveTextureUnitIndex = 0;
         }
 
@@ -454,15 +462,48 @@ namespace Cocos3D
         {
             this.ActivateTextureUnit(texUnitIndex);
 
-            _xnaTextureUnits[_xnaCurrentlyActiveTextureUnitIndex] 
+            Texture2D texture
                 = new Texture2D(_xnaGraphicsDevice, width, height, false, textureFormat.XnaSurfaceFormat());
 
-            _xnaTextureUnits[_xnaCurrentlyActiveTextureUnitIndex].SetData<T>(imageData);
+            texture.SetData<T>(imageData);
+
+            _xnaGraphicsDevice.Textures[_xnaCurrentlyActiveTextureUnitIndex] = texture;
         }
        
+        public void BindTextureToTargetAtIndex(LCC3GraphicsTexture texture, LCC3GraphicsTextureTarget target, uint texUnitIndex)
+        {
+            _xnaGraphicsDevice.Textures[(int)texUnitIndex] = texture.XnaTexture2D;
+
+            this.ActivateTextureUnit(texUnitIndex);
+        }
+
         public void ActivateTextureUnit(uint texUnitIndex)
         {
             _xnaCurrentlyActiveTextureUnitIndex = (int)texUnitIndex;
+        }
+
+        public void SetTextureMinifyFuncAtIndex(LCC3TextureFilter minifyFunction, uint texUnitIndex)
+        {
+            // MonoGame doesn't support MinFilter/MagFilter as per XNA spec
+            _xnaGraphicsDevice.SamplerStates[(int)texUnitIndex].Filter = minifyFunction.XnaTextureFilter();
+        }
+
+        public void SetTextureMagnifyFuncAtIndex(LCC3TextureFilter magnifyFunction, uint texUnitIndex)
+        {
+            // MonoGame doesn't support MinFilter/MagFilter as per XNA spec
+            _xnaGraphicsDevice.SamplerStates[(int)texUnitIndex].Filter = magnifyFunction.XnaTextureFilter();
+        }
+
+        public void SetTextureHorizWrapFuncAtIndex(LCC3TextureWrapMode wrapFunction, uint texUnitIndex)
+        {
+            // MonoGame doesn't support MinFilter/MagFilter as per XNA spec
+            _xnaGraphicsDevice.SamplerStates[(int)texUnitIndex].AddressU = wrapFunction.XnaTextureAddressMode();
+        }
+
+        public void SetTextureVertWrapFuncAtIndex(LCC3TextureWrapMode wrapFunction, uint texUnitIndex)
+        {
+            // MonoGame doesn't support MinFilter/MagFilter as per XNA spec
+            _xnaGraphicsDevice.SamplerStates[(int)texUnitIndex].AddressV = wrapFunction.XnaTextureAddressMode();
         }
 
         #endregion Textures

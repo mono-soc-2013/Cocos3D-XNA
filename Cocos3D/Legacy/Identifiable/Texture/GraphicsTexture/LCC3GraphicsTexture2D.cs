@@ -17,42 +17,35 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
-    public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
+    public class LCC3GraphicsTexture2D : LCC3GraphicsTexture
     {
-        // Instance fields
-
-        private LCC3ProgPipeline _progPipeline;
-        private LCC3ShaderProgram _currentShaderProgram;
-        private uint _currentTextureUnitIndex;
-
         #region Properties
 
-        public LCC3ProgPipeline ProgramPipeline
+        public override bool IsTexture2D
         {
-            get { return _progPipeline; }
-            set { _progPipeline = value; }
+            get { return true; }
         }
 
-        public LCC3ShaderProgram CurrentShaderProgram
+        public override LCC3GraphicsTextureTarget TextureTarget
         {
-            get { return _currentShaderProgram; }
-            set { _currentShaderProgram = value; }
-        }
-
-        public uint CurrentTextureUnitIndex
-        {
-            get { return _currentTextureUnitIndex; }
-            set { _currentTextureUnitIndex = value; }
+            get { return LCC3GraphicsTextureTarget.Texture2D; }
         }
 
         #endregion Properties
 
-        public LCC3NodeDrawingVisitor()
+
+        #region Allocation and initialization
+
+        public LCC3GraphicsTexture2D(string fileName) : base(fileName)
         {
+            _xnaTexture = LCC3ProgPipeline.SharedPipeline().XnaGame.Content.Load<Texture2D>(fileName);
         }
+
+        #endregion Allocation and initialization
     }
 }
 
