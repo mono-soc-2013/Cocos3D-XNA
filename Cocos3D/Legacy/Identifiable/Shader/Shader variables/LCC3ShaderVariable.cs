@@ -25,6 +25,7 @@ namespace Cocos3D
         // Instance fields
 
         protected LCC3ShaderProgram _program;
+        protected LCC3ShaderVariableType _type;
         protected string _name;
         private int _location;
         protected int _index;
@@ -38,6 +39,12 @@ namespace Cocos3D
         public LCC3ShaderProgram Program
         {
             get { return _program; }
+        }
+
+        public LCC3ShaderVariableType Type
+        {
+            get { return _type; }
+            set { _type = value; }
         }
 
         public string Name

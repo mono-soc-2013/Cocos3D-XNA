@@ -31,6 +31,8 @@ namespace Cocos3DShowcase
         {
             _graphicsDeviceManager = new GraphicsDeviceManager(this);
 
+            Content.RootDirectory = "Content";
+
             CCApplication application = new AppDelegate(this, _graphicsDeviceManager);
             Components.Add(application);
         }

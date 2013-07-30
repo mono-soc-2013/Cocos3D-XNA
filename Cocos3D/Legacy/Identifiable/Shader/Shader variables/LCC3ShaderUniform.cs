@@ -18,6 +18,7 @@
 //
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
@@ -34,6 +35,85 @@ namespace Cocos3D
         public object VarValue
         {
             get { return _varValue; }
+        }
+
+        internal float FloatValue
+        {
+            get 
+            { 
+                float floatValue = 0.0f;
+
+                if (_type == LCC3ShaderVariableType.Float)
+                {
+                    floatValue = (float)_varValue;
+                }
+
+                return floatValue; 
+            }
+        }
+
+        internal Matrix XnaMatrix
+        {
+            get 
+            { 
+                Matrix xnaMatrix = Matrix.Identity;
+
+                if (_type == LCC3ShaderVariableType.Matrix)
+                {
+                    LCC3Matrix4x4 matrix = _varValue as LCC3Matrix4x4;
+                    xnaMatrix = matrix.XnaMatrix;
+                }
+
+                return xnaMatrix; 
+            }
+        }
+
+        internal Texture2D XnaTexture2D
+        {
+            get 
+            { 
+                Texture2D xnaTex2D = null;
+
+                if (_type == LCC3ShaderVariableType.Texture2D)
+                {
+                    LCC3GraphicsTexture2D texture = _varValue as LCC3GraphicsTexture2D;
+                    xnaTex2D = texture.XnaTexture2D;
+                }
+
+                return xnaTex2D; 
+            }
+        }
+
+        internal Vector3 XnaVector3
+        {
+            get 
+            { 
+                Vector3 xnaVec3 = Vector3.Zero;
+
+                if (_type == LCC3ShaderVariableType.Vector3)
+                {
+                    LCC3Vector vec3 = (LCC3Vector)_varValue;
+                    xnaVec3 = vec3.XnaVector;
+                }
+
+                return xnaVec3; 
+            }
+        }
+
+        internal Vector4 XnaVector4
+        {
+            get 
+            { 
+                Vector4 xnaVec4 = Vector4.Zero;
+
+                if (_type == LCC3ShaderVariableType.Vector4)
+                {
+                    LCC3Vector4 vec4 = (LCC3Vector4)_varValue;
+                    xnaVec4 = vec4.XnaVector4;
+                }
+
+                return xnaVec4; 
+            }
         }
 
         #endregion Properties
@@ -82,7 +162,7 @@ namespace Cocos3D
             _varValue = uniform.VarValue;
         }
 
-        public virtual bool UpdateValue()
+        public virtual bool UpdateShaderValue()
         {
             _program.UpdateUniformValue(this);
 

@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -49,10 +50,15 @@ namespace Cocos3D
         private bool _isSceneScopeDirty;
 
         #region Properties
-
+       
         public string PlatformPreamble
         {
             get { return LCC3ProgPipeline.SharedPipeline().DefaultShaderPreamble(); }
+        }
+
+        public Effect XnaShaderEffect
+        {
+            get { return _xnaShaderEffect; }
         }
 
         #endregion Properties
@@ -72,8 +78,8 @@ namespace Cocos3D
             _isSceneScopeDirty = true;
         }
 
-        public LCC3ShaderProgram(string name, ILCC3ShaderSemanticDelegate semanticDelegate, string shaderFilename)
-            : base(name)
+        public LCC3ShaderProgram(int tag, string name, ILCC3ShaderSemanticDelegate semanticDelegate, string shaderFilename)
+            : this(tag, name)
         {
             _semanticDelegate = semanticDelegate;
             this.CompileAndLinkShaderFile(shaderFilename);
@@ -203,7 +209,26 @@ namespace Cocos3D
 
             if (_xnaEffectParam != null)
             {
-                //_xnaEffectParam.SetValue(LCC3ShaderUniform.XnaUniformValue(uniform));
+                if (uniform.Type == LCC3ShaderVariableType.Matrix)
+                {
+                    _xnaEffectParam.SetValue(uniform.XnaMatrix);
+                }
+                else if (uniform.Type == LCC3ShaderVariableType.Texture2D)
+                {
+                    _xnaEffectParam.SetValue(uniform.XnaTexture2D);
+                }
+                else if (uniform.Type == LCC3ShaderVariableType.Vector4)
+                {
+                    _xnaEffectParam.SetValue(uniform.XnaVector4);
+                }
+                else if (uniform.Type == LCC3ShaderVariableType.Vector3)
+                {
+                    _xnaEffectParam.SetValue(uniform.XnaVector3);
+                }
+                else if (uniform.Type == LCC3ShaderVariableType.Float)
+                {
+                    _xnaEffectParam.SetValue(uniform.FloatValue);
+                }
             }
         }
 
@@ -266,10 +291,21 @@ namespace Cocos3D
 
         #region Compiling and linking
 
+        internal static byte[] LoadEffectResource(string name)
+        {
+            var stream = File.OpenRead(name); //assembly.GetManifestResourceStream(name);
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+
         public void CompileAndLinkShaderFile(string shaderFilename)
         {
-            GameServiceContainer xnaServices = LCC3ProgPipeline.SharedPipeline().XnaGame.Services;
-            _xnaShaderEffect = new ContentManager(xnaServices).Load<Effect>(shaderFilename);
+            //_xnaShaderEffect = LCC3ProgPipeline.SharedPipeline().XnaGame.Content.Load<Effect>(shaderFilename);
+            _xnaShaderEffect = new Effect(LCC3ProgPipeline.SharedPipeline().XnaGraphicsDevice, 
+                                          LCC3ShaderProgram.LoadEffectResource(shaderFilename));
         }
 
         public void ConfigureUniforms()
@@ -280,7 +316,6 @@ namespace Cocos3D
 
             for (int i = 0; i < _xnaShaderEffect.Parameters.Count; i++)
             {
-                // Find out type
                 LCC3ShaderUniform uniform = LCC3ShaderUniform.VariableInProgram(this, i);
                 _semanticDelegate.ConfigureVariable(uniform);
                 this.AddUniform(uniform);
@@ -371,7 +406,7 @@ namespace Cocos3D
                 if (progCtx.PopulateUniformWithVisitor(uniform, visitor) 
                     || _semanticDelegate.PopulateUniformWithVisitor(uniform, visitor))
                 {
-                    uniform.UpdateValue();
+                    uniform.UpdateShaderValue();
                 } 
             }
         }

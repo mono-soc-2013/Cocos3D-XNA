@@ -65,7 +65,7 @@ namespace Cocos3DShowcase
                                                   CCResolutionPolicy.ShowAll);
 
             // Create the scene.
-            CC3Scene scene = new ShowcaseGameScene(new CC3GraphicsContext(_graphicsDeviceManager));
+            CC3Scene scene = new ShowcaseGameScene(_game, new CC3GraphicsContext(_graphicsDeviceManager));
 
             // This is an extension method of CCDirector
             director.RunWithCC3Scene(scene);

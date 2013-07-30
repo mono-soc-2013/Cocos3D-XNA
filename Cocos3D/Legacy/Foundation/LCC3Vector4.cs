@@ -26,6 +26,7 @@ namespace Cocos3D
         // Private static fields
 
         private static readonly LCC3Vector4 _CC3Vector4Zero = new LCC3Vector4(0f);
+        private static readonly LCC3Vector4 _CC3Vector4One = new LCC3Vector4(1f);
         private static readonly LCC3Vector4 _CC3Vector4Null = new LCC3Vector4(float.PositiveInfinity);
 
         // Private instance fields
@@ -40,6 +41,11 @@ namespace Cocos3D
         public static LCC3Vector4 CC3Vector4Zero
         {
             get { return _CC3Vector4Zero; }
+        }
+
+        public static LCC3Vector4 CC3Vector4One
+        {
+            get { return _CC3Vector4One; }
         }
 
         public static LCC3Vector4 CC3Vector4Null

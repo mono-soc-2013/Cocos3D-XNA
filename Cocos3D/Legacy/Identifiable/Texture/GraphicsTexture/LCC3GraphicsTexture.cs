@@ -81,7 +81,7 @@ namespace Cocos3D
             get { return false; }
         }
 
-        internal Texture2D XnaTexture2D
+        public Texture2D XnaTexture2D
         {
             get { return (this.IsTexture2D == true) ? (Texture2D)_xnaTexture : null; }
         }

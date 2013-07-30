@@ -39,6 +39,7 @@ namespace Cocos3D
         private Game _xnaGame;
         private GraphicsDevice _xnaGraphicsDevice;
         private VertexBuffer _xnaVertexBuffer;
+        private IndexBuffer _xnaIndexBuffer;
         private BlendState _xnaBlendState;
         private CullMode _xnaCullMode;
         private DepthStencilState _xnaDepthStencilState;
@@ -76,6 +77,20 @@ namespace Cocos3D
         public Game XnaGame
         {
             get { return _xnaGame; }
+        }
+
+        // For testing only
+
+        public VertexBuffer XnaVertexBuffer
+        {
+            get { return _xnaVertexBuffer; }
+            set { _xnaVertexBuffer = value; }
+        }
+
+        public IndexBuffer XnaIndexBuffer
+        {
+            get { return _xnaIndexBuffer; }
+            set { _xnaIndexBuffer = value; }
         }
 
         #endregion Properties
@@ -341,9 +356,27 @@ namespace Cocos3D
             _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
         }
 
+        public void BindIndexBuffer()
+        {
+            _xnaGraphicsDevice.Indices = _xnaIndexBuffer;
+        }
+
         public void DrawVertices(LCC3DrawMode drawMode, int startIndex, int length)
         {
-            _xnaGraphicsDevice.DrawPrimitives(drawMode.XnaPrimitiveType(), startIndex, length);
+            foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                _xnaGraphicsDevice.DrawPrimitives(drawMode.XnaPrimitiveType(), startIndex, length);
+            }
+        }
+
+        public void DrawIndices(LCC3DrawMode drawMode, int vertexOffset, int minVertexIndex, int numOfVertices, int startIndex, int primitiveCount)
+        {
+            foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                _xnaGraphicsDevice.DrawIndexedPrimitives(drawMode.XnaPrimitiveType(), vertexOffset, minVertexIndex, numOfVertices, startIndex, primitiveCount);
+            }
         }
 
         #endregion Vertex attributes

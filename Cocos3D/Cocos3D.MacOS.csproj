@@ -209,6 +209,7 @@
     <Compile Include="Legacy\Identifiable\Texture\LCC3TextureParams.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFilterExtension.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureWrapModeExtension.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariableType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

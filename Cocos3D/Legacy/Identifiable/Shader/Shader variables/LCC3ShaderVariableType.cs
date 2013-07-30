@@ -20,16 +20,14 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3ShaderUniformOverride : LCC3ShaderUniform
+    public enum LCC3ShaderVariableType
     {
-        public LCC3ShaderUniformOverride()
-        {
-        }
-
-        public override bool UpdateShaderValue()
-        {
-            return false;
-        }
+        None = 0,
+        Matrix = 1,
+        Texture2D = 2,
+        Vector3 = 3,
+        Vector4 = 4,
+        Float = 5
     }
 }
 

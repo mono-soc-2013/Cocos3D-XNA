@@ -27,10 +27,11 @@ using System.Collections.Generic;
 
 namespace Cocos3DShowcase
 {
-    public class ShowcaseGameScene : CC3Scene
+    public class ShowcaseGameScene : CC3Scene, ILCC3ShaderSemanticDelegate
     {
         // Instance fields
 
+        private LCC3ProgPipeline _progPipeline;
         private CC3CameraPerspective _camera;
 
         private BasicEffect _basicEffect;
@@ -39,30 +40,177 @@ namespace Cocos3DShowcase
         private VertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;
 
+        private Model _tankModel;
+        private LCC3GraphicsTexture2D _tankTexture;
+        private LCC3ShaderProgram _tankShader;
+
+
         #region Constructors
 
-        public ShowcaseGameScene(CC3GraphicsContext graphicsContext) : base(graphicsContext)
+        public ShowcaseGameScene(Game game, CC3GraphicsContext graphicsContext) : base(graphicsContext)
         {
+            /*
             this.InitializeCamera();
             this.InitializeEffect();
             this.InitializeCubeDrawingData();
             this.InitializeCubes();
             this.InitializeCameraAction();
+            */
+
+            _progPipeline = LCC3ProgPipeline.SharedPipeline(game);
+
+            this.InitializeCameraForTextureTest();
+            this.InitializeModel();
+            this.InitializeTankEffect();
+            this.RunCameraActionForTextureTest();
         }
 
         #endregion Constructors
+
+
+        #region Legacy texture test
+
+        private void InitializeCameraForTextureTest()
+        {
+            CC3Vector cameraPos = new CC3Vector(750.0f, 1000.0f, 10.0f);
+            CC3Vector cameraTarget = new CC3Vector(0.0f, 300.0f, 0.0f);
+            float cameraFieldOfViewInDegrees = 45.0f;
+            float cameraAspectRatio = _graphicsContext.ScreenAspectRatio;
+            float cameraNearClippingDistance = 200.0f;
+            float cameraFarClippingDistance = 10000.0f;
+
+            CC3CameraPerspectiveBuilder cameraBuilder = new CC3CameraPerspectiveBuilder();
+            cameraBuilder.PositionAtPoint(cameraPos).LookingAtPoint(cameraTarget);
+            cameraBuilder.WithFieldOfView(cameraFieldOfViewInDegrees).WithAspectRatio(cameraAspectRatio);
+            cameraBuilder.WithNearAndFarClippingDistances(cameraNearClippingDistance, cameraFarClippingDistance);
+
+            _camera = cameraBuilder.Build();
+          
+            this.ActiveCamera = _camera;
+        }
+
+        private void InitializeModel()
+        {
+            _tankModel = _progPipeline.XnaGame.Content.Load<Model>("tank");
+        }
+
+        private void InitializeTankEffect()
+        {
+            _tankShader = new LCC3ShaderProgram(0, "MyShader", this, "Content/BasicEffect.ogl.mgfxo");
+            _tankShader.ConfigureUniforms();
+            _tankTexture = new LCC3GraphicsTexture2D("turret_alt_diff_tex_0");
+            _tankShader.XnaShaderEffect.CurrentTechnique = _tankShader.XnaShaderEffect.Techniques[5];
+
+            LCC3ShaderUniform textureUniform = _tankShader.UniformNamed("Texture");
+            textureUniform.SetValue(_tankTexture);
+            textureUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform diffuseColorUniform = _tankShader.UniformNamed("DiffuseColor");
+            LCC3Vector4 diffuseColor = LCC3Vector4.CC3Vector4One;
+            diffuseColorUniform.SetValue(diffuseColor);
+            diffuseColorUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform specularColorUniform = _tankShader.UniformNamed("SpecularColor");
+            LCC3Vector specularColor = LCC3Vector.CC3VectorUnitCube;
+            specularColorUniform.SetValue(specularColor);
+            specularColorUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform specularPowerUniform = _tankShader.UniformNamed("SpecularPower");
+            float specularPower = 16.0f;
+            specularPowerUniform.SetValue(specularPower);
+            specularPowerUniform.UpdateShaderValue();
+        }
+
+        // ILCC3SemanticDelegate methods
+
+        public bool ConfigureVariable(LCC3ShaderVariable variable)
+        {
+            if (variable.Name == "WorldViewProj")
+                variable.Type = LCC3ShaderVariableType.Matrix;
+            else if (variable.Name == "Texture")
+                variable.Type = LCC3ShaderVariableType.Texture2D;
+            else if (variable.Name == "DiffuseColor")
+                variable.Type = LCC3ShaderVariableType.Vector4;
+            else if (variable.Name == "SpecularColor")
+                variable.Type = LCC3ShaderVariableType.Vector3;
+            else if (variable.Name == "SpecularPower")
+                variable.Type = LCC3ShaderVariableType.Float;
+
+            return true;
+        }
+       
+        public bool PopulateUniformWithVisitor(LCC3ShaderUniform uniform, LCC3NodeDrawingVisitor visitor)
+        {
+            return false;
+        }
+
+        // end of ILCC3SemanticDelegate methods
+
+        private void RunCameraActionForTextureTest()
+        {
+            CC3CameraPerspectiveActionBuilder cameraActionBuilder 
+                = new CC3CameraPerspectiveActionBuilder();
+            cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(0.0f, 1.0f, 0.0f), 360.0f);
+
+            CC3CameraPerspectiveActionRunner runner 
+                = new CC3CameraPerspectiveActionRunner(cameraActionBuilder.Build(), _camera, 10.0f);
+
+            runner.RunAction();
+        }
+
+        public void DrawTextureTest()
+        {
+            _progPipeline.SetClearColor(new CCColor4F(0.2f, 0.5f, 0.8f, 1.0f));
+            _progPipeline.SetClearDepth(100.0f);
+            _progPipeline.ClearBuffers(LCC3BufferMask.ColorBuffer | LCC3BufferMask.DepthBuffer | LCC3BufferMask.StencilBuffer );
+           
+            _progPipeline.EnableBlend(false);
+            _progPipeline.EnableDepthTest(true);
+            _progPipeline.SetDepthMask(true);
+            _progPipeline.SetDepthFunc(LCC3DepthStencilFuncMode.LessOrEqual);
+            _progPipeline.EnableCullFace(false);
+
+
+            _progPipeline.CurrentlyActiveShader = _tankShader;
+
+            Matrix[] transforms = new Matrix[_tankModel.Bones.Count];
+
+            _tankModel.CopyAbsoluteBoneTransformsTo(transforms);
+
+            foreach (ModelMesh mesh in _tankModel.Meshes)
+            {                
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+
+                    LCC3ShaderUniform worldViewProjUniform = _tankShader.UniformNamed("WorldViewProj");
+                    LCC3Matrix4x4 worldViewProjMatrix 
+                        = new LCC3Matrix4x4(transforms[mesh.ParentBone.Index] * _graphicsContext.ViewMatrix.XnaMatrix * _graphicsContext.ProjectionMatrix.XnaMatrix);
+
+                    worldViewProjUniform.SetValue(worldViewProjMatrix);
+                    worldViewProjUniform.UpdateShaderValue();
+
+                    _progPipeline.XnaVertexBuffer = part.VertexBuffer;
+                    _progPipeline.XnaIndexBuffer = part.IndexBuffer;
+                    _progPipeline.BindVertexBuffer();
+                    _progPipeline.BindIndexBuffer();
+                    _progPipeline.DrawIndices(LCC3DrawMode.TriangleList, part.VertexOffset, 0, part.NumVertices, part.StartIndex, part.PrimitiveCount);
+                }
+            }
+        }
+
+        #endregion Legacy texture test
 
 
         #region Initializing scene
 
         private void InitializeCamera()
         {
-            CC3Vector cameraPos = new CC3Vector(0.0f, 10.0f, 10.0f);
-            CC3Vector cameraTarget = new CC3Vector(0.0f, 0.0f, -10.0f);
+            CC3Vector cameraPos = new CC3Vector(750.0f, 1000.0f, 10.0f);
+            CC3Vector cameraTarget = new CC3Vector(0.0f, 300.0f, 0.0f);
             float cameraFieldOfViewInDegrees = 45.0f;
             float cameraAspectRatio = _graphicsContext.ScreenAspectRatio;
             float cameraNearClippingDistance = 1.0f;
-            float cameraFarClippingDistance = 1000.0f;
+            float cameraFarClippingDistance = 10000.0f;
 
 
             CC3CameraPerspectiveBuilder cameraBuilder = new CC3CameraPerspectiveBuilder();
@@ -237,7 +385,7 @@ namespace Cocos3DShowcase
 
         #endregion Initializing scene
 
-        public override void Draw()
+        private void DrawCoreCameraTest()
         {
             _graphicsContext.ClearColor = new CCColor4F(0.2f, 0.5f, 0.8f, 1.0f);
             _graphicsContext.ClearColorBuffer();
@@ -265,6 +413,13 @@ namespace Cocos3DShowcase
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 8, 8, 6); 
                 }
             }
+        }
+
+        public override void Draw()
+        {
+            //this.DrawCoreCameraTest();
+
+            this.DrawTextureTest();
         }
 
     }
