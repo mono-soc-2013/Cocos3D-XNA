@@ -210,6 +210,9 @@
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureFilterExtension.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3TextureWrapModeExtension.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariableType.cs" />
+    <Compile Include="Legacy\Foundation\LCC3BlendType.cs" />
+    <Compile Include="Legacy\Foundation\LCC3AlphaTestFuncMode.cs" />
+    <Compile Include="Legacy\Foundation\LCC3ColorUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

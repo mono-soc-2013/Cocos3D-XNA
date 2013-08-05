@@ -477,7 +477,7 @@ namespace Cocos3D
 
         #region Materials
 
-        public void SetBlendFuncSrcAndDst(uint src, uint dst)
+        public void SetBlendFuncSrcAndDst(LCC3BlendType src, LCC3BlendType dst)
         {
 
         }
@@ -579,34 +579,34 @@ namespace Cocos3D
 
         #region Platform limits
 
-        public static uint MaxNumberOfLights()
+        public static uint MaxNumberOfLights
         {
-            return 8;
+            get { return 8; }
         }
 
-        public static uint MaxNumberOfClipPlanes()
+        public static uint MaxNumberOfClipPlanes
         {
-            return 6;
+            get { return 6; }
         }
 
-        public static uint MaxNumberOfPaletteMatrices()
+        public static uint MaxNumberOfPaletteMatrices
         {
-            return 12;
+            get { return 12; }
         }
 
-        public static uint MaxNumberOfTextureUnits()
+        public static uint MaxNumberOfTextureUnits
         {
-            return 5;
+            get { return 5U; }
         }
 
-        public static uint MaxNumberOfVertexAttributes()
+        public static uint MaxNumberOfVertexAttributes
         {
-            return 4;
+            get { return 4; }
         }
 
-        public static uint MaxNumberOfVertexUnits()
+        public static uint MaxNumberOfVertexUnits
         {
-            return 4;
+            get { return 4; }
         }
 
         #endregion Platform limits

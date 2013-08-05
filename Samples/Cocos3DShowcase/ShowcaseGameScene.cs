@@ -43,26 +43,29 @@ namespace Cocos3DShowcase
         private Model _tankModel;
         private LCC3GraphicsTexture2D _tankTexture;
         private LCC3ShaderProgram _tankShader;
+        private Matrix[] _tankTransforms;
 
 
         #region Constructors
 
         public ShowcaseGameScene(Game game, CC3GraphicsContext graphicsContext) : base(graphicsContext)
         {
-            /*
+
             this.InitializeCamera();
             this.InitializeEffect();
             this.InitializeCubeDrawingData();
             this.InitializeCubes();
             this.InitializeCameraAction();
-            */
 
+
+            /*
             _progPipeline = LCC3ProgPipeline.SharedPipeline(game);
 
             this.InitializeCameraForTextureTest();
             this.InitializeModel();
             this.InitializeTankEffect();
             this.RunCameraActionForTextureTest();
+            */
         }
 
         #endregion Constructors
@@ -92,6 +95,8 @@ namespace Cocos3DShowcase
         private void InitializeModel()
         {
             _tankModel = _progPipeline.XnaGame.Content.Load<Model>("tank");
+            _tankTransforms = new Matrix[_tankModel.Bones.Count];
+            _tankModel.CopyAbsoluteBoneTransformsTo(_tankTransforms);
         }
 
         private void InitializeTankEffect()
@@ -153,7 +158,7 @@ namespace Cocos3DShowcase
             cameraActionBuilder.RotateCameraAroundAxisRelativeToTargetByDegrees(new CC3Vector(0.0f, 1.0f, 0.0f), 360.0f);
 
             CC3CameraPerspectiveActionRunner runner 
-                = new CC3CameraPerspectiveActionRunner(cameraActionBuilder.Build(), _camera, 10.0f);
+                = new CC3CameraPerspectiveActionRunner(cameraActionBuilder.Build(), _camera, 4.0f);
 
             runner.RunAction();
         }
@@ -162,20 +167,17 @@ namespace Cocos3DShowcase
         {
             _progPipeline.SetClearColor(new CCColor4F(0.2f, 0.5f, 0.8f, 1.0f));
             _progPipeline.SetClearDepth(100.0f);
-            _progPipeline.ClearBuffers(LCC3BufferMask.ColorBuffer | LCC3BufferMask.DepthBuffer | LCC3BufferMask.StencilBuffer );
+            _progPipeline.ClearBuffers(LCC3BufferMask.ColorBuffer | LCC3BufferMask.DepthBuffer);
            
             _progPipeline.EnableBlend(false);
             _progPipeline.EnableDepthTest(true);
             _progPipeline.SetDepthMask(true);
             _progPipeline.SetDepthFunc(LCC3DepthStencilFuncMode.LessOrEqual);
-            _progPipeline.EnableCullFace(false);
+            _progPipeline.EnableCullFace(true);
 
 
             _progPipeline.CurrentlyActiveShader = _tankShader;
 
-            Matrix[] transforms = new Matrix[_tankModel.Bones.Count];
-
-            _tankModel.CopyAbsoluteBoneTransformsTo(transforms);
 
             foreach (ModelMesh mesh in _tankModel.Meshes)
             {                
@@ -184,7 +186,7 @@ namespace Cocos3DShowcase
 
                     LCC3ShaderUniform worldViewProjUniform = _tankShader.UniformNamed("WorldViewProj");
                     LCC3Matrix4x4 worldViewProjMatrix 
-                        = new LCC3Matrix4x4(transforms[mesh.ParentBone.Index] * _graphicsContext.ViewMatrix.XnaMatrix * _graphicsContext.ProjectionMatrix.XnaMatrix);
+                        = new LCC3Matrix4x4(_tankTransforms[mesh.ParentBone.Index] * _graphicsContext.ViewMatrix.XnaMatrix * _graphicsContext.ProjectionMatrix.XnaMatrix);
 
                     worldViewProjUniform.SetValue(worldViewProjMatrix);
                     worldViewProjUniform.UpdateShaderValue();
@@ -205,9 +207,9 @@ namespace Cocos3DShowcase
 
         private void InitializeCamera()
         {
-            CC3Vector cameraPos = new CC3Vector(750.0f, 1000.0f, 10.0f);
-            CC3Vector cameraTarget = new CC3Vector(0.0f, 300.0f, 0.0f);
-            float cameraFieldOfViewInDegrees = 45.0f;
+            CC3Vector cameraPos = new CC3Vector(0.0f, 10.0f, 5.0f);
+            CC3Vector cameraTarget = new CC3Vector(0.0f, 0.0f, -10.0f);
+            float cameraFieldOfViewInDegrees = 60.0f;
             float cameraAspectRatio = _graphicsContext.ScreenAspectRatio;
             float cameraNearClippingDistance = 1.0f;
             float cameraFarClippingDistance = 10000.0f;
@@ -417,9 +419,9 @@ namespace Cocos3DShowcase
 
         public override void Draw()
         {
-            //this.DrawCoreCameraTest();
+            this.DrawCoreCameraTest();
 
-            this.DrawTextureTest();
+            //this.DrawTextureTest();
         }
 
     }

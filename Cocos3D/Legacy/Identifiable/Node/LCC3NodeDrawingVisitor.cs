@@ -17,6 +17,7 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
 
 namespace Cocos3D
 {
@@ -27,6 +28,8 @@ namespace Cocos3D
         private LCC3ProgPipeline _progPipeline;
         private LCC3ShaderProgram _currentShaderProgram;
         private uint _currentTextureUnitIndex;
+        private CCColor4F _currentColor;
+        private uint _textureUnitCount;
 
         #region Properties
 
@@ -48,10 +51,21 @@ namespace Cocos3D
             set { _currentTextureUnitIndex = value; }
         }
 
+        public CCColor4F CurrentColor
+        {
+            get { return _currentColor; }
+            set { _currentColor = value; }
+        }
+
         #endregion Properties
 
         public LCC3NodeDrawingVisitor()
         {
+        }
+
+        public void DisableUnusedTextureUnits()
+        {
+            _textureUnitCount = _currentTextureUnitIndex;
         }
     }
 }
