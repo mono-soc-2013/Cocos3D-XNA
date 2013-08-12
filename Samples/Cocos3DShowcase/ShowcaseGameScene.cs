@@ -50,22 +50,22 @@ namespace Cocos3DShowcase
 
         public ShowcaseGameScene(Game game, CC3GraphicsContext graphicsContext) : base(graphicsContext)
         {
-
+            /*
             this.InitializeCamera();
             this.InitializeEffect();
             this.InitializeCubeDrawingData();
             this.InitializeCubes();
             this.InitializeCameraAction();
+            */
 
 
-            /*
             _progPipeline = LCC3ProgPipeline.SharedPipeline(game);
 
             this.InitializeCameraForTextureTest();
             this.InitializeModel();
             this.InitializeTankEffect();
             this.RunCameraActionForTextureTest();
-            */
+
         }
 
         #endregion Constructors
@@ -102,28 +102,47 @@ namespace Cocos3DShowcase
         private void InitializeTankEffect()
         {
             _tankShader = new LCC3ShaderProgram(0, "MyShader", this, "Content/BasicEffect.ogl.mgfxo");
-            _tankShader.ConfigureUniforms();
             _tankTexture = new LCC3GraphicsTexture2D("turret_alt_diff_tex_0");
-            _tankShader.XnaShaderEffect.CurrentTechnique = _tankShader.XnaShaderEffect.Techniques[5];
+            _tankShader.XnaShaderEffect.CurrentTechnique = _tankShader.XnaShaderEffect.Techniques[21]; //5
 
             LCC3ShaderUniform textureUniform = _tankShader.UniformNamed("Texture");
             textureUniform.SetValue(_tankTexture);
             textureUniform.UpdateShaderValue();
 
             LCC3ShaderUniform diffuseColorUniform = _tankShader.UniformNamed("DiffuseColor");
-            LCC3Vector4 diffuseColor = LCC3Vector4.CC3Vector4One;
+            LCC3Vector4 diffuseColor = new LCC3Vector4(1.0f, 1.0f, 1.0f, 0.4f);
             diffuseColorUniform.SetValue(diffuseColor);
             diffuseColorUniform.UpdateShaderValue();
 
+            LCC3ShaderUniform emissiveColorUniform = _tankShader.UniformNamed("EmissiveColor");
+            LCC3Vector emissiveColor = new LCC3Vector(0.5f, 0.5f, 0.9f);
+            emissiveColorUniform.SetValue(emissiveColor);
+            emissiveColorUniform.UpdateShaderValue();
+
             LCC3ShaderUniform specularColorUniform = _tankShader.UniformNamed("SpecularColor");
-            LCC3Vector specularColor = LCC3Vector.CC3VectorUnitCube;
+            LCC3Vector specularColor = new LCC3Vector(1.0f, 0.0f, 0.0f);
             specularColorUniform.SetValue(specularColor);
             specularColorUniform.UpdateShaderValue();
 
             LCC3ShaderUniform specularPowerUniform = _tankShader.UniformNamed("SpecularPower");
-            float specularPower = 16.0f;
+            float specularPower = 100.0f;
             specularPowerUniform.SetValue(specularPower);
             specularPowerUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform light0DirectionUniform = _tankShader.UniformNamed("DirLight0Direction");
+            LCC3Vector light0Direction = (new LCC3Vector(-0.5f, -1.2f, -1.0f)).NormalizedVector();
+            light0DirectionUniform.SetValue(light0Direction);
+            light0DirectionUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform light0DiffuseColorUniform = _tankShader.UniformNamed("DirLight0DiffuseColor");
+            LCC3Vector light0DiffuseColor = new LCC3Vector(1.0f, 2.0f, 2.0f);
+            light0DiffuseColorUniform.SetValue(light0DiffuseColor);
+            light0DiffuseColorUniform.UpdateShaderValue();
+
+            LCC3ShaderUniform light0SpecularColorUniform = _tankShader.UniformNamed("DirLight0SpecularColor");
+            LCC3Vector light0SpecularColor = new LCC3Vector(1.0f, 0.0f, 0.0f);
+            light0SpecularColorUniform.SetValue(light0SpecularColor);
+            light0DiffuseColorUniform.UpdateShaderValue();
         }
 
         // ILCC3SemanticDelegate methods
@@ -132,14 +151,26 @@ namespace Cocos3DShowcase
         {
             if (variable.Name == "WorldViewProj")
                 variable.Type = LCC3ShaderVariableType.Matrix;
+            else if (variable.Name == "World")
+                variable.Type = LCC3ShaderVariableType.Matrix;
+            else if (variable.Name == "WorldInverseTranspose")
+                variable.Type = LCC3ShaderVariableType.Matrix;
             else if (variable.Name == "Texture")
                 variable.Type = LCC3ShaderVariableType.Texture2D;
             else if (variable.Name == "DiffuseColor")
                 variable.Type = LCC3ShaderVariableType.Vector4;
             else if (variable.Name == "SpecularColor")
                 variable.Type = LCC3ShaderVariableType.Vector3;
+            else if (variable.Name == "EmissiveColor")
+                variable.Type = LCC3ShaderVariableType.Vector3;
             else if (variable.Name == "SpecularPower")
                 variable.Type = LCC3ShaderVariableType.Float;
+            else if (variable.Name == "DirLight0Direction")
+                variable.Type = LCC3ShaderVariableType.Vector3;
+            else if (variable.Name == "DirLight0DiffuseColor")
+                variable.Type = LCC3ShaderVariableType.Vector3;
+            else if (variable.Name == "DirLight0SpecularColor")
+                variable.Type = LCC3ShaderVariableType.Vector3;
 
             return true;
         }
@@ -187,14 +218,28 @@ namespace Cocos3DShowcase
                     LCC3ShaderUniform worldViewProjUniform = _tankShader.UniformNamed("WorldViewProj");
                     LCC3Matrix4x4 worldViewProjMatrix 
                         = new LCC3Matrix4x4(_tankTransforms[mesh.ParentBone.Index] * _graphicsContext.ViewMatrix.XnaMatrix * _graphicsContext.ProjectionMatrix.XnaMatrix);
-
                     worldViewProjUniform.SetValue(worldViewProjMatrix);
                     worldViewProjUniform.UpdateShaderValue();
 
+                    LCC3ShaderUniform eyePositionUniform = _tankShader.UniformNamed("EyePosition");
+                    LCC3Vector eyePosition = new LCC3Vector(Matrix.Invert(_graphicsContext.ViewMatrix.XnaMatrix).Translation);
+                    eyePositionUniform.SetValue(eyePosition);
+                    eyePositionUniform.UpdateShaderValue();
+
+                    LCC3ShaderUniform worldUniform = _tankShader.UniformNamed("World");
+                    LCC3Matrix4x4 worldMatrix = new LCC3Matrix4x4(_tankTransforms[mesh.ParentBone.Index]);
+                    worldUniform.SetValue(worldMatrix);
+                    worldUniform.UpdateShaderValue();
+
+
+                    LCC3ShaderUniform worldInvTransUniform = _tankShader.UniformNamed("WorldInverseTranspose");
+                    LCC3Matrix4x4 worldInvTransMatrix = new LCC3Matrix4x4(Matrix.Invert(Matrix.Transpose(_tankTransforms[mesh.ParentBone.Index])));
+                    worldInvTransUniform.SetValue(worldInvTransMatrix);
+                    worldInvTransUniform.UpdateShaderValue();
+
                     _progPipeline.XnaVertexBuffer = part.VertexBuffer;
                     _progPipeline.XnaIndexBuffer = part.IndexBuffer;
-                    _progPipeline.BindVertexBuffer();
-                    _progPipeline.BindIndexBuffer();
+
                     _progPipeline.DrawIndices(LCC3DrawMode.TriangleList, part.VertexOffset, 0, part.NumVertices, part.StartIndex, part.PrimitiveCount);
                 }
             }
@@ -419,9 +464,9 @@ namespace Cocos3DShowcase
 
         public override void Draw()
         {
-            this.DrawCoreCameraTest();
+            //this.DrawCoreCameraTest();
 
-            //this.DrawTextureTest();
+            this.DrawTextureTest();
         }
 
     }

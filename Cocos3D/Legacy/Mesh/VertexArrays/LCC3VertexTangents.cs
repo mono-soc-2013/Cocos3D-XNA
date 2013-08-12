@@ -20,32 +20,45 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3Mesh
+    public class LCC3VertexTangents : LCC3VertexArray
     {
-        // Instance fields
-
-        LCC3VertexIndices _vertexIndices;
-
         #region Properties
 
-        public LCC3VertexIndices VertexIndices
+        public override string NameSuffix
         {
-            get { return _vertexIndices; }
+            get { return "Tangents"; }
+        }
+
+        public override LCC3Semantic DefaultSemantic
+        {
+            get { return LCC3Semantic.SemanticVertexTangent; }
         }
 
         #endregion Properties
 
 
-        public LCC3Mesh()
+        #region Allocation and initialization
+
+        public LCC3VertexTangents(int tag, string name) : base(tag, name)
         {
         }
 
-        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
+        #endregion Allocation and initialization
+
+
+        #region Setting/getting tangents
+
+        public LCC3Vector TangentAtIndex(uint index)
         {
-            return null;
+            return (LCC3Vector)_vertices[(int)index];
         }
 
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
+        public void SetTangentAtIndex(LCC3Vector aTangent, uint index)
+        {
+            _vertices[(int)index] = aTangent;
+        }
+
+        #endregion Setting/getting tangents
     }
 }
 

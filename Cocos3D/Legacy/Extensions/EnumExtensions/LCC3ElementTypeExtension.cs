@@ -20,32 +20,22 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3Mesh
+    public static class LCC3ElementTypeExtension
     {
-        // Instance fields
-
-        LCC3VertexIndices _vertexIndices;
-
-        #region Properties
-
-        public LCC3VertexIndices VertexIndices
+        internal static uint Size(this LCC3ElementType elementType)
         {
-            get { return _vertexIndices; }
+            uint size = 0;
+
+            switch (elementType)
+            {
+                case LCC3ElementType.Float:
+                    size = sizeof(float);
+                    break;
+
+            }
+
+            return size;
         }
-
-        #endregion Properties
-
-
-        public LCC3Mesh()
-        {
-        }
-
-        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
-        {
-            return null;
-        }
-
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
     }
 }
 

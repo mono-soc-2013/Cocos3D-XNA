@@ -30,8 +30,8 @@ namespace Cocos3D
     {
         // Static fields
 
-        public const int VertexAttributeIndexUnavailable = -1;
-
+        public const LCC3VertexAttrIndex VertexAttributeIndexUnavailable = LCC3VertexAttrIndex.VertexAttribUnavailable;
+        private const int _defaultNumberOfBuffers = 5;
         private static LCC3ProgPipeline _sharedProgPipeline;
 
         // Instance fields
@@ -55,6 +55,7 @@ namespace Cocos3D
         private LCC3ShaderProgram _currentlyActiveShader;
         private List<LCC3VertexAttr> _vertexAttributes;
         private CC3VertexType[] _vertexData;
+        private CC3BufferAndTarget[] _buffers;
 
         private Stack<LCC3Matrix4x4> _modelMatrixStack;
         private Stack<LCC3Matrix4x4> _viewMatrixStack;
@@ -84,13 +85,13 @@ namespace Cocos3D
         public VertexBuffer XnaVertexBuffer
         {
             get { return _xnaVertexBuffer; }
-            set { _xnaVertexBuffer = value; }
+            set { _xnaVertexBuffer = value; _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer); }
         }
 
         public IndexBuffer XnaIndexBuffer
         {
             get { return _xnaIndexBuffer; }
-            set { _xnaIndexBuffer = value; }
+            set { _xnaIndexBuffer = value; _xnaGraphicsDevice.Indices = _xnaIndexBuffer; }
         }
 
         #endregion Properties
@@ -128,6 +129,8 @@ namespace Cocos3D
             _modelMatrixStack = new Stack<LCC3Matrix4x4>();
             _viewMatrixStack = new Stack<LCC3Matrix4x4>();
             _projMatrixStack = new Stack<LCC3Matrix4x4>();
+
+            _buffers = new CC3BufferAndTarget[_defaultNumberOfBuffers];
 
             this.InitVertexAttributes();
             this.InitTextureUnits();
@@ -277,28 +280,44 @@ namespace Cocos3D
         public LCC3VertexArray VertexArrayForAttributeWithVisitor(LCC3ShaderAttribute attribute, 
                                                                   LCC3NodeDrawingVisitor visitor)
         {
-            return visitor.CurrentMesh.VertexArrayForSemanticAtIndex(attribute.SemanticVertex, attribute.SemanticVertexIndex);
+            return visitor.CurrentMesh.VertexArrayForSemanticAtIndex(attribute.Semantic, attribute.SemanticIndex);
         }
 
-
         public void BindVertexContentToAttributeAtIndex(object[] pData, 
-                                                        uint elemSize, 
-                                                        LCC3VertexAttrElementType elemType, 
-                                                        uint vertexStride, 
+                                                        LCC3ElementType elemType, 
                                                         bool shouldNormalize, 
-                                                        int vaIndex)
+                                                        LCC3VertexAttrIndex vaIndex)
         {
             if (vaIndex >= 0)
             {
-                LCC3VertexAttr vertexAttribute = _vertexAttributes[vaIndex];
+                LCC3VertexAttr vertexAttribute = _vertexAttributes[(int)vaIndex];
 
                 vertexAttribute.Vertices = pData;
-                vertexAttribute.ElementSize = elemSize;
                 vertexAttribute.ElementType = elemType;
-                vertexAttribute.VertexStride = vertexStride;
                 vertexAttribute.ShouldNormalize = shouldNormalize;
                 vertexAttribute.WasBound = true;
             }
+
+            int numOfVertices = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices.Length;
+            _vertexData = new CC3VertexType[numOfVertices];
+
+            for (int i=0; i < numOfVertices; i++)
+            {
+                LCC3Vector position = (LCC3Vector)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices[i];
+                CCPoint texCoord = (CCPoint)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].Vertices[i];
+                LCC3Vector4 color = (LCC3Vector4)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].Vertices[i];
+
+                _vertexData[i] = new CC3VertexType(position, texCoord, color);
+            }
+
+            _xnaVertexBuffer = new VertexBuffer(_xnaGraphicsDevice, 
+                                                typeof(CC3VertexType), 
+                                                _vertexData.Length, 
+                                                BufferUsage.None);
+
+            _xnaVertexBuffer.SetData<CC3VertexType>( _vertexData );
+
+            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
         }
 
         public void ClearUnboundVertexAttributes()
@@ -329,36 +348,71 @@ namespace Cocos3D
             _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].WasBound = true;
         }
 
-        public void GenerateVertexBuffer()
+        public uint GenerateBuffer()
         {
-            int numOfVertices = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices.Length;
-            _vertexData = new CC3VertexType[numOfVertices];
+            int buffID = -1;
+            int proposedBuffID = 0; 
 
-            for (int i=0; i < numOfVertices; i++)
+            foreach (CC3BufferAndTarget buffAndTar in _buffers)
             {
-                LCC3Vector position = (LCC3Vector)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices[i];
-                CCPoint texCoord = (CCPoint)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].Vertices[i];
-                LCC3Vector4 color = (LCC3Vector4)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].Vertices[i];
+                if (buffAndTar.Target == LCC3BufferTarget.None)
+                {
+                    buffID = proposedBuffID;
+                    break;
+                }
 
-                _vertexData[i] = new CC3VertexType(position, texCoord, color);
+                proposedBuffID += 1;
             }
 
-            _xnaVertexBuffer = new VertexBuffer(_xnaGraphicsDevice, 
-                                                typeof(CC3VertexType), 
-                                                _vertexData.Length, 
-                                                BufferUsage.None);
+            if (buffID == -1)
+            {
+                Array.Resize(ref _buffers, _buffers.Length + 1);
+                buffID = _buffers.Length;
+            }
 
-            _xnaVertexBuffer.SetData<CC3VertexType>( _vertexData );
+            return (uint)buffID;
         }
 
-        public void BindVertexBuffer()
+        public void DeleteBuffer(uint buffID)
         {
-            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
+            CC3BufferAndTarget buffAndTarget = _buffers[(int)buffID];
+            buffAndTarget.Buffer = null;
+            buffAndTarget.Target = LCC3BufferTarget.None;
         }
 
-        public void BindIndexBuffer()
+        public void BindBufferToTarget(uint buffID, LCC3BufferTarget target)
         {
-            _xnaGraphicsDevice.Indices = _xnaIndexBuffer;
+            CC3BufferAndTarget buffAndTarget = _buffers[(int)buffID];
+            buffAndTarget.Target = target;
+        }
+
+        public void UnbindBuffer(uint buffID)
+        {
+            CC3BufferAndTarget buffAndTarget = _buffers[(int)buffID];
+            buffAndTarget.Target = LCC3BufferTarget.None;
+        }
+
+        public void LoadBufferTarget(uint buffID, LCC3BufferTarget target, object[] vtxData)
+        {
+            CC3BufferAndTarget buffAndTarget = _buffers[(int)buffID];
+            buffAndTarget.Buffer = vtxData;
+        }
+
+        public void UpdateBufferTarget(uint buffID, LCC3BufferTarget target, object[] vtxData, uint startingIndex)
+        {
+            CC3BufferAndTarget buffAndTarget = _buffers[(int)buffID];
+
+            if (buffAndTarget.Buffer == null)
+            {
+                buffAndTarget.Buffer = vtxData;
+            }
+            else
+            {
+                object[] buffer = buffAndTarget.Buffer;
+
+                Array.Resize(ref buffer, (int)startingIndex + vtxData.Length);
+                Array.Copy(vtxData, 0, buffAndTarget.Buffer, (int)startingIndex, vtxData.Length);
+            }
         }
 
         public void DrawVertices(LCC3DrawMode drawMode, int startIndex, int length)
@@ -653,7 +707,42 @@ namespace Cocos3D
 
     }
 
-    #region Private custom vertex declaration
+
+    #region Private class holding buffer and target info
+
+    internal class CC3BufferAndTarget
+    {
+        private object[] _buffer;
+        private LCC3BufferTarget _target;
+
+        public object[] Buffer
+        {
+            get { return _buffer; }
+            set { _buffer = value; }
+        }
+
+        public LCC3BufferTarget Target
+        {
+            get { return _target; }
+            set { _target = value; }
+        }
+
+        public CC3BufferAndTarget(object[] buffer, LCC3BufferTarget target)
+        {
+            _buffer = buffer;
+            _target = target;
+        }
+
+        public CC3BufferAndTarget(object[] buffer)
+        {
+            _buffer = buffer;
+            _target = LCC3BufferTarget.None;
+        }
+    }
+
+    #endregion Private struct holding buffer and target info
+
+    #region Internal custom vertex declaration
 
     internal interface ICC3VertexTypeDataSource
     {
@@ -734,6 +823,6 @@ namespace Cocos3D
         }
     }
 
-    #endregion Private custom vertex declaration
+    #endregion Internal custom vertex declaration
 }
 

@@ -22,7 +22,7 @@ namespace Cocos3D
 {
     public class LCC3VertexIndices : LCC3DrawableVertexArray
     {
-        public LCC3VertexIndices()
+        public LCC3VertexIndices(int tag, string name) : base(tag, name)
         {
         }
     }

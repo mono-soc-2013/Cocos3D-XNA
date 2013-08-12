@@ -230,7 +230,7 @@ namespace Cocos3D
 
         }
 
-        internal LCC3Vector(Vector3 xnaVec3)
+        public LCC3Vector(Vector3 xnaVec3)
         {
             // Structs copy by value so we get new copy
             _xnaVec3 = xnaVec3;

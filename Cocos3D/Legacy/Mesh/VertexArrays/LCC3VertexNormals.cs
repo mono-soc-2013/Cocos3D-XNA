@@ -20,32 +20,45 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3Mesh
+    public class LCC3VertexNormals : LCC3VertexArray
     {
-        // Instance fields
-
-        LCC3VertexIndices _vertexIndices;
-
         #region Properties
 
-        public LCC3VertexIndices VertexIndices
+        public override string NameSuffix
         {
-            get { return _vertexIndices; }
+            get { return "Normals"; }
+        }
+
+        public override LCC3Semantic DefaultSemantic
+        {
+            get { return LCC3Semantic.SemanticVertexNormal; }
         }
 
         #endregion Properties
 
 
-        public LCC3Mesh()
+        #region Allocation and initialization
+
+        public LCC3VertexNormals(int tag, string name) : base(tag, name)
         {
         }
 
-        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
+        #endregion Allocation and initialization
+
+
+        #region Setting/getting normals
+
+        public LCC3Vector NormalAtIndex(uint index)
         {
-            return null;
+            return (LCC3Vector)_vertices[(int)index];
         }
 
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
+        public void SetNormalAtIndex(LCC3Vector aNormal, uint index)
+        {
+            _vertices[(int)index] = aNormal;
+        }
+
+        #endregion Setting/getting normals
     }
 }
 

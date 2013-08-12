@@ -140,7 +140,7 @@ namespace Cocos3D
             return null;
         }
 
-        public LCC3ShaderUniform UniformAtLocation(int uniformLocation)
+        public LCC3ShaderUniform UniformAtLocation(LCC3VertexAttrIndex uniformLocation)
         {
             foreach (LCC3ShaderUniform uniform in _uniformsSceneScope)
             {
@@ -169,16 +169,16 @@ namespace Cocos3D
             return null;
         }
 
-        public LCC3ShaderUniform UniformForSemantic(LCC3SemanticVertex semantic)
+        public LCC3ShaderUniform UniformForSemantic(LCC3Semantic semantic)
         {
             return this.UniformForSemantic(semantic, 0);
         }
 
-        public LCC3ShaderUniform UniformForSemantic(LCC3SemanticVertex semantic, int semanticIndex)
+        public LCC3ShaderUniform UniformForSemantic(LCC3Semantic semantic, int semanticIndex)
         {
             foreach (LCC3ShaderUniform uniform in _uniformsSceneScope)
             {
-                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                if (uniform.Semantic == semantic && uniform.SemanticIndex == semanticIndex)
                 {
                     return uniform;
                 }
@@ -186,7 +186,7 @@ namespace Cocos3D
 
             foreach (LCC3ShaderUniform uniform in _uniformsNodeScope)
             {
-                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                if (uniform.Semantic == semantic && uniform.SemanticIndex == semanticIndex)
                 {
                     return uniform;
                 }
@@ -194,7 +194,7 @@ namespace Cocos3D
 
             foreach (LCC3ShaderUniform uniform in _uniformsDrawScope)
             {
-                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                if (uniform.Semantic == semantic && uniform.SemanticIndex == semanticIndex)
                 {
                     return uniform;
                 }
@@ -245,7 +245,7 @@ namespace Cocos3D
             return null;
         }
 
-        public LCC3ShaderAttribute AttributeAtLocation(int attributeLocation)
+        public LCC3ShaderAttribute AttributeAtLocation(LCC3VertexAttrIndex attributeLocation)
         {
             foreach (LCC3ShaderAttribute attribute in _attributes)
             {
@@ -258,16 +258,16 @@ namespace Cocos3D
             return null;
         }
 
-        public LCC3ShaderAttribute AttributeForSemantic(LCC3SemanticVertex semantic)
+        public LCC3ShaderAttribute AttributeForSemantic(LCC3Semantic semantic)
         {
             return this.AttributeForSemantic(semantic, 0);
         }
 
-        public LCC3ShaderAttribute AttributeForSemantic(LCC3SemanticVertex semantic, uint semanticIndex)
+        public LCC3ShaderAttribute AttributeForSemantic(LCC3Semantic semantic, uint semanticIndex)
         {
             foreach (LCC3ShaderAttribute attribute in _attributes)
             {
-                if (attribute.SemanticVertex == semantic && attribute.SemanticVertexIndex == semanticIndex)
+                if (attribute.Semantic == semantic && attribute.SemanticIndex == semanticIndex)
                 {
                     return attribute;
                 }
@@ -306,6 +306,8 @@ namespace Cocos3D
             //_xnaShaderEffect = LCC3ProgPipeline.SharedPipeline().XnaGame.Content.Load<Effect>(shaderFilename);
             _xnaShaderEffect = new Effect(LCC3ProgPipeline.SharedPipeline().XnaGraphicsDevice, 
                                           LCC3ShaderProgram.LoadEffectResource(shaderFilename));
+
+            this.ConfigureUniforms();
         }
 
         public void ConfigureUniforms()

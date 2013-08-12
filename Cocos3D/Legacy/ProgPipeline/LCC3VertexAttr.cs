@@ -25,7 +25,7 @@ namespace Cocos3D
     {
         // Instance fields
 
-        private LCC3VertexAttrElementType _elementType;
+        private LCC3ElementType _elementType;
         private uint _elementSize;
         private uint _vertexStride;
         private object[] _vertices;
@@ -38,7 +38,7 @@ namespace Cocos3D
 
         #region Properties
 
-        internal LCC3VertexAttrElementType ElementType
+        internal LCC3ElementType ElementType
         {
             get { return _elementType; }
             set { _elementType = value; }

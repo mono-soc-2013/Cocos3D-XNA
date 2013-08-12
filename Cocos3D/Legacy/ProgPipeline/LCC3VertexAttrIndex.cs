@@ -22,6 +22,7 @@ namespace Cocos3D
 {
     public enum LCC3VertexAttrIndex
     {
+        VertexAttribUnavailable = -1,
         VertexAttribPosition = 0,
         VertexAttribColor = 1,
         VertexAttribTexCoords = 2

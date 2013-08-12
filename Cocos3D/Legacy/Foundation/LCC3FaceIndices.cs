@@ -20,32 +20,45 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3Mesh
+    public struct LCC3FaceIndices
     {
         // Instance fields
 
-        LCC3VertexIndices _vertexIndices;
+        private uint _index1;
+        private uint _index2;
+        private uint _index3;
+
 
         #region Properties
 
-        public LCC3VertexIndices VertexIndices
+        public uint Index1
         {
-            get { return _vertexIndices; }
+            get { return _index1; }
+        }
+
+        public uint Index2
+        {
+            get { return _index2; }
+        }
+
+        public uint Index3
+        {
+            get { return _index3; }
         }
 
         #endregion Properties
 
+      
+        #region Constructors
 
-        public LCC3Mesh()
+        public LCC3FaceIndices(uint index1, uint index2, uint index3)
         {
+            _index1 = index1;
+            _index2 = index2;
+            _index3 = index3;
         }
 
-        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
-        {
-            return null;
-        }
-
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
+        #endregion Constructors
     }
 }
 

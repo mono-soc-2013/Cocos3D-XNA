@@ -27,10 +27,10 @@ namespace Cocos3D
         protected LCC3ShaderProgram _program;
         protected LCC3ShaderVariableType _type;
         protected string _name;
-        private int _location;
+        private LCC3VertexAttrIndex _location;
         protected int _index;
-        protected LCC3SemanticVertex _semanticVertex;
-        protected uint _semanticVertexIndex;
+        protected LCC3Semantic _semantic;
+        protected uint _semanticIndex;
         private LCC3ShaderVariableScope _scope;
         private uint _size;
 
@@ -52,19 +52,19 @@ namespace Cocos3D
             get { return _name; }
         }
 
-        public int Location
+        public LCC3VertexAttrIndex Location
         {
             get { return _location; }
         }
 
-        public LCC3SemanticVertex SemanticVertex
+        public LCC3Semantic Semantic
         {
-            get { return _semanticVertex; }
+            get { return _semantic; }
         }
 
-        public uint SemanticVertexIndex
+        public uint SemanticIndex
         {
-            get { return _semanticVertexIndex; }
+            get { return _semanticIndex; }
         }
 
         public LCC3ShaderVariableScope Scope
@@ -95,8 +95,8 @@ namespace Cocos3D
         internal void LoadInProgramAtIndex(LCC3ShaderProgram program, int index)
         {
             _index = index;
-            _semanticVertex = LCC3SemanticVertex.SemanticNone;
-            _semanticVertexIndex = 0;
+            _semantic = LCC3Semantic.SemanticNone;
+            _semanticIndex = 0;
             _scope = LCC3ShaderVariableScope.ScopeUnknown;
             _program = program;
             this.PopulateFromProgram();
@@ -120,8 +120,8 @@ namespace Cocos3D
             _name = variable.Name;
             _location = variable.Location;
             _size = variable.Size;
-            _semanticVertex = variable.SemanticVertex;
-            _semanticVertexIndex = variable._semanticVertexIndex;
+            _semantic = variable.Semantic;
+            _semanticIndex = variable._semanticIndex;
             _scope = variable.Scope;
         }
 

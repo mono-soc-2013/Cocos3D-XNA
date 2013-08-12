@@ -39,7 +39,7 @@ namespace Cocos3D
 
         public override void PopulateFromProgram()
         {
-            _semanticVertex = LCC3SemanticVertex.SemanticNone;
+            _semantic = LCC3Semantic.SemanticNone;
         }
 
         #endregion Allocation and initialization

@@ -66,16 +66,16 @@ namespace Cocos3D
             return uniform;
         }
 
-        public LCC3ShaderUniform UniformOverrideForSemantic(LCC3SemanticVertex semantic)
+        public LCC3ShaderUniform UniformOverrideForSemantic(LCC3Semantic semantic)
         {
             return this.UniformOverrideForSemantic(semantic, 0);
         }
 
-        public LCC3ShaderUniform UniformOverrideForSemantic(LCC3SemanticVertex semantic, int semanticIndex)
+        public LCC3ShaderUniform UniformOverrideForSemantic(LCC3Semantic semantic, int semanticIndex)
         {
             foreach (LCC3ShaderUniform uniform in _uniforms)
             {
-                if (uniform.SemanticVertex == semantic && uniform.SemanticVertexIndex == semanticIndex)
+                if (uniform.Semantic == semantic && uniform.SemanticIndex == semanticIndex)
                 {
                     return uniform;
                 }
@@ -84,7 +84,7 @@ namespace Cocos3D
             return this.AddUniformOverrideForUniform(_program.UniformForSemantic(semantic, semanticIndex));
         }
 
-        public LCC3ShaderUniform UniformOverrideAtLocation(int location)
+        public LCC3ShaderUniform UniformOverrideAtLocation(LCC3VertexAttrIndex location)
         {
             foreach (LCC3ShaderUniform uniform in _uniforms)
             {

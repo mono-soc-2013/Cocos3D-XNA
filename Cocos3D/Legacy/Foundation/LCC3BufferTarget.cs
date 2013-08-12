@@ -20,8 +20,10 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3VertexAttrElementType
+    public enum LCC3BufferTarget
     {
+        None = 0,
+        ArrayBuffer = 1
     }
 }
 

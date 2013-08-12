@@ -106,6 +106,7 @@
     <Folder Include="Legacy\Extensions\EnumExtensions\" />
     <Folder Include="Legacy\Identifiable\Material\" />
     <Folder Include="Legacy\Identifiable\Texture\GraphicsTexture\" />
+    <Folder Include="Legacy\Identifiable\Shader\Shader program semantics\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -176,11 +177,9 @@
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3DepthStencilFuncModeExtension.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3StencilOperation.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3StencilOperationExtension.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3SemanticVertex.cs" />
     <Compile Include="Legacy\Identifiable\Node\LCC3NodeVisitor.cs" />
     <Compile Include="Legacy\Identifiable\Node\LCC3Node.cs" />
     <Compile Include="Legacy\Identifiable\Node\LCC3MeshNode.cs" />
-    <Compile Include="Legacy\ProgPipeline\LCC3VertexAttrElementType.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3VertexAttrIndex.cs" />
     <Compile Include="Legacy\Foundation\LCC3Vector.cs" />
     <Compile Include="Legacy\Foundation\LCC3Vector4.cs" />
@@ -194,7 +193,6 @@
     <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderAttribute.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariable.cs" />
     <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgram.cs" />
-    <Compile Include="Legacy\Identifiable\Shader\ILCC3ShaderSemanticDelegate.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderUniform.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader variables\LCC3ShaderVariableScope.cs" />
     <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgramContext.cs" />
@@ -213,6 +211,16 @@
     <Compile Include="Legacy\Foundation\LCC3BlendType.cs" />
     <Compile Include="Legacy\Foundation\LCC3AlphaTestFuncMode.cs" />
     <Compile Include="Legacy\Foundation\LCC3ColorUtil.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3ElementType.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\LCC3ElementTypeExtension.cs" />
+    <Compile Include="Legacy\Foundation\LCC3BufferTarget.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexNormals.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexTangents.cs" />
+    <Compile Include="Legacy\Foundation\LCC3FaceIndices.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\ILCC3ShaderSemanticDelegate.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderProgramSemanticsBase.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3Semantic.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\CCColor4FExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

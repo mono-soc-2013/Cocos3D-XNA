@@ -59,7 +59,7 @@ namespace Cocos3D
             set { _userData = value; }
         }
 
-        public string NameSuffix
+        public virtual string NameSuffix
         {
             get 
             { 

@@ -142,8 +142,8 @@ namespace Cocos3D
 
         public override void PopulateFromProgram()
         {
-            _semanticVertex = LCC3SemanticVertex.SemanticNone;
-            _semanticVertexIndex = 0;
+            _semantic = LCC3Semantic.SemanticNone;
+            _semanticIndex = 0;
             _name = _program.UniformNameAtIndex(_index);
         }
 

@@ -55,6 +55,7 @@ namespace Cocos3D
         private float _shininess;
         private float _reflectivity;
         private LCC3AlphaTestFuncMode _alphaTestFunc;
+        private float _alphaTestReference;
         private LCC3BlendType _srcBlendType;
         private LCC3BlendType _dstBlendType;
         private bool _shouldUseLighting;
@@ -168,6 +169,12 @@ namespace Cocos3D
                     }
                 }
             }
+        }
+
+        public float AlphaTestReference
+        {
+            get { return _alphaTestReference; }
+            set { _alphaTestReference = value; }
         }
 
         public bool ShouldDrawLowAlpha

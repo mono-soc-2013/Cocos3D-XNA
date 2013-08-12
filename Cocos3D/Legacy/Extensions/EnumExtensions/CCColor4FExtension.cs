@@ -17,35 +17,16 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
 
 namespace Cocos3D
 {
-    public class LCC3Mesh
+    public static class CCColor4FExtension
     {
-        // Instance fields
-
-        LCC3VertexIndices _vertexIndices;
-
-        #region Properties
-
-        public LCC3VertexIndices VertexIndices
+        public static LCC3Vector4 ToVector4(this CCColor4F color4F)
         {
-            get { return _vertexIndices; }
+            return new LCC3Vector4(color4F.R, color4F.G, color4F.B, color4F.A);
         }
-
-        #endregion Properties
-
-
-        public LCC3Mesh()
-        {
-        }
-
-        public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
-        {
-            return null;
-        }
-
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
     }
 }
 
