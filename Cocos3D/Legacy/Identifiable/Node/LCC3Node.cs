@@ -17,11 +17,30 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.Collections.Generic;
 
 namespace Cocos3D
 {
     public class LCC3Node
     {
+        // Instance fields
+        LCC3Node _parent;
+        List<LCC3Node> _children;
+
+        #region Properties
+
+        public bool ShouldUseLighting
+        {
+            get { return true; }
+        }
+
+        public virtual LCC3Scene Scene
+        {
+            get { return _parent.Scene; }
+        }
+
+        #endregion Properties
+
         public LCC3Node()
         {
         }

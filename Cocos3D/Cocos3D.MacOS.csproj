@@ -107,6 +107,9 @@
     <Folder Include="Legacy\Identifiable\Material\" />
     <Folder Include="Legacy\Identifiable\Texture\GraphicsTexture\" />
     <Folder Include="Legacy\Identifiable\Shader\Shader program semantics\" />
+    <Folder Include="Legacy\Identifiable\Shader\Resources\" />
+    <Folder Include="Legacy\Identifiable\Node\Light\" />
+    <Folder Include="Legacy\Identifiable\Node\Scene\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -221,6 +224,17 @@
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderProgramSemanticsBase.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3Semantic.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\CCColor4FExtension.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexPointSizes.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexColors.cs" />
+    <Compile Include="Legacy\Extensions\EnumExtensions\CCColor4BExtension.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexLocations.cs" />
+    <Compile Include="Legacy\Foundation\LCC3BoundingBox.cs" />
+    <Compile Include="Legacy\Foundation\LCC3NormalScaling.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderProgramSemanticsByVarName.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderVariableConfiguration.cs" />
+    <Compile Include="Legacy\Identifiable\Node\Light\LCC3Light.cs" />
+    <Compile Include="Legacy\Identifiable\Node\Scene\LCC3Scene.cs" />
+    <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgramMatchers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
@@ -231,5 +245,11 @@
       <Project>{36C538E6-C32A-4A8D-A39C-566173D7118E}</Project>
       <Name>MonoGame.Framework.MacOS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.fx" />
+    <None Include="Legacy\Identifiable\Shader\Resources\Structures.fxh" />
+    <None Include="Legacy\Identifiable\Shader\Resources\Common.fxh" />
+    <None Include="Legacy\Identifiable\Shader\Resources\Macros.fxh" />
   </ItemGroup>
 </Project>

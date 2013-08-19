@@ -35,7 +35,7 @@ namespace Cocos3D
         private uint _elementOffset;
         private int _elementSize;
         private uint _vertexStride;
-        private LCC3ElementType _elementType;
+        protected LCC3ElementType _elementType;
         private uint _allocatedVertexCapacity;
         private LCC3Semantic _semantic;
 
@@ -59,6 +59,11 @@ namespace Cocos3D
             get { return _bufferID; }
         }
 
+        public virtual LCC3BufferTarget BufferTarget
+        {
+            get { return LCC3BufferTarget.ArrayBuffer; }
+        }
+
         public object[] Vertices
         {
             get { return _vertices; }
@@ -78,7 +83,7 @@ namespace Cocos3D
 
         }
 
-        public uint VertexCount
+        public virtual uint VertexCount
         {
             get { return _vertexCount; }
             set { _vertexCount = value; }
@@ -105,7 +110,7 @@ namespace Cocos3D
             set { _elementOffset = value; }
         }
 
-        public LCC3ElementType ElementType
+        public virtual LCC3ElementType ElementType
         {
             get { return 0; }
             set
@@ -135,11 +140,6 @@ namespace Cocos3D
             get { return (_allocatedVertexCapacity > 0) ? _allocatedVertexCapacity : _vertexCount; }
         }
 
-        public virtual LCC3BufferTarget BufferTarget
-        {
-            get { return LCC3BufferTarget.ArrayBuffer; }
-        }
-
         public uint AllocatedVertexCapacity
         {
             get { return 0; }
@@ -160,6 +160,7 @@ namespace Cocos3D
         public bool ShouldNormalizeContent
         {
             get { return _shouldNormalizeContent; }
+            set { _shouldNormalizeContent = value; }
         }
 
         public bool ShouldAllowVertexBuffering
@@ -312,7 +313,7 @@ namespace Cocos3D
         }
 
 
-        public void ReleaseRedundantContent()
+        public virtual void ReleaseRedundantContent()
         {
             if (this.IsUsingGraphicsBuffer == true && _shouldReleaseRedundantContent == true)
             {
@@ -330,7 +331,7 @@ namespace Cocos3D
             }
         }
 
-        private void BindContentToAttributeAtIndexWithVisitor(object[] vertexData, LCC3VertexAttrIndex vaIdx, LCC3NodeDrawingVisitor visitor)
+        protected virtual void BindContentToAttributeAtIndexWithVisitor(object[] vertexData, LCC3VertexAttrIndex vaIdx, LCC3NodeDrawingVisitor visitor)
         {
             visitor.ProgramPipeline.BindVertexContentToAttributeAtIndex(vertexData, _elementType, _shouldNormalizeContent, vaIdx);
         }

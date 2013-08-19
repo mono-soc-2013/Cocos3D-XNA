@@ -20,11 +20,12 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3BufferTarget
+    public enum LCC3NormalScaling
     {
-        None = 0,
-        ArrayBuffer,
-        ElementArrayBuffer
+        CC3NormalScalingNone = 0,   
+        CC3NormalScalingRescale,      
+        CC3NormalScalingNormalize,    
+        CC3NormalScalingAutomatic,    
     }
 }
 

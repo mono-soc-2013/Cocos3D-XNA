@@ -39,6 +39,11 @@ namespace Cocos3D
             get { return _material; }
         }
 
+        public LCC3NormalScaling EffectiveNormalScalingMethod
+        {
+            get { return LCC3NormalScaling.CC3NormalScalingNone; }
+        }
+
         #endregion Properties
 
 

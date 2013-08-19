@@ -24,15 +24,58 @@ namespace Cocos3D
     {
         // Instance fields
 
+        LCC3VertexNormals _vertexNormals;
         LCC3VertexIndices _vertexIndices;
 
         #region Properties
+
+        // Instance properties
 
         public LCC3VertexIndices VertexIndices
         {
             get { return _vertexIndices; }
         }
 
+        public bool HasVertexNormals
+        {
+            get { return (_vertexNormals != null); }
+        }
+
+        public bool HasVertexTangents
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexBitangents
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexColors
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexWeights
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexMatrixIndices
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexTextureCoordinates
+        {
+            get { return false; }
+        }
+
+        public bool HasVertexPointSizes
+        {
+            get { return false; }
+        }
+                
         #endregion Properties
 
 

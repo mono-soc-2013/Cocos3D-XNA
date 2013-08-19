@@ -36,6 +36,26 @@ namespace Cocos3D
 
             return size;
         }
+
+        internal static Type CSharpType(this LCC3ElementType elementType)
+        {
+            Type csharpType = null;
+
+            switch (elementType)
+            {
+                case LCC3ElementType.Float:
+                    csharpType = typeof(float);
+                    break;
+                case LCC3ElementType.UnsignedByte:
+                    csharpType = typeof(byte);
+                    break;
+                case LCC3ElementType.UnsignedShort:
+                    csharpType = typeof(ushort);
+                    break;
+            }
+
+            return csharpType;
+        }
     }
 }
 

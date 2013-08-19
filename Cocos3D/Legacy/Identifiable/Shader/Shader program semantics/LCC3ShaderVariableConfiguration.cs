@@ -20,45 +20,40 @@ using System;
 
 namespace Cocos3D
 {
-    public class LCC3NodeVisitor
+    public class LCC3ShaderVariableConfiguration
     {
-        // Instance fields
-        private LCC3Node _startingNode;
-        private LCC3Node _currentNode;
+        // Instance variables
+
+        private string _name;
+        private LCC3Semantic _semantic;
+        private uint _semanticIndex;
+        private LCC3ElementType _type;
 
 
         #region Properties
 
-        public LCC3Node StartingNode
+        internal string Name
         {
-            get { return _startingNode; }
-            set { _startingNode = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
-        public LCC3Node CurrentNode
+        internal LCC3Semantic Semantic
         {
-            get { return _currentNode; }
-            set { _currentNode = value; }
+            get { return _semantic; }
+            set { _semantic = value; }
         }
 
-        public LCC3MeshNode CurrentMeshNode
+        internal uint SemanticIndex
         {
-            get { return _currentNode as LCC3MeshNode; }
+            get { return _semanticIndex; }
+            set { _semanticIndex = value; }
         }
 
-        public LCC3Material CurrentMaterial
+        internal LCC3ElementType Type
         {
-            get { return this.CurrentMeshNode.Material; }
-        }
-
-        public LCC3Mesh CurrentMesh
-        {
-            get { return this.CurrentMeshNode.Mesh; }
-        }
-
-        public LCC3Scene Scene
-        {
-            get { return _startingNode.Scene; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         #endregion Properties
@@ -66,8 +61,10 @@ namespace Cocos3D
 
         #region Constructors
 
-        public LCC3NodeVisitor()
+        public LCC3ShaderVariableConfiguration()
         {
+            _semantic = LCC3Semantic.SemanticNone;
+            _type = LCC3ElementType.None;
         }
 
         #endregion Constructors

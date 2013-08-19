@@ -26,7 +26,7 @@ namespace Cocos3D
         // Instance fields
 
         private LCC3DrawMode _drawingMode;
-        private uint[] _stripLengths;
+        protected uint[] _stripLengths;
 
 
         #region Properties
@@ -125,23 +125,28 @@ namespace Cocos3D
             // Subclasses to implement
         }
 
-        protected uint FaceCountFromVertexIndexCount(uint vertexCount)
+        public static uint FaceCountFromVertexIndexCount(uint vertexCount, LCC3DrawMode drawingMode)
         {
-            switch (_drawingMode)
+            switch (drawingMode)
             {
                 case LCC3DrawMode.TriangleList:
                     return vertexCount / 3;
-                case LCC3DrawMode.TriangleStrip:
+                    case LCC3DrawMode.TriangleStrip:
                     return vertexCount - 2;
-                case LCC3DrawMode.LineList:
+                    case LCC3DrawMode.LineList:
                     return vertexCount / 2;
-                case LCC3DrawMode.LineStrip:
+                    case LCC3DrawMode.LineStrip:
                     return vertexCount - 1;
-                default:
-                    Debug.Assert(false, String.Format("Encountered unknown drawing mode {0}", this.DrawingMode));
+                    default:
+                    Debug.Assert(false, String.Format("Encountered unknown drawing mode {0}", drawingMode));
 
                     return 0;
             }
+        }
+
+        protected uint FaceCountFromVertexIndexCount(uint vertexCount)
+        {
+            return LCC3DrawableVertexArray.FaceCountFromVertexIndexCount(vertexCount, _drawingMode);
         }
 
         protected uint VertexIndexCountFromFaceCount(uint faceCount)

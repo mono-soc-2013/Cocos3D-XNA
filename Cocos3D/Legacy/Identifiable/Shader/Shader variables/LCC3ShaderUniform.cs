@@ -43,7 +43,7 @@ namespace Cocos3D
             { 
                 float floatValue = 0.0f;
 
-                if (_type == LCC3ShaderVariableType.Float)
+                if (_type == LCC3ElementType.Float)
                 {
                     floatValue = (float)_varValue;
                 }
@@ -58,7 +58,7 @@ namespace Cocos3D
             { 
                 Matrix xnaMatrix = Matrix.Identity;
 
-                if (_type == LCC3ShaderVariableType.Matrix)
+                if (_type == LCC3ElementType.Float4x4)
                 {
                     LCC3Matrix4x4 matrix = _varValue as LCC3Matrix4x4;
                     xnaMatrix = matrix.XnaMatrix;
@@ -74,7 +74,7 @@ namespace Cocos3D
             { 
                 Texture2D xnaTex2D = null;
 
-                if (_type == LCC3ShaderVariableType.Texture2D)
+                if (_type == LCC3ElementType.Texture2D)
                 {
                     LCC3GraphicsTexture2D texture = _varValue as LCC3GraphicsTexture2D;
                     xnaTex2D = texture.XnaTexture2D;
@@ -90,7 +90,7 @@ namespace Cocos3D
             { 
                 Vector3 xnaVec3 = Vector3.Zero;
 
-                if (_type == LCC3ShaderVariableType.Vector3)
+                if (_type == LCC3ElementType.Vector3)
                 {
                     LCC3Vector vec3 = (LCC3Vector)_varValue;
                     xnaVec3 = vec3.XnaVector;
@@ -106,7 +106,7 @@ namespace Cocos3D
             { 
                 Vector4 xnaVec4 = Vector4.Zero;
 
-                if (_type == LCC3ShaderVariableType.Vector4)
+                if (_type == LCC3ElementType.Vector4)
                 {
                     LCC3Vector4 vec4 = (LCC3Vector4)_varValue;
                     xnaVec4 = vec4.XnaVector4;

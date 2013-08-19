@@ -17,14 +17,16 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
 
 namespace Cocos3D
 {
-    public enum LCC3BufferTarget
+    public static class CCColor4BExtension
     {
-        None = 0,
-        ArrayBuffer,
-        ElementArrayBuffer
+        public static CCColor3B CCColor3B(this CCColor4B color4B)
+        {
+            return new CCColor3B(color4B.R, color4B.G, color4B.B);
+        }
     }
 }
 

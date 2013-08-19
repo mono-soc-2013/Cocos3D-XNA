@@ -209,23 +209,23 @@ namespace Cocos3D
 
             if (_xnaEffectParam != null)
             {
-                if (uniform.Type == LCC3ShaderVariableType.Matrix)
+                if (uniform.Type == LCC3ElementType.Float4x4)
                 {
                     _xnaEffectParam.SetValue(uniform.XnaMatrix);
                 }
-                else if (uniform.Type == LCC3ShaderVariableType.Texture2D)
+                else if (uniform.Type == LCC3ElementType.Texture2D)
                 {
                     _xnaEffectParam.SetValue(uniform.XnaTexture2D);
                 }
-                else if (uniform.Type == LCC3ShaderVariableType.Vector4)
+                else if (uniform.Type == LCC3ElementType.Vector4)
                 {
                     _xnaEffectParam.SetValue(uniform.XnaVector4);
                 }
-                else if (uniform.Type == LCC3ShaderVariableType.Vector3)
+                else if (uniform.Type == LCC3ElementType.Vector3)
                 {
                     _xnaEffectParam.SetValue(uniform.XnaVector3);
                 }
-                else if (uniform.Type == LCC3ShaderVariableType.Float)
+                else if (uniform.Type == LCC3ElementType.Float)
                 {
                     _xnaEffectParam.SetValue(uniform.FloatValue);
                 }

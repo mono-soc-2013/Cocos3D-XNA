@@ -20,11 +20,16 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3BufferTarget
+    public class LCC3Light
     {
-        None = 0,
-        ArrayBuffer,
-        ElementArrayBuffer
+        public static uint DefaultMaxNumOfLights
+        {
+            get { return 4; }
+        }
+
+        public LCC3Light()
+        {
+        }
     }
 }
 

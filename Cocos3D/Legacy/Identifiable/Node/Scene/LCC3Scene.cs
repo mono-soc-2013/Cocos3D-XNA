@@ -17,14 +17,34 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
 
 namespace Cocos3D
 {
-    public enum LCC3BufferTarget
+    public class LCC3Scene : LCC3Node
     {
-        None = 0,
-        ArrayBuffer,
-        ElementArrayBuffer
+        // Instance fields
+
+        CCColor4F _ambientLight;
+
+        #region Properties
+
+        public CCColor4F AmbientLight
+        {
+            get { return _ambientLight; }
+            set { _ambientLight = value; }
+        }
+
+        public override LCC3Scene Scene
+        {
+            get { return this; }
+        }
+        
+        #endregion Properties
+
+        public LCC3Scene()
+        {
+        }
     }
 }
 

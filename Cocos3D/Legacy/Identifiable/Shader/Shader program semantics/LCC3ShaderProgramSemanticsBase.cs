@@ -105,7 +105,6 @@ namespace Cocos3D
                     return LCC3ShaderVariableScope.ScopeNode;
             }
 
-            return LCC3ShaderVariableScope.ScopeNode;
         }
 
         #endregion Querying semantic attributes
@@ -113,7 +112,7 @@ namespace Cocos3D
 
         #region Semantic delegate methods
 
-        public bool ConfigureVariable(LCC3ShaderVariable variable)
+        public virtual bool ConfigureVariable(LCC3ShaderVariable variable)
         {
             return false;
         }
@@ -125,8 +124,52 @@ namespace Cocos3D
 
             switch (semantic)
             {
+                #region Attribute Qualifiers
 
-            #region Setting material semantics
+                case LCC3Semantic.SemanticVertexNormal:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexNormals);
+                    return true;
+                case LCC3Semantic.SemanticShouldNormalizeVertexNormal:
+                    uniform.SetValue(visitor.CurrentMeshNode.EffectiveNormalScalingMethod == LCC3NormalScaling.CC3NormalScalingNormalize);
+                    return true;
+                case LCC3Semantic.SemanticShouldRescaleVertexNormal:
+                    uniform.SetValue(visitor.CurrentMeshNode.EffectiveNormalScalingMethod == LCC3NormalScaling.CC3NormalScalingRescale);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexTangent:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexTangents);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexBitangent:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexBitangents);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexColor:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexColors);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexWeight:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexWeights);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexMatrixIndex:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexMatrixIndices);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexTextureCoordinate:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexTextureCoordinates);
+                    return true;
+                case LCC3Semantic.SemanticHasVertexPointSize:
+                    uniform.SetValue(visitor.CurrentMesh.HasVertexPointSizes);
+                    return true;
+                case LCC3Semantic.SemanticIsDrawingPoints:
+                    uniform.SetValue(false); // XNA doesn't support drawing mode by points
+                    return true;
+
+                #endregion Attribute Qualifiers
+                
+
+                #region Environment matrix semantics
+
+
+                #endregion Environment matrix semantics
+
+
+                #region Setting material semantics
 
                 case LCC3Semantic.SemanticColor:
                     uniform.SetValue(visitor.CurrentColor.ToVector4());
@@ -157,7 +200,29 @@ namespace Cocos3D
                     uniform.SetValue(material.ShouldDrawLowAlpha ? 0.0f : material.AlphaTestReference);
                     return true;
 
-            #endregion Setting material semantics
+                #endregion Setting material semantics
+
+
+                #region Light semantics
+
+                case LCC3Semantic.SemanticIsUsingLighting:
+                    uniform.SetValue(visitor.CurrentNode.ShouldUseLighting);
+                    return true;
+                case LCC3Semantic.SemanticSceneLightColorAmbient:
+                    uniform.SetValue(visitor.Scene.AmbientLight.ToVector4());
+                    return true;
+                case LCC3Semantic.SemanticLightIsEnabled:
+                    return true;
+                case LCC3Semantic.SemanticLightPositionEyeSpace:
+                    return true;
+                case LCC3Semantic.SemanticLightColorDiffuse:
+                    return true;
+                case LCC3Semantic.SemanticLightColorAmbient:
+                    return true;
+                case LCC3Semantic.SemanticLightColorSpecular:
+                    return true;
+
+                #endregion Light semantics
             
             }
 

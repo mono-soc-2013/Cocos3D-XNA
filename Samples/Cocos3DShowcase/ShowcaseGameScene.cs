@@ -150,27 +150,27 @@ namespace Cocos3DShowcase
         public bool ConfigureVariable(LCC3ShaderVariable variable)
         {
             if (variable.Name == "WorldViewProj")
-                variable.Type = LCC3ShaderVariableType.Matrix;
+                variable.Type = LCC3ElementType.Float4x4;
             else if (variable.Name == "World")
-                variable.Type = LCC3ShaderVariableType.Matrix;
+                variable.Type = LCC3ElementType.Float4x4;
             else if (variable.Name == "WorldInverseTranspose")
-                variable.Type = LCC3ShaderVariableType.Matrix;
+                variable.Type = LCC3ElementType.Float4x4;
             else if (variable.Name == "Texture")
-                variable.Type = LCC3ShaderVariableType.Texture2D;
+                variable.Type = LCC3ElementType.Texture2D;
             else if (variable.Name == "DiffuseColor")
-                variable.Type = LCC3ShaderVariableType.Vector4;
+                variable.Type = LCC3ElementType.Vector4;
             else if (variable.Name == "SpecularColor")
-                variable.Type = LCC3ShaderVariableType.Vector3;
+                variable.Type = LCC3ElementType.Vector3;
             else if (variable.Name == "EmissiveColor")
-                variable.Type = LCC3ShaderVariableType.Vector3;
+                variable.Type = LCC3ElementType.Vector3;
             else if (variable.Name == "SpecularPower")
-                variable.Type = LCC3ShaderVariableType.Float;
+                variable.Type = LCC3ElementType.Float;
             else if (variable.Name == "DirLight0Direction")
-                variable.Type = LCC3ShaderVariableType.Vector3;
+                variable.Type = LCC3ElementType.Vector3;
             else if (variable.Name == "DirLight0DiffuseColor")
-                variable.Type = LCC3ShaderVariableType.Vector3;
+                variable.Type = LCC3ElementType.Vector3;
             else if (variable.Name == "DirLight0SpecularColor")
-                variable.Type = LCC3ShaderVariableType.Vector3;
+                variable.Type = LCC3ElementType.Vector3;
 
             return true;
         }

@@ -22,7 +22,19 @@ namespace Cocos3D
 {
     public enum LCC3ElementType
     {
-        Float = 0
+        None = 0,
+        Float,
+        Fixed,
+        UnsignedByte,
+        UnsignedShort,
+        Boolean,
+        BooleanArray,
+        Vector3,
+        Vector4,
+        Vector4Array,
+        Float4x4,
+        Float3x3,
+        Texture2D
     }
 }
 

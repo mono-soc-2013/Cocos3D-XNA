@@ -424,6 +424,27 @@ namespace Cocos3D
             }
         }
 
+        public void DrawIndices<T>(ArraySegment<T> arraySegment, LCC3ElementType type, LCC3DrawMode drawMode, int minVertexIndex) where T : struct
+        {
+            Type xnaType = type.CSharpType();
+
+            _xnaIndexBuffer = new IndexBuffer(_xnaGraphicsDevice, xnaType, arraySegment.Array.Count(), BufferUsage.WriteOnly);
+
+            _xnaIndexBuffer.SetData(arraySegment.Array);
+
+            foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                _xnaGraphicsDevice.DrawIndexedPrimitives(
+                    drawMode.XnaPrimitiveType(), 
+                    0, 
+                    minVertexIndex, 
+                    arraySegment.Array.Count(), 
+                    arraySegment.Offset, 
+                    (int)LCC3DrawableVertexArray.FaceCountFromVertexIndexCount((uint)arraySegment.Count, drawMode));
+            }
+        }
+
         public void DrawIndices(LCC3DrawMode drawMode, int vertexOffset, int minVertexIndex, int numOfVertices, int startIndex, int primitiveCount)
         {
             foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)

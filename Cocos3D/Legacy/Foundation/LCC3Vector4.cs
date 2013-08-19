@@ -140,7 +140,7 @@ namespace Cocos3D
             _xnaVec4 = new Vector4(x, y, z, w);
         }
 
-        public LCC3Vector4(CC3Vector vec3, float w)
+        public LCC3Vector4(LCC3Vector vec3, float w)
         : this(vec3.X, vec3.Y, vec3.Z, w)
         {
 

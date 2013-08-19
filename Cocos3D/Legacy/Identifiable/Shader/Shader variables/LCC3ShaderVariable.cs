@@ -25,7 +25,7 @@ namespace Cocos3D
         // Instance fields
 
         protected LCC3ShaderProgram _program;
-        protected LCC3ShaderVariableType _type;
+        protected LCC3ElementType _type;
         protected string _name;
         private LCC3VertexAttrIndex _location;
         protected int _index;
@@ -41,7 +41,7 @@ namespace Cocos3D
             get { return _program; }
         }
 
-        public LCC3ShaderVariableType Type
+        public LCC3ElementType Type
         {
             get { return _type; }
             set { _type = value; }
@@ -60,16 +60,19 @@ namespace Cocos3D
         public LCC3Semantic Semantic
         {
             get { return _semantic; }
+            set { _semantic = value; }
         }
 
         public uint SemanticIndex
         {
             get { return _semanticIndex; }
+            set { _semanticIndex = value; }
         }
 
         public LCC3ShaderVariableScope Scope
         {
             get { return _scope; }
+            set { _scope = value; }
         }
 
         public uint Size
