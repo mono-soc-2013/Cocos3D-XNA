@@ -110,6 +110,5 @@
     <BundleResource Include="Content\BasicEffect.ogl.mgfxo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
-    <BundleResource Include="Content\CC3MultiTextureConfigurable.ogl.mgfxo" />
   </ItemGroup>
 </Project>

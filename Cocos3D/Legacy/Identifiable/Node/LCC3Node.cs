@@ -24,14 +24,34 @@ namespace Cocos3D
     public class LCC3Node
     {
         // Instance fields
+       
         LCC3Node _parent;
         List<LCC3Node> _children;
 
+        LCC3Matrix4x4 _transformMatrix;
+        LCC3Vector _location;
+        LCC3Vector _globalLocation;
+        bool _isTransformDirty;
+
         #region Properties
 
-        public bool ShouldUseLighting
+        public LCC3Node Parent
         {
-            get { return true; }
+            get { return _parent; }
+            set { _parent = value; }
+        }
+
+        public virtual bool ShouldUseLighting
+        {
+            get 
+            { 
+                foreach (LCC3Node child in _children)
+                {
+                    if (child.ShouldUseLighting == true) return true;
+                }
+
+                return false;
+            }
         }
 
         public virtual LCC3Scene Scene
@@ -39,10 +59,69 @@ namespace Cocos3D
             get { return _parent.Scene; }
         }
 
+        public LCC3Matrix4x4 TransformMatrix
+        {
+            get { return _transformMatrix; }
+            set
+            {
+                this.UpdateGlobalOrientation();
+                //this.TransformMatrixChanged();
+                //this.NotifyTransformListeners();
+            }
+        }
+
+        public LCC3Vector Location
+        {
+            get { return _location; }
+            set { _location = value; this.MarkTransformDirty(); }
+        }
+
+        public LCC3Vector GlobalLocation
+        {
+            get { return _globalLocation; }
+        }
+
+        public virtual LCC3Vector4 GlobalHomogeneousPosition
+        {
+            get { return new LCC3Vector4(this.GlobalLocation, 1.0f); }
+        }
+
         #endregion Properties
 
         public LCC3Node()
         {
+            _transformMatrix = LCC3Matrix4x4.CC3MatrixIdentity;
+        }
+
+        private void MarkTransformDirty()
+        {
+            _isTransformDirty = true;
+        }
+
+        private void UpdateGlobalOrientation()
+        {
+            this.UpdateGlobalLocation();
+            //this.UpdateGlobalRotation();
+            //this.UpdateGlobalScale();
+        }
+
+        private void UpdateGlobalLocation()
+        {
+            LCC3Vector4 locVec4 = new LCC3Vector4(_location, 0.0f);
+            _globalLocation = _transformMatrix.TransformCC3Vector4(locVec4).TruncateToCC3Vector();
+        }
+
+        public void ApplyLocalTransforms()
+        {
+            this.ApplyTranslation();
+            //this.ApplyRotation();
+            //this.ApplyScaling();
+        }
+
+        private void ApplyTranslation()
+        {
+            _transformMatrix *= LCC3Matrix4x4.CreateTranslationMatrix(_location);
+            this.UpdateGlobalLocation();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Cocos3D
         private LCC3Semantic _semantic;
         private uint _semanticIndex;
         private LCC3ElementType _type;
+        private uint _size;
 
 
         #region Properties
@@ -54,6 +55,12 @@ namespace Cocos3D
         {
             get { return _type; }
             set { _type = value; }
+        }
+
+        internal uint Size
+        {
+            get { return _size; }
+            set { _size = value; }
         }
 
         #endregion Properties

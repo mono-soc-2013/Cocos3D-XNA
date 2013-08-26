@@ -26,6 +26,10 @@ namespace Cocos3D
         {
         }
 
+        public LCC3ShaderUniformOverride(LCC3ShaderProgram program, int index) : base(program, index)
+        {
+        }
+
         public override bool UpdateShaderValue()
         {
             return false;

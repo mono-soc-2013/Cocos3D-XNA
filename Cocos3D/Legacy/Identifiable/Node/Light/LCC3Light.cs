@@ -17,18 +17,76 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using Cocos2D;
 
 namespace Cocos3D
 {
-    public class LCC3Light
+    public class LCC3Light : LCC3Node
     {
+        // Instance fields
+
+        private bool _isVisible;
+        private CCColor4F _ambientColor;
+        private CCColor4F _diffuseColor;
+        private CCColor4F _specularColor;
+
+        #region Properties
+
+        // Static properties
+
         public static uint DefaultMaxNumOfLights
         {
-            get { return 4; }
+            get { return 3; }
         }
+
+        // Instance properties
+
+        public bool Visible
+        {
+            get { return _isVisible; }
+            set { _isVisible = value; }
+        }
+
+        public bool IsDirectionalOnly
+        {
+            get { return true; }
+        }
+
+        public CCColor4F AmbientColor
+        {
+            get { return _ambientColor; }
+            set { _ambientColor = value; }
+        }
+
+        public CCColor4F DiffuseColor
+        {
+            get { return _diffuseColor; }
+            set { _diffuseColor = value; }
+        }
+
+        public CCColor4F SpecularColor
+        {
+            get { return _specularColor; }
+            set { _specularColor = value; }
+        }
+
+        public override LCC3Vector4 GlobalHomogeneousPosition
+        {
+            get 
+            { 
+                float w = this.IsDirectionalOnly ? 0.0f : 1.0f;
+                return new LCC3Vector4(this.GlobalLocation, w);
+            }
+        }
+
+        #endregion Properties
+
 
         public LCC3Light()
         {
+            _ambientColor = LCC3ColorUtil.CCC4FBlackTransparent;
+            _diffuseColor = LCC3ColorUtil.CCC4FBlackTransparent;
+            _specularColor = LCC3ColorUtil.CCC4FBlackTransparent;
         }
     }
 }

@@ -24,7 +24,13 @@ namespace Cocos3D
 {
     public static class LCC3ColorUtil
     {
+        private static readonly CCColor4F _CCC4FBlackTransparent = new CCColor4F(0.0f,0.0f,0.0f,0.0f);
         private const float _CC3OneOver255 = 0.00392156862745098f;
+
+        public static CCColor4F CCC4FBlackTransparent
+        {
+            get { return _CCC4FBlackTransparent; }
+        }
 
         public static CCColor4F CCC4FBlendAlpha(CCColor4F rgba)
         {

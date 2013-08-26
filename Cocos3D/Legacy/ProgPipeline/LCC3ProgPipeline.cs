@@ -53,7 +53,7 @@ namespace Cocos3D
         private int _xnaCurrentlyActiveTextureUnitIndex;
 
         private LCC3ShaderProgram _currentlyActiveShader;
-        private List<LCC3VertexAttr> _vertexAttributes;
+        private LCC3VertexAttr[] _vertexAttributes;
         private CC3VertexType[] _vertexData;
         private CC3BufferAndTarget[] _buffers;
 
@@ -136,12 +136,19 @@ namespace Cocos3D
             this.InitTextureUnits();
         }
 
-        public void InitVertexAttributes()
+        private void InitVertexAttributes()
         {
-            _vertexAttributes = new List<LCC3VertexAttr>();
+           // Array of vertex attributes based on number of attribute index enum types
+           // There is a default "unavaible index" which is why we subtract the total num of enum items by 1
+            _vertexAttributes = new LCC3VertexAttr[Enum.GetNames(typeof(LCC3VertexAttrIndex)).Length - 1];
+
+            for (int i=0; i < _vertexAttributes.Length; i++)
+            {
+                _vertexAttributes[i] = new LCC3VertexAttr();
+            }
         }
 
-        public void InitTextureUnits()
+        private void InitTextureUnits()
         {
             _xnaCurrentlyActiveTextureUnitIndex = 0;
         }
@@ -153,17 +160,22 @@ namespace Cocos3D
 
         public bool VertexPositionEnabled()
         {
-            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].WasBound;
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].IsEnabled;
         }
 
         public bool VertexTexCoordEnabled()
         {
-            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].WasBound;
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].IsEnabled;
         }
 
         public bool VertexColorEnabled()
         {
-            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].WasBound;
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].IsEnabled;
+        }
+
+        public bool VertexNormalEnabled()
+        {
+            return _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribNormal].IsEnabled;
         }
 
         public List<LCC3VertexAttrIndex> EnabledVertexAttributeIndices()
@@ -183,6 +195,11 @@ namespace Cocos3D
             if (this.VertexColorEnabled())
             {
                 vertexAttrIndices.Add(LCC3VertexAttrIndex.VertexAttribColor);
+            }
+
+            if (this.VertexNormalEnabled())
+            {
+                vertexAttrIndices.Add(LCC3VertexAttrIndex.VertexAttribNormal);
             }
 
             return vertexAttrIndices;
@@ -266,11 +283,11 @@ namespace Cocos3D
             vertexArray.BindContentToAttributeAtIndexWithVisitor(attribute.Location, visitor);
         }
 
-        public void EnableVertexAttributeAtIndex(bool onOrOff, int vaIndex)
+        public void EnableVertexAttributeAtIndex(bool onOrOff, LCC3VertexAttrIndex vaIndex)
         {
             if (vaIndex >= 0)
             {
-                LCC3VertexAttr vertexAttribute = _vertexAttributes[vaIndex];
+                LCC3VertexAttr vertexAttribute = _vertexAttributes[(int)vaIndex];
 
                 vertexAttribute.IsEnabled = onOrOff;
                 vertexAttribute.IsEnabledKnown = true;
@@ -297,17 +314,40 @@ namespace Cocos3D
                 vertexAttribute.ShouldNormalize = shouldNormalize;
                 vertexAttribute.WasBound = true;
             }
+        }
 
+        public void GenerateVertexBuffer()
+        {
             int numOfVertices = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices.Length;
             _vertexData = new CC3VertexType[numOfVertices];
 
             for (int i=0; i < numOfVertices; i++)
             {
-                LCC3Vector position = (LCC3Vector)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices[i];
-                CCPoint texCoord = (CCPoint)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].Vertices[i];
-                LCC3Vector4 color = (LCC3Vector4)_vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].Vertices[i];
+                object[] vtxData = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices;
+                LCC3Vector position = (LCC3Vector)(vtxData[i]);
+                LCC3Vector normal = LCC3Vector.CC3VectorZero;
+                CCTex2F texCoord = new CCTex2F(0.0f,0.0f);
+                CCColor4B color = new CCColor4B(0, 0, 0, 0);
 
-                _vertexData[i] = new CC3VertexType(position, texCoord, color);
+                if (this.VertexNormalEnabled())
+                {
+                    vtxData = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribNormal].Vertices;
+                    normal = (LCC3Vector)vtxData[i];
+                }
+
+                if (this.VertexTexCoordEnabled())
+                {
+                    vtxData = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribTexCoords].Vertices;
+                    texCoord = (CCTex2F)vtxData[i];
+                }
+
+                if (this.VertexColorEnabled())
+                {
+                    vtxData = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribColor].Vertices;
+                    color = (CCColor4B)vtxData[i];
+                }
+
+                _vertexData[i] = new CC3VertexType(position, normal, texCoord, color);
             }
 
             _xnaVertexBuffer = new VertexBuffer(_xnaGraphicsDevice, 
@@ -330,17 +370,17 @@ namespace Cocos3D
 
         public void EnableBoundVertexAttributes()
         {
-            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            for (int i=0; i < _vertexAttributes.Length; i++)
             {
-                this.EnableVertexAttributeAtIndex(vertexAttribute.WasBound, _vertexAttributes.IndexOf(vertexAttribute));
+                this.EnableVertexAttributeAtIndex(_vertexAttributes[i].WasBound, (LCC3VertexAttrIndex)i);
             }
         }
 
         public void Enable2DVertexAttributes()
         {
-            foreach (LCC3VertexAttr vertexAttribute in _vertexAttributes)
+            for (int i=0; i < _vertexAttributes.Length; i++)
             {
-                this.EnableVertexAttributeAtIndex(false, _vertexAttributes.IndexOf(vertexAttribute));
+                this.EnableVertexAttributeAtIndex(false, (LCC3VertexAttrIndex)i);
             }
 
             _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].WasBound = true;
@@ -417,9 +457,13 @@ namespace Cocos3D
 
         public void DrawVertices(LCC3DrawMode drawMode, int startIndex, int length)
         {
-            foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
+            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
+
+            EffectPassCollection passes = _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes;
+
+            for (int i=0; i < passes.Count; i++)
             {
-                pass.Apply();
+                passes[i].Apply();
                 _xnaGraphicsDevice.DrawPrimitives(drawMode.XnaPrimitiveType(), startIndex, length);
             }
         }
@@ -431,6 +475,7 @@ namespace Cocos3D
             _xnaIndexBuffer = new IndexBuffer(_xnaGraphicsDevice, xnaType, arraySegment.Array.Count(), BufferUsage.WriteOnly);
 
             _xnaIndexBuffer.SetData(arraySegment.Array);
+            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
 
             foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
             {
@@ -698,6 +743,8 @@ namespace Cocos3D
             this.EnableBoundVertexAttributes();
 
             program.PopulateNodeScopeUniformsWithVisitor(visitor);
+
+            this.CurrentlyActiveShader = program;
         }
 
         public string DefaultShaderPreamble()
@@ -770,6 +817,7 @@ namespace Cocos3D
         bool VertexPositionEnabled();
         bool VertexTexCoordEnabled();
         bool VertexColorEnabled();
+        bool VertexNormalEnabled();
     }
 
     internal struct CC3VertexType : IVertexType
@@ -779,6 +827,7 @@ namespace Cocos3D
         private Vector3 _position;
         private Vector2 _texCoord;
         private Vector4 _color;
+        private Vector3 _normal;
 
         public static ICC3VertexTypeDataSource DataSource
         {
@@ -794,23 +843,29 @@ namespace Cocos3D
 
                 List<VertexElement> vertexElements = new List<VertexElement>();
 
-                if (_dataSource.VertexPositionEnabled())
-                {
-                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Position, 0));
-                    currentOffset += Marshal.SizeOf(Vector3.Zero);
-                }
+                //if (_dataSource.VertexPositionEnabled() == true)
+                //{
+                vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Position, 0));
+                currentOffset += sizeof(float) * 3; 
+                //}
 
-                if (_dataSource.VertexTexCoordEnabled())
-                {
+                //if (_dataSource.VertexTexCoordEnabled() == true)
+                //{
                     vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0));
-                    currentOffset += Marshal.SizeOf(Vector2.Zero);
-                }
+                    currentOffset += sizeof(float) * 2;
+                //}
 
-                if (_dataSource.VertexColorEnabled())
-                {
-                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector4, VertexElementUsage.Color, 0));
-                    currentOffset += Marshal.SizeOf(Vector4.Zero);
-                }
+                //if (_dataSource.VertexColorEnabled() == true)
+                //{
+                vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector4, VertexElementUsage.Color, 0));
+                currentOffset += sizeof(float) * 4; 
+                //}
+
+                //if (_dataSource.VertexNormalEnabled() == true)
+                //{
+                vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0));
+                currentOffset += sizeof(float) * 4; 
+                //}
 
                 VertexDeclaration vertexDec = new VertexDeclaration(vertexElements.ToArray());
 
@@ -818,17 +873,24 @@ namespace Cocos3D
             }
         }
 
-        public CC3VertexType(LCC3Vector position, CCPoint texCoord, LCC3Vector4 color)
+        public CC3VertexType(LCC3Vector position, LCC3Vector normal, CCTex2F texCoord, CCColor4B color)
         {
             _position = position.XnaVector;
-            _texCoord = new Vector2(texCoord.X, texCoord.Y);
-            _color = color.XnaVector4;
+            _texCoord = new Vector2(texCoord.U, texCoord.V);
+            _color = LCC3ColorUtil.CCC4FFromCCC4B(color).ToVector4().XnaVector4;
+            _normal = normal.XnaVector;
         }
 
         public Vector3 Position
         {
             get { return _position; }
             set { _position = value; }
+        }
+
+        public Vector3 Normal
+        {
+            get { return _normal; }
+            set { _normal = value; }
         }
 
         public Vector2 TextureCoordinate

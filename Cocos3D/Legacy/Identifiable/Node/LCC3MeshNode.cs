@@ -32,16 +32,23 @@ namespace Cocos3D
         public LCC3Mesh Mesh
         {
             get { return _mesh; }
+            set { _mesh = value; }
         }
 
         public LCC3Material Material
         {
             get { return _material; }
+            set { _material = value; }
         }
 
         public LCC3NormalScaling EffectiveNormalScalingMethod
         {
             get { return LCC3NormalScaling.CC3NormalScalingNone; }
+        }
+
+        public override bool ShouldUseLighting
+        {
+            get { return (_material != null) ? _material.ShouldUseLighting : false; }
         }
 
         #endregion Properties

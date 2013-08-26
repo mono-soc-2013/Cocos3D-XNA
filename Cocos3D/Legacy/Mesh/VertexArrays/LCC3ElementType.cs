@@ -24,6 +24,7 @@ namespace Cocos3D
     {
         None = 0,
         Float,
+        FloatArray,
         Fixed,
         UnsignedByte,
         UnsignedShort,

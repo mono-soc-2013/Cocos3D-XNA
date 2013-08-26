@@ -235,6 +235,9 @@
     <Compile Include="Legacy\Identifiable\Node\Light\LCC3Light.cs" />
     <Compile Include="Legacy\Identifiable\Node\Scene\LCC3Scene.cs" />
     <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgramMatchers.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexTextureCoordinates.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexWeights.cs" />
+    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexMatrixIndices.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
@@ -251,5 +254,9 @@
     <None Include="Legacy\Identifiable\Shader\Resources\Structures.fxh" />
     <None Include="Legacy\Identifiable\Shader\Resources\Common.fxh" />
     <None Include="Legacy\Identifiable\Shader\Resources\Macros.fxh" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.ogl.mgfxo" />
+    <EmbeddedResource Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.dx11.mgfxo" />
   </ItemGroup>
 </Project>

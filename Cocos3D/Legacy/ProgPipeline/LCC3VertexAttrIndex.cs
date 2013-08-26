@@ -24,8 +24,9 @@ namespace Cocos3D
     {
         VertexAttribUnavailable = -1,
         VertexAttribPosition = 0,
-        VertexAttribColor = 1,
-        VertexAttribTexCoords = 2
+        VertexAttribNormal = 1,
+        VertexAttribColor = 2,
+        VertexAttribTexCoords = 3
     }
 }
 

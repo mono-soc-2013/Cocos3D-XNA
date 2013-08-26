@@ -50,16 +50,30 @@ namespace Cocos3D
 
         #region Program options
 
-        LCC3ShaderProgram SingleTextureProgram(bool shouldAlphaTest=false)
+        private LCC3ShaderProgram ProgramFromShaderFile(string shaderFileResource)
+        {
+            return new LCC3ShaderProgram(LCC3ShaderProgram.NextTag(), shaderFileResource, _semanticDelegate, shaderFileResource, true);
+        }
+
+        public LCC3ShaderProgram SingleTextureProgram(bool shouldAlphaTest=false)
         {
             // TBA
             return null;
         }
 
-        LCC3ShaderProgram ConfigurableProgram(bool shouldAlphaTest=false)
+        public LCC3ShaderProgram ConfigurableProgram(bool shouldAlphaTest=false)
         {
-            // TBA
-            return null;
+            string shaderFileResource = null;
+
+#if DIRECTX
+            shaderFileResource = "Cocos3D.Legacy.Identifiable.Shader.Resources.CC3MultiTextureConfigurable.dx11.mgfxo";
+#elif PSM 
+            throw new NotImplementedException("PSM shader not implemented");
+#else
+            shaderFileResource = "Cocos3D.Legacy.Identifiable.Shader.Resources.CC3MultiTextureConfigurable.ogl.mgfxo";
+#endif
+
+            return ProgramFromShaderFile(shaderFileResource);
         }
 
         #endregion Program options

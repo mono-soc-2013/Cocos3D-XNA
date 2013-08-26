@@ -49,6 +49,7 @@ namespace Cocos3D
                 variable.Semantic = varConfig.Semantic;
                 variable.SemanticIndex = varConfig.SemanticIndex;
                 variable.Type = varConfig.Type;
+                variable.Size = varConfig.Size;
                 variable.Scope = this.VariableScopeForSemantic(varConfig.Semantic);
                 return true;
             }
@@ -61,20 +62,23 @@ namespace Cocos3D
             _varConfigsByName[varConfig.Name] = varConfig;
         }
 
-        private void MapVarNameToSemantic(string name, LCC3Semantic semantic, uint semanticIndex, LCC3ElementType elementType)
+        private void MapVarNameToSemantic(string name, LCC3Semantic semantic, 
+                                          uint semanticIndex, LCC3ElementType elementType,
+                                          uint size=1)
         {
             LCC3ShaderVariableConfiguration varConfig = new LCC3ShaderVariableConfiguration();
             varConfig.Name = name;
             varConfig.Semantic = semantic;
             varConfig.SemanticIndex = semanticIndex;
             varConfig.Type = elementType;
+            varConfig.Size = size;
 
             this.AddVariableConfiguration(varConfig);
         }
 
-        private void MapVarNameToSemantic(string name, LCC3Semantic semantic, LCC3ElementType elementType)
+        private void MapVarNameToSemantic(string name, LCC3Semantic semantic, LCC3ElementType elementType, uint size=1)
         {
-            this.MapVarNameToSemantic(name, semantic, 0, elementType);
+            this.MapVarNameToSemantic(name, semantic, 0, elementType, size);
         }
 
         #endregion Variable configuration
@@ -100,30 +104,53 @@ namespace Cocos3D
             this.MapVarNameToSemantic("u_cc3Color", LCC3Semantic.SemanticColor, LCC3ElementType.Vector4);                                 
             this.MapVarNameToSemantic("u_cc3MaterialAmbientColor", LCC3Semantic.SemanticMaterialColorAmbient, LCC3ElementType.Vector4);   
             this.MapVarNameToSemantic("u_cc3MaterialDiffuseColor", LCC3Semantic.SemanticMaterialColorDiffuse, LCC3ElementType.Vector4);   
-            this.MapVarNameToSemantic("u_cc3MaterialSpecularColor", LCC3Semantic.SemanticMaterialColorSpecular, LCC3ElementType.Vector4); 
-            this.MapVarNameToSemantic("u_cc3MaterialEmissionColor", LCC3Semantic.SemanticMaterialColorEmission, LCC3ElementType.Vector4);
+            this.MapVarNameToSemantic("u_cc3MaterialSpecularColor", LCC3Semantic.SemanticMaterialColorSpecular, LCC3ElementType.Vector3); 
+            this.MapVarNameToSemantic("u_cc3EmissiveColor", LCC3Semantic.SemanticMaterialColorEmission, LCC3ElementType.Vector3);
             this.MapVarNameToSemantic("u_cc3MaterialOpacity", LCC3Semantic.SemanticMaterialOpacity, LCC3ElementType.Float);             
             this.MapVarNameToSemantic("u_cc3MaterialShininess", LCC3Semantic.SemanticMaterialShininess, LCC3ElementType.Float);         
             this.MapVarNameToSemantic("u_cc3MaterialReflectivity", LCC3Semantic.SemanticMaterialReflectivity, LCC3ElementType.Float);   
             this.MapVarNameToSemantic("u_cc3MaterialMinimumDrawnAlpha", LCC3Semantic.SemanticMinimumDrawnAlpha, LCC3ElementType.Float);
 
-            // Matrices
+            // Environment
+            this.MapVarNameToSemantic("u_cc3EyePosition", LCC3Semantic.SemanticEyePosition, LCC3ElementType.Vector3);
+            this.MapVarNameToSemantic("u_cc3MatrixModel", LCC3Semantic.SemanticModelMatrix, LCC3ElementType.Float4x4);
             this.MapVarNameToSemantic("u_cc3MatrixModelView", LCC3Semantic.SemanticModelViewMatrix, LCC3ElementType.Float4x4); 
-            this.MapVarNameToSemantic("u_cc3MatrixProj", LCC3Semantic.SemanticModelViewProjMatrix, LCC3ElementType.Float4x4);
+            this.MapVarNameToSemantic("u_cc3MatrixProj", LCC3Semantic.SemanticProjMatrix, LCC3ElementType.Float4x4);
             this.MapVarNameToSemantic("u_cc3MatrixModelViewInvTran", LCC3Semantic.SemanticModelViewMatrixInvTran, LCC3ElementType.Float3x3);
+            this.MapVarNameToSemantic("u_cc3WorldViewProj", LCC3Semantic.SemanticModelViewProjMatrix, LCC3ElementType.Float4x4);
+            this.MapVarNameToSemantic("u_cc3WorldInverseTranspose", LCC3Semantic.SemanticModelMatrixInvTran, LCC3ElementType.Float3x3);
 
             // Lighting
             this.MapVarNameToSemantic("u_cc3LightIsUsingLighting", LCC3Semantic.SemanticIsUsingLighting, LCC3ElementType.Boolean);  
             this.MapVarNameToSemantic("u_cc3LightSceneAmbientLightColor", LCC3Semantic.SemanticSceneLightColorAmbient, LCC3ElementType.Vector4); 
 
-            for(uint semanticIndex=0; semanticIndex < LCC3Light.DefaultMaxNumOfLights; semanticIndex++)
-            {
-                this.MapVarNameToSemantic("u_cc3LightIsLightEnabled", LCC3Semantic.SemanticLightIsEnabled, semanticIndex, LCC3ElementType.BooleanArray);
-                this.MapVarNameToSemantic("u_cc3LightPositionEyeSpace", LCC3Semantic.SemanticLightPositionEyeSpace, semanticIndex, LCC3ElementType.Vector4Array);
-                this.MapVarNameToSemantic("u_cc3LightDiffuseColor", LCC3Semantic.SemanticLightColorDiffuse, semanticIndex, LCC3ElementType.Vector4Array);
-                this.MapVarNameToSemantic("u_cc3LightAmbientColor", LCC3Semantic.SemanticLightColorAmbient, semanticIndex, LCC3ElementType.Vector4Array);
-                this.MapVarNameToSemantic("u_cc3LightSpecularColor", LCC3Semantic.SemanticLightColorSpecular, semanticIndex, LCC3ElementType.Vector4Array);
-            }
+
+            this.MapVarNameToSemantic("u_cc3LightIsLightEnabled", LCC3Semantic.SemanticLightIsEnabled,
+                                      LCC3ElementType.Boolean);
+            this.MapVarNameToSemantic("u_cc3DirLightDirection", LCC3Semantic.SemanticLightDirection, 
+                                      LCC3ElementType.Vector3);
+            this.MapVarNameToSemantic("u_cc3DirLightDiffuseColor", LCC3Semantic.SemanticLightColorDiffuse, 
+                                      LCC3ElementType.Vector3);
+            this.MapVarNameToSemantic("u_cc3LightAmbientColor", LCC3Semantic.SemanticLightColorAmbient, 
+                                      LCC3ElementType.Vector4);
+            this.MapVarNameToSemantic("u_cc3DirLightSpecularColor", LCC3Semantic.SemanticLightColorSpecular, 
+                                      LCC3ElementType.Vector3);
+            /*
+            this.MapVarNameToSemantic("u_cc3LightIsLightEnabled", LCC3Semantic.SemanticLightIsEnabled,
+                                      LCC3ElementType.BooleanArray, LCC3Light.DefaultMaxNumOfLights);
+            this.MapVarNameToSemantic("u_cc3LightPositionEyeSpace", LCC3Semantic.SemanticLightPositionEyeSpace, 
+                                      LCC3ElementType.Vector4Array, LCC3Light.DefaultMaxNumOfLights);
+            this.MapVarNameToSemantic("u_cc3LightDiffuseColor", LCC3Semantic.SemanticLightColorDiffuse, 
+                                      LCC3ElementType.Vector4Array, LCC3Light.DefaultMaxNumOfLights);
+            this.MapVarNameToSemantic("u_cc3LightAmbientColor", LCC3Semantic.SemanticLightColorAmbient, 
+                                      LCC3ElementType.Vector4Array, LCC3Light.DefaultMaxNumOfLights);
+            this.MapVarNameToSemantic("u_cc3LightSpecularColor", LCC3Semantic.SemanticLightColorSpecular, 
+                                      LCC3ElementType.Vector4Array, LCC3Light.DefaultMaxNumOfLights);
+                                      */
+
+            // Texture
+            this.MapVarNameToSemantic("Texture", LCC3Semantic.SemanticVertexTexture, LCC3ElementType.Texture2D);
+
         }
 
         #endregion Default mappings

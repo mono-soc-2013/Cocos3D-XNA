@@ -24,16 +24,49 @@ namespace Cocos3D
     {
         // Instance fields
 
+        LCC3VertexLocations _vertexLocations;
         LCC3VertexNormals _vertexNormals;
+        LCC3VertexTangents _vertexTangents;
         LCC3VertexIndices _vertexIndices;
+        LCC3VertexColors _vertexColors;
+        LCC3VertexTextureCoordinates _vertexTexCoords;
 
         #region Properties
 
         // Instance properties
 
+        public LCC3VertexLocations VertexLocations
+        {
+            get { return _vertexLocations; }
+            set { _vertexLocations = value; }
+        }
+
+        public LCC3VertexNormals VertexNormals
+        {
+            get { return _vertexNormals; }
+            set { _vertexNormals = value; }
+        }
+
+        public LCC3VertexColors VertexColors
+        {
+            get { return _vertexColors; }
+            set { _vertexColors = value; }
+        }
+
         public LCC3VertexIndices VertexIndices
         {
             get { return _vertexIndices; }
+        }
+
+        public LCC3VertexTextureCoordinates VertexTextureCoords
+        {
+            get { return _vertexTexCoords; }
+            set { _vertexTexCoords = value; }
+        }
+
+        public bool HasVertexLocations
+        {
+            get { return (_vertexLocations != null); }
         }
 
         public bool HasVertexNormals
@@ -43,7 +76,7 @@ namespace Cocos3D
 
         public bool HasVertexTangents
         {
-            get { return false; }
+            get { return (_vertexTangents != null); }
         }
 
         public bool HasVertexBitangents
@@ -53,7 +86,7 @@ namespace Cocos3D
 
         public bool HasVertexColors
         {
-            get { return false; }
+            get { return (_vertexColors != null); }
         }
 
         public bool HasVertexWeights
@@ -68,7 +101,7 @@ namespace Cocos3D
 
         public bool HasVertexTextureCoordinates
         {
-            get { return false; }
+            get { return (_vertexTexCoords != null); }
         }
 
         public bool HasVertexPointSizes
@@ -85,10 +118,21 @@ namespace Cocos3D
 
         public LCC3VertexArray VertexArrayForSemanticAtIndex(LCC3Semantic vertexSemantic, uint semanticIndex)
         {
-            return null;
+            switch (vertexSemantic) 
+            {
+                case LCC3Semantic.SemanticVertexLocation: 
+                    return this.VertexLocations;
+                case LCC3Semantic.SemanticVertexNormal:
+                    return this.VertexNormals;
+                case LCC3Semantic.SemanticColor:
+                    return this.VertexColors;
+                case LCC3Semantic.SemanticVertexTexture:
+                    return this.VertexTextureCoords;
+                default:
+                    return null;
+            }
         }
-
-        //-(CC3VertexArray*) vertexArrayForSemantic: (GLenum) semantic at: (GLuint) semanticIndex
+    
     }
 }
 

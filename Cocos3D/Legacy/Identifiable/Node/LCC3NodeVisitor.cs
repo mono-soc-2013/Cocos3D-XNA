@@ -71,6 +71,22 @@ namespace Cocos3D
         }
 
         #endregion Constructors
+
+
+        #region Accessing node contents
+
+        public LCC3Light LightAtIndex(uint index)
+        {
+            LCC3Light[] lights = this.Scene.Lights;
+            if (index < (uint)lights.Length)
+            {
+                return lights[(int)index];
+            }
+
+            return null;
+        }
+
+        #endregion Accessing node contents
     }
 }
 

@@ -18,6 +18,7 @@
 //
 using System;
 using Microsoft.Xna.Framework;
+using Cocos2D;
 
 namespace Cocos3D
 {
@@ -121,6 +122,7 @@ namespace Cocos3D
         {
             LCC3Semantic semantic = uniform.Semantic;
             LCC3Material material;
+            bool isInverted;
 
             switch (semantic)
             {
@@ -163,10 +165,31 @@ namespace Cocos3D
                 #endregion Attribute Qualifiers
                 
 
-                #region Environment matrix semantics
+                #region Environment semantics
+                case LCC3Semantic.SemanticEyePosition:
+                    uniform.SetValue(visitor.ViewMatrix.Inverse().TranslationOfTransformMatrix());
+                    return true;
+                case LCC3Semantic.SemanticModelMatrix:
+                    uniform.SetValue(visitor.ModelMatrix);
+                    return true;
+                case LCC3Semantic.SemanticModelViewMatrix:
+                    uniform.SetValue(visitor.ModelViewMatrix);
+                    return true;
+                case LCC3Semantic.SemanticModelViewProjMatrix:
+                    uniform.SetValue(visitor.ModelViewProjMatrix);
+                    return true;
+                case LCC3Semantic.SemanticProjMatrix:
+                    uniform.SetValue(visitor.ProjMatrix);
+                    return true;
+                case LCC3Semantic.SemanticModelViewMatrixInvTran:
+                    uniform.SetValue(visitor.ModelViewMatrix.InverseAdjointTranspose());
+                    return true;
+                case LCC3Semantic.SemanticModelMatrixInvTran:
+                    uniform.SetValue(visitor.ModelMatrix.Transpose().Inverse());
+                    return true;
 
 
-                #endregion Environment matrix semantics
+                #endregion Environment semantics
 
 
                 #region Setting material semantics
@@ -181,10 +204,10 @@ namespace Cocos3D
                     uniform.SetValue(visitor.CurrentMaterial.EffectiveDiffuseColor.ToVector4());
                     return true;
                 case LCC3Semantic.SemanticMaterialColorSpecular:
-                    uniform.SetValue(visitor.CurrentMaterial.EffectiveSpecularColor.ToVector4());
+                    uniform.SetValue(visitor.CurrentMaterial.EffectiveSpecularColor.ToVector4().TruncateToCC3Vector());
                     return true;
                 case LCC3Semantic.SemanticMaterialColorEmission:
-                    uniform.SetValue(visitor.CurrentMaterial.EffectiveEmissionColor.ToVector4());
+                    uniform.SetValue(visitor.CurrentMaterial.EffectiveEmissionColor.ToVector4().TruncateToCC3Vector());
                     return true;
                 case LCC3Semantic.SemanticMaterialOpacity:
                     uniform.SetValue(visitor.CurrentMaterial.EffectiveDiffuseColor.A);
@@ -212,14 +235,66 @@ namespace Cocos3D
                     uniform.SetValue(visitor.Scene.AmbientLight.ToVector4());
                     return true;
                 case LCC3Semantic.SemanticLightIsEnabled:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        uniform.SetValueAtIndex(light.Visible, i);
+                    }
                     return true;
+                case LCC3Semantic.SemanticLightInvertedPositionEyeSpace:
+                    isInverted = true;
+                    goto case LCC3Semantic.SemanticLightPositionEyeSpace;
                 case LCC3Semantic.SemanticLightPositionEyeSpace:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        LCC3Vector4 ltPos = light.GlobalHomogeneousPosition;
+                        if (isInverted == true) 
+                        {
+                            ltPos = ltPos.HomogeneousNegate();
+                        }
+
+                        // Transform global position/direction to eye space and normalize if direction
+                        ltPos = visitor.ViewMatrix.TransformCC3Vector4(ltPos);
+                        if (light.IsDirectionalOnly == true)
+                        {
+                            ltPos = ltPos.NormalizedVector();
+                        }
+
+                        uniform.SetValueAtIndex(ltPos, i);
+                    }
                     return true;
+                case LCC3Semantic.SemanticLightDirection:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        uniform.SetValueAtIndex(light.Location, i);
+                    }
+                    return true;
+
                 case LCC3Semantic.SemanticLightColorDiffuse:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        CCColor4F ltColor = light.Visible ? light.DiffuseColor : LCC3ColorUtil.CCC4FBlackTransparent;
+                        uniform.SetValueAtIndex(ltColor.ToVector4().TruncateToCC3Vector(), i);
+                    }
                     return true;
                 case LCC3Semantic.SemanticLightColorAmbient:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        CCColor4F ltColor = light.Visible ? light.AmbientColor : LCC3ColorUtil.CCC4FBlackTransparent;
+                        uniform.SetValueAtIndex(ltColor.ToVector4(), i);
+                    }
                     return true;
                 case LCC3Semantic.SemanticLightColorSpecular:
+                    for (uint i = 0; i < uniform.Size; i++) 
+                    {
+                        LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
+                        CCColor4F ltColor = light.Visible ? light.SpecularColor : LCC3ColorUtil.CCC4FBlackTransparent;
+                        uniform.SetValueAtIndex(ltColor.ToVector4().TruncateToCC3Vector(), i);
+                    }
                     return true;
 
                 #endregion Light semantics

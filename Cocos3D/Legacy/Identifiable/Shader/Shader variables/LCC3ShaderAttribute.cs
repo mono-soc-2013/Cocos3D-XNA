@@ -35,6 +35,23 @@ namespace Cocos3D
 
         public LCC3ShaderAttribute(LCC3ShaderProgram program, LCC3VertexAttrIndex attrIndex) : base(program, (int)attrIndex)
         {
+            switch (attrIndex)
+            {
+                case LCC3VertexAttrIndex.VertexAttribPosition:
+                    this.Semantic = LCC3Semantic.SemanticVertexLocation;
+                    break;
+                case LCC3VertexAttrIndex.VertexAttribNormal:
+                    this.Semantic = LCC3Semantic.SemanticVertexNormal;
+                    break;
+                case LCC3VertexAttrIndex.VertexAttribColor:
+                    this.Semantic = LCC3Semantic.SemanticColor;
+                    break;
+                case LCC3VertexAttrIndex.VertexAttribTexCoords:
+                    this.Semantic = LCC3Semantic.SemanticVertexTexture;
+                    break;
+            }
+
+            this.Location = attrIndex;
         }
 
         public override void PopulateFromProgram()

@@ -84,6 +84,13 @@ namespace Cocos3D
         #endregion Environment Matrices 
 
 
+        #region Other environment vars
+
+        SemanticEyePosition,
+
+        #endregion Other environment vars
+
+
         #region Skinning Matrices
 
         SemanticBonesPerVertex,                 
@@ -128,7 +135,8 @@ namespace Cocos3D
         SemanticIsUsingLighting,                
         SemanticSceneLightColorAmbient,         
 
-        SemanticLightIsEnabled,                 
+        SemanticLightIsEnabled,
+        SemanticLightDirection,
         SemanticLightPositionGlobal,           
         SemanticLightPositionEyeSpace,          
         SemanticLightPositionModelSpace,        

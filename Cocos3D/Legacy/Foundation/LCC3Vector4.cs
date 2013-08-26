@@ -218,6 +218,11 @@ namespace Cocos3D
             return new LCC3Vector(_xnaVec4.X,_xnaVec4.Y,_xnaVec4.Z);
         }
 
+        public LCC3Vector4 HomogeneousNegate()
+        {
+            return new LCC3Vector4(-_xnaVec4.X,-_xnaVec4.Y,-_xnaVec4.Z, _xnaVec4.W);
+        }
+
         #endregion Instance methods
     }
 }

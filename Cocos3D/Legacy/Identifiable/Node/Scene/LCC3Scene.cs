@@ -24,10 +24,16 @@ namespace Cocos3D
     public class LCC3Scene : LCC3Node
     {
         // Instance fields
-
+        LCC3Light[] _lights;
         CCColor4F _ambientLight;
 
         #region Properties
+
+        public LCC3Light[] Lights
+        {
+            get { return _lights; }
+            set { _lights = value; }
+        }
 
         public CCColor4F AmbientLight
         {

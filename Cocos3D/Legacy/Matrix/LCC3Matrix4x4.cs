@@ -51,6 +51,16 @@ namespace Cocos3D
         #endregion Properties
 
 
+        #region Operators
+
+        public static LCC3Matrix4x4 operator *(LCC3Matrix4x4 matrix1, LCC3Matrix4x4 matrix2)
+        {
+            return new LCC3Matrix4x4(matrix1.XnaMatrix * matrix2.XnaMatrix);
+        }
+
+        #endregion Operators
+
+
         #region Static matrix construction methods
 
         public static LCC3Matrix4x4 CreateWorldMatrix(LCC3Vector worldPosition, 
@@ -73,7 +83,7 @@ namespace Cocos3D
                                      xnaScaleMatrix);
         }
 
-        public static LCC3Matrix4x4 CreateTranslationMatrix(CC3Vector worldTranslation)
+        public static LCC3Matrix4x4 CreateTranslationMatrix(LCC3Vector worldTranslation)
         {
             Matrix xnaTranslationMatrix = Matrix.CreateTranslation(worldTranslation.XnaVector);
 
@@ -136,6 +146,35 @@ namespace Cocos3D
             }
 
             return localRotation;
+        }
+
+        public LCC3Vector4 TransformCC3Vector4(LCC3Vector4 vec4)
+        {
+            return new LCC3Vector4(Vector4.Transform(vec4.XnaVector4, _xnaMatrix));
+        }
+
+        public LCC3Matrix4x4 Transpose()
+        {
+            return new LCC3Matrix4x4(Matrix.Transpose(_xnaMatrix));
+        }
+
+        public LCC3Matrix4x4 InverseAdjoint()
+        {
+            LCC3Matrix4x4 inverse = this.Inverse();
+            Matrix xnaInvs = inverse.XnaMatrix;
+            float determinant = xnaInvs.Determinant();
+
+            if (determinant != 0.0f)
+            {
+                xnaInvs /= determinant;
+            }
+
+            return new LCC3Matrix4x4(xnaInvs);
+        }
+
+        public LCC3Matrix4x4 InverseAdjointTranspose()
+        {
+            return this.InverseAdjoint().Transpose();
         }
 
         #endregion Calculation methods

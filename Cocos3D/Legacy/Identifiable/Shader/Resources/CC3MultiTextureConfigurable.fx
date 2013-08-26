@@ -18,132 +18,166 @@
 //
 
 #include "Macros.fxh"
-#include "Structures.fxh"
 
-#define MAX_LIGHTS 3
+#define SetCommonVSOutputParams \
+    vout.PositionPS = cout.Pos_ps; \
+    vout.Diffuse = cout.Diffuse; \
+    vout.Specular = float4(cout.Specular, cout.FogFactor);
+
+
+#define SetCommonVSOutputParamsNoFog \
+    vout.PositionPS = cout.Pos_ps; \
 
 // Uniforms
 
-uniform float4x4 u_cc3MatrixModelView;
-uniform float4x4 u_cc3MatrixProj;
-uniform float3x3 u_cc3MatrixModelViewInvTran;
+uniform float4x4 u_cc3MatrixModel; 
+uniform float3  u_cc3EyePosition;
+uniform float3x3 u_cc3WorldInverseTranspose;
+uniform float4x4 u_cc3WorldViewProj;
 
+uniform float4 u_cc3MaterialDiffuseColor;	
+uniform float3 u_cc3MaterialSpecularColor;
+uniform float3 u_cc3EmissiveColor;
+uniform float  u_cc3MaterialShininess;
 
-uniform float4 u_cc3MaterialAmbientColor;
-uniform float4 u_cc3MaterialDiffuseColor;
-uniform float4 u_cc3MaterialSpecularColor;
-uniform float4 u_cc3MaterialEmissionColor;
+uniform float3 u_cc3DirLightDirection;
+uniform float3 u_cc3DirLightDiffuseColor;
+uniform float3 u_cc3DirLightSpecularColor;
 
-uniform float u_cc3MaterialShininess;
-
-uniform bool u_cc3LightIsUsingLighting;
-uniform float4 u_cc3LightSceneAmbientLightColor;
-
-uniform bool u_cc3LightIsLightEnabled[MAX_LIGHTS];
-uniform float4 u_cc3LightPositionEyeSpace[MAX_LIGHTS];
-uniform float4 u_cc3LightAmbientColor[MAX_LIGHTS];
-uniform float4 u_cc3LightDiffuseColor[MAX_LIGHTS];
-uniform float4 u_cc3LightSpecularColor[MAX_LIGHTS];
-
-
-// Constants
-
-static const float3 kHalfPlaneOffset = float3(0.0, 0.0, 1.0);
+uniform bool u_cc3VertexHasTexCoord;
 
 DECLARE_TEXTURE(Texture, 0);
 
+// Structures
 
-void VertexToEyeSpace(VSInputNmTx vin)
+struct CommonVSOutput
 {
-	//VtxPosEye = mul(vin.Position, u_cc3MatrixModelView);
-	//VtxNormEye = mul(vin.Normal, u_cc3MatrixModelViewInvTran);
+    float4 Pos_ps;
+    float4 Diffuse;
+    float3 Specular;
+    float  FogFactor;
+};
+
+struct VSInputNmTxVc
+{
+    float4 Position : SV_Position;
+    float3 Normal   : NORMAL;
+    float2 TexCoord : TEXCOORD0;
+    float4 Color    : COLOR;
+};
+
+
+struct VSOutputTx
+{
+    float4 PositionPS : SV_Position;
+    float4 Diffuse    : COLOR0;
+    float4 Specular   : COLOR1;
+    float2 TexCoord   : TEXCOORD0;
+};
+
+struct ColorPair
+{
+    float3 Diffuse;
+    float3 Specular;
+};
+
+// Functions
+
+void AddSpecular(inout float4 color, float3 specular)
+{
+    color.rgb += specular * color.a;
 }
 
-
-float4 IlluminateWith(int ltIdx, float3 VtxNormEye) 
+ColorPair ComputeLights(float3 eyeVector, float3 worldNormal, uniform int numLights)
 {
-	float3 ltDir;
-	float intensity = 1.0;
-
-
-	// Directional light. Vector is expected to be normalized!
-	ltDir = float3(u_cc3LightPositionEyeSpace[ltIdx].x, u_cc3LightPositionEyeSpace[ltIdx].y, u_cc3LightPositionEyeSpace[ltIdx].z);
-	
-	
-	// If no light intensity, short-circuit and return no color
-	if (intensity <= 0.0) return float4(0.0, 0.0, 0.0, 0.0);
-
-	// Employ lighting equation to calculate vertex color
-	float4 vtxColor = (u_cc3LightAmbientColor[ltIdx] * u_cc3MaterialAmbientColor);
-	vtxColor += mul(u_cc3LightDiffuseColor[ltIdx] * u_cc3MaterialDiffuseColor, max(0.0, dot(VtxNormEye, ltDir)));
-
-	
-	// Project normal onto half-plane vector to determine specular component
-	float specProj =  dot(VtxNormEye, normalize(ltDir + kHalfPlaneOffset));
-	
-	
-	if (specProj > 0.0) 
-	{
-		float specPow = specProj * u_cc3MaterialShininess;
-		
-		vtxColor +=
-			u_cc3MaterialSpecularColor *
-			u_cc3LightSpecularColor[ltIdx];
-		
-		vtxColor *= specPow;
-	}
-	
-	// Return the attenuated vertex color
-	return vtxColor;
-}
-
-
-float4 Illuminate(float3 VtxNormEye)
-{
-	float4 vtxColor = u_cc3MaterialEmissionColor + (u_cc3MaterialAmbientColor * u_cc3LightSceneAmbientLightColor);
-		
-	for (int ltIdx = 0; ltIdx < MAX_LIGHTS; ltIdx++)
-	{
-		if (u_cc3LightIsLightEnabled[ltIdx] == true)
-		{
-			vtxColor += IlluminateWith(ltIdx, VtxNormEye);
-		}
-	}
-	
-
-	vtxColor.a = u_cc3MaterialDiffuseColor.a;
-
-
-	return vtxColor;
-}
-
-
-// Vertex shader
-
-VSOutputTx VSBasicTx(VSInputNmTx vin)
-{
-	float4 VtxPosEye;
-	float3 VtxNormEye;
+    float3x3 lightDirections = 0;
+    float3x3 lightDiffuse = 0;
+    float3x3 lightSpecular = 0;
+    float3x3 halfVectors = 0;
     
-	VtxPosEye = mul(vin.Position, u_cc3MatrixModelView);
-	VtxNormEye = mul(vin.Normal, u_cc3MatrixModelViewInvTran);
+    [unroll]
+    for (int i = 0; i < numLights; i++)
+    {
+        lightDirections[i] = float3x3(u_cc3DirLightDirection,     0.0, 0.0, 0.0 ,     0.0, 0.0, 0.0)    [i];
+        lightDiffuse[i]    = float3x3(u_cc3DirLightDiffuseColor,  1.0, 1.0, 1.0 ,  1.0, 1.0, 1.0) [i];
+        lightSpecular[i]   = float3x3(u_cc3DirLightSpecularColor, 1.0, 1.0, 1.0 , 1.0, 1.0, 1.0)[i];
+        
+        halfVectors[i] = normalize(eyeVector - lightDirections[i]);
+    }
 
-    VSOutputTx vout;
+    float3 dotL = mul(-lightDirections, worldNormal);
+    float3 dotH = abs(mul(halfVectors, worldNormal));
     
-    vout.PositionPS = mul(VtxPosEye, u_cc3MatrixProj);
-	vout.Diffuse = Illuminate(VtxNormEye);
-	vout.Specular = float4(0.0, 0.0, 0.0, 0.0);
-    vout.TexCoord = vin.TexCoord;
+    float3 zeroL = step(0, dotL);
 
+    float3 diffuse  = zeroL * dotL;
+    float3 specular = pow(max(dotH, 0) * zeroL, u_cc3MaterialShininess);
+
+    ColorPair result;
+    
+    result.Diffuse  = mul(diffuse,  lightDiffuse)  * u_cc3MaterialDiffuseColor.rgb + u_cc3EmissiveColor;
+    result.Specular = max(mul(specular, lightSpecular),0) * u_cc3MaterialSpecularColor;
+
+    return result;
+}
+
+
+CommonVSOutput ComputeCommonVSOutputWithLighting(float4 position, float3 normal, uniform int numLights)
+{
+    CommonVSOutput vout;
+    
+    float4 pos_ws = mul(position, u_cc3MatrixModel);
+    float3 eyeVector = normalize(u_cc3EyePosition - pos_ws.xyz);
+    float3 worldNormal = normalize(mul(normal, u_cc3WorldInverseTranspose));
+
+    ColorPair lightResult = ComputeLights(eyeVector, worldNormal, numLights);
+    
+    vout.Pos_ps = mul(position, u_cc3WorldViewProj);
+    vout.Diffuse = float4(lightResult.Diffuse, u_cc3MaterialDiffuseColor.a);
+    vout.Specular = lightResult.Specular;
+    vout.FogFactor = 0.0;
+    
     return vout;
 }
 
-// Fragment shader
+// Vertex shader
 
-float4 PSBasicTx(VSOutputTx pin) : SV_Target0
+VSOutputTx VSBasicVertexLightingTxVc(VSInputNmTxVc vin)
 {
-    return SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
+    VSOutputTx vout;
+    
+    CommonVSOutput cout = ComputeCommonVSOutputWithLighting(vin.Position, vin.Normal, 1);
+    SetCommonVSOutputParams;
+    
+    vout.TexCoord = vin.TexCoord;
+	
+	if(u_cc3VertexHasTexCoord == false)
+	{
+		vout.Diffuse *= vin.Color;
+	}
+    
+    return vout;
 }
 
-TECHNIQUE(BasicEffect_Texture, VSBasicTx, PSBasicTx);
+// Pixel shader
 
+float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
+{
+	float4 color;
+   
+	if(u_cc3VertexHasTexCoord == true)
+	{
+		color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
+	}
+    else
+	{
+		color = pin.Diffuse;
+	}
+	
+	
+    AddSpecular(color, pin.Specular.rgb);
+    
+    return color;
+}
+
+TECHNIQUE(BasicEffect_Texture, VSBasicVertexLightingTxVc, PSBasicVertexLightingTxNoFog);

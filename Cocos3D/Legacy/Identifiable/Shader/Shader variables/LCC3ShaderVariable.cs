@@ -32,7 +32,7 @@ namespace Cocos3D
         protected LCC3Semantic _semantic;
         protected uint _semanticIndex;
         private LCC3ShaderVariableScope _scope;
-        private uint _size;
+        protected uint _size;
 
         #region Properties
 
@@ -55,6 +55,7 @@ namespace Cocos3D
         public LCC3VertexAttrIndex Location
         {
             get { return _location; }
+            set { _location = value; }
         }
 
         public LCC3Semantic Semantic
@@ -75,9 +76,10 @@ namespace Cocos3D
             set { _scope = value; }
         }
 
-        public uint Size
+        public virtual uint Size
         {
             get { return _size; }
+            set { _size = value; }
         }
 
         #endregion Properties

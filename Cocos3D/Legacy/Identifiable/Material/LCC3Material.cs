@@ -99,21 +99,25 @@ namespace Cocos3D
         public CCColor4F AmbientColor
         {
             get { return _ambientColor; }
+            set { _ambientColor = value; }
         }
 
         public CCColor4F DiffuseColor
         {
             get { return _diffuseColor; }
+            set { _diffuseColor = value; }
         }
 
         public CCColor4F SpecularColor
         {
             get { return _specularColor; }
+            set { _specularColor = value; }
         }
 
         public CCColor4F EmissionColor
         {
-            get { return _specularColor; }
+            get { return _emissionColor; }
+            set { _emissionColor = value; }
         }
 
         public LCC3Texture Texture
@@ -223,7 +227,7 @@ namespace Cocos3D
             get { return _shaderContext.Program; }
             set
             {
-                if (value == this.ShaderProgram)
+                if (_shaderContext != null && value == this.ShaderProgram)
                 {
                     return;
                 }
@@ -292,6 +296,12 @@ namespace Cocos3D
 
                 return false;
             }
+        }
+
+        public bool ShouldUseLighting
+        {
+            get { return _shouldUseLighting; }
+            set { _shouldUseLighting = value; }
         }
 
         public LCC3Vector LightDirection
