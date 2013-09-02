@@ -229,7 +229,7 @@ namespace Cocos3D
         {
             EffectParameter _xnaEffectParam = _xnaShaderEffect.Parameters[uniform.Name];
 
-            if (_xnaEffectParam != null)
+            if (_xnaEffectParam != null && uniform.VarValue != null)
             {
                 switch (uniform.Type)
                 {
@@ -248,6 +248,9 @@ namespace Cocos3D
                         break;
                     case LCC3ElementType.Float:
                         _xnaEffectParam.SetValue(uniform.FloatValue);
+                        break;
+                    case LCC3ElementType.Int:
+                        _xnaEffectParam.SetValue(uniform.IntValue);
                         break;
                     case LCC3ElementType.Boolean:
                         _xnaEffectParam.SetValue(uniform.BoolValue);

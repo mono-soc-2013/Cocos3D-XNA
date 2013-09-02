@@ -44,7 +44,7 @@ namespace Cocos3D
         {
             LCC3ShaderVariableConfiguration varConfig = _varConfigsByName[variable.Name];
 
-            if (varConfig != null) 
+            if (varConfig != null)
             {
                 variable.Semantic = varConfig.Semantic;
                 variable.SemanticIndex = varConfig.SemanticIndex;
@@ -59,7 +59,8 @@ namespace Cocos3D
 
         public void AddVariableConfiguration(LCC3ShaderVariableConfiguration varConfig)
         {
-            _varConfigsByName[varConfig.Name] = varConfig;
+            string str = varConfig.NameSemanticIndex;
+            _varConfigsByName[varConfig.NameSemanticIndex] = varConfig;
         }
 
         private void MapVarNameToSemantic(string name, LCC3Semantic semantic, 
@@ -149,8 +150,13 @@ namespace Cocos3D
                                       */
 
             // Texture
-            this.MapVarNameToSemantic("Texture", LCC3Semantic.SemanticVertexTexture, LCC3ElementType.Texture2D);
-
+            this.MapVarNameToSemantic("u_cc3TextureCount", LCC3Semantic.SemanticTextureCount, LCC3ElementType.Int);
+            for (uint i =0; i < LCC3ProgPipeline.MaxNumberOfTextureUnits; i++)
+            {
+                this.MapVarNameToSemantic("u_cc3TextureUnitMode", LCC3Semantic.SemanticTexUnitMode, i, LCC3ElementType.Int, (uint)LCC3Semantic.SemanticTextureCount);
+                this.MapVarNameToSemantic("u_cc3Texture", LCC3Semantic.SemanticVertexTexture, i, LCC3ElementType.Texture2D, (uint)LCC3Semantic.SemanticTextureCount);
+                this.MapVarNameToSemantic("u_cc3TextureUnitColor", LCC3Semantic.SemanticTexUnitConstantColor, i, LCC3ElementType.Vector4, (uint)LCC3Semantic.SemanticTextureCount);
+            }
         }
 
         #endregion Default mappings

@@ -45,6 +45,19 @@ namespace Cocos3D
             set { _semantic = value; }
         }
 
+        internal string NameSemanticIndex
+        {
+            get 
+            { 
+                if (_size <= 1)
+                {
+                    return _name;
+                }
+
+                return String.Format("{0}{1}", _name, _semanticIndex); 
+            }
+        }
+
         internal uint SemanticIndex
         {
             get { return _semanticIndex; }

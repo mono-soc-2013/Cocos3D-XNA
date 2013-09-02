@@ -166,7 +166,9 @@ namespace Cocos3D
 
         #region Textures
 
-        SemanticTextureCount,          
+        SemanticTextureCount, 
+        SemanticTexUnitMode,
+        SemanticTexUnitConstantColor,
         SemanticTextureSampler,                 
         SemanticTexture2DCount,                 
         SemanticTexture2DSampler,       

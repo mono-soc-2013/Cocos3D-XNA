@@ -110,5 +110,8 @@
     <BundleResource Include="Content\BasicEffect.ogl.mgfxo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="Content\crate.jpg" />
+    <BundleResource Include="Content\logo.jpg" />
+    <BundleResource Include="Content\logo.gif" />
   </ItemGroup>
 </Project>

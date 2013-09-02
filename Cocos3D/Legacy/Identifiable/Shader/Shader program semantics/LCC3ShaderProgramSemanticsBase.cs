@@ -121,7 +121,9 @@ namespace Cocos3D
         public bool PopulateUniformWithVisitor(LCC3ShaderUniform uniform, LCC3NodeDrawingVisitor visitor)
         {
             LCC3Semantic semantic = uniform.Semantic;
+            uint semanticIndex = uniform.SemanticIndex;
             LCC3Material material;
+            uint numOfTextures = (uint)visitor.CurrentMaterial.TextureCount();
             bool isInverted;
 
             switch (semantic)
@@ -166,6 +168,7 @@ namespace Cocos3D
                 
 
                 #region Environment semantics
+
                 case LCC3Semantic.SemanticEyePosition:
                     uniform.SetValue(visitor.ViewMatrix.Inverse().TranslationOfTransformMatrix());
                     return true;
@@ -187,7 +190,6 @@ namespace Cocos3D
                 case LCC3Semantic.SemanticModelMatrixInvTran:
                     uniform.SetValue(visitor.ModelMatrix.Transpose().Inverse());
                     return true;
-
 
                 #endregion Environment semantics
 
@@ -224,6 +226,49 @@ namespace Cocos3D
                     return true;
 
                 #endregion Setting material semantics
+
+
+                #region Textures
+
+                case LCC3Semantic.SemanticTextureCount:
+                    uniform.SetValue(visitor.CurrentMaterial.TextureCount());
+                    return true;
+                case LCC3Semantic.SemanticTexUnitMode:
+                    if(semanticIndex < numOfTextures)
+                    {
+                        LCC3TextureUnitMode texUnitMode = visitor.CurrentMaterial.TextureForTextureUnit(semanticIndex).TextureUnitMode;
+                        uniform.SetValue((int)texUnitMode);
+                    } 
+                    else
+                    {
+                        uniform.SetValue(0);
+                    }
+                    return true;
+                case LCC3Semantic.SemanticVertexTexture:
+                    if(semanticIndex < numOfTextures)
+                    {
+                        LCC3Texture texture = visitor.CurrentMaterial.TextureForTextureUnit(semanticIndex);
+                        LCC3GraphicsTexture2D tex2D = texture.GraphicsTexture as LCC3GraphicsTexture2D;
+                        uniform.SetValue(tex2D);
+                    }
+                    else
+                    {
+                        uniform.SetValue(null);
+                    }
+                    return true;
+                case LCC3Semantic.SemanticTexUnitConstantColor:
+                    if(semanticIndex < numOfTextures)
+                    {
+                        LCC3Texture texture = visitor.CurrentMaterial.TextureForTextureUnit(semanticIndex);
+                        uniform.SetValue(texture.TextureUnitConstantColor.ToVector4());
+                    }
+                    else
+                    {
+                        uniform.SetValue(LCC3Vector4.CC3Vector4One);
+                    }
+                    return true;
+
+                #endregion Textures
 
 
                 #region Light semantics

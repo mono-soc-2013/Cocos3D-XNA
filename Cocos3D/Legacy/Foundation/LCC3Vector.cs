@@ -29,6 +29,9 @@ namespace Cocos3D
         private static readonly LCC3Vector _CC3VectorUnitCube = new LCC3Vector(1f);
         private static readonly LCC3Vector _CC3VectorNull = new LCC3Vector(float.PositiveInfinity);
         private static readonly LCC3Vector _CC3VectorUp = new LCC3Vector(Vector3.Up);
+        private static readonly LCC3Vector _CC3VectorUnitXPositive = new LCC3Vector(1.0f, 0.0f, 0.0f);
+        private static readonly LCC3Vector _CC3VectorUnitYPositive = new LCC3Vector(0.0f, 1.0f, 0.0f);
+        private static readonly LCC3Vector _CC3VectorUnitZPositive = new LCC3Vector(0.0f, 0.0f, 1.0f);
 
         // Private instance fields
 
@@ -56,6 +59,21 @@ namespace Cocos3D
         public static LCC3Vector CC3VectorUp
         {
             get { return _CC3VectorUp; }
+        }
+
+        public static LCC3Vector CC3UnitXPositive
+        {
+            get { return _CC3VectorUnitXPositive; }
+        }
+
+        public static LCC3Vector CC3UnitYPositive
+        {
+            get { return _CC3VectorUnitYPositive; }
+        }
+
+        public static LCC3Vector CC3UnitZPositive
+        {
+            get { return _CC3VectorUnitZPositive; }
         }
 
         // Public instance properties

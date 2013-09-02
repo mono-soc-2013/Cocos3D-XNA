@@ -17,6 +17,7 @@
 // Please see README.md to locate the external API documentation.
 //
 using System;
+using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
@@ -40,9 +41,17 @@ namespace Cocos3D
 
         #region Allocation and initialization
 
-        public LCC3GraphicsTexture2D(string fileName) : base(fileName)
+        public LCC3GraphicsTexture2D(string fileName, bool xnbResource=false) : base(fileName)
         {
-            _xnaTexture = LCC3ProgPipeline.SharedPipeline().XnaGame.Content.Load<Texture2D>(fileName);
+            if (xnbResource)
+            {
+                _xnaTexture = LCC3ProgPipeline.SharedPipeline().XnaGame.Content.Load<Texture2D>(fileName);
+            }
+            else
+            {
+                _xnaTexture = Texture2D.FromStream(LCC3ProgPipeline.SharedPipeline().XnaGraphicsDevice,
+                                                   new FileStream(fileName, FileMode.Open));
+            }
         }
 
         #endregion Allocation and initialization

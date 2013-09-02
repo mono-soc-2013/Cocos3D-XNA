@@ -67,6 +67,21 @@ namespace Cocos3D
             get { return _varValue; }
         }
 
+        internal int IntValue
+        {
+            get 
+            { 
+                int intValue = 0;
+
+                if (_type == LCC3ElementType.Int)
+                {
+                    intValue = (int)_varValue;
+                }
+
+                return intValue; 
+            } 
+        }
+       
         internal float FloatValue
         {
             get 

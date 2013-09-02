@@ -24,13 +24,14 @@ namespace Cocos3D
     public class LCC3Texture : LCC3Identifiable
     {
         // Static fields
-
         private static int _lastAssignedTextureTag = 0;
 
         // Instance fields
 
-        LCC3GraphicsTexture _graphicsTexture;
-        LCC3TextureUnit _textureUnit;
+        private LCC3GraphicsTexture _graphicsTexture;
+        private LCC3TextureUnit _textureUnit;
+        private LCC3TextureUnitMode _textureUnitMode;
+        private CCColor4F _texUnitConstantColor;
 
         #region Properties
 
@@ -52,6 +53,19 @@ namespace Cocos3D
             get { return _textureUnit; }
             set { _textureUnit = value; }
         }
+
+        public LCC3TextureUnitMode TextureUnitMode
+        {
+            get { return _textureUnitMode; }
+            set { _textureUnitMode = value; }
+        }
+
+        public CCColor4F TextureUnitConstantColor
+        {
+            get { return _texUnitConstantColor; }
+            set { _texUnitConstantColor = value; }
+        }
+
 
         public bool HasPremultipliedAlpha
         {
@@ -101,6 +115,7 @@ namespace Cocos3D
 
         public LCC3Texture(int tag, string name) : base(tag, name)
         {
+            _texUnitConstantColor = new CCColor4F(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
         public void PopulateFrom(LCC3Texture texture)

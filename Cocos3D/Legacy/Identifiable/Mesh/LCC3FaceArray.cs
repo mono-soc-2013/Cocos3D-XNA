@@ -20,22 +20,11 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3ElementType
+    public class LCC3FaceArray
     {
-        None = 0,
-        Float,
-        FloatArray,
-        Fixed,
-        UnsignedByte,
-        UnsignedShort,
-        Boolean,
-        BooleanArray,
-        Vector3,
-        Vector4,
-        Vector4Array,
-        Float4x4,
-        Float3x3,
-        Texture2D
+        public LCC3FaceArray()
+        {
+        }
     }
 }
 

@@ -46,7 +46,21 @@ uniform float3 u_cc3DirLightSpecularColor;
 
 uniform bool u_cc3VertexHasTexCoord;
 
-DECLARE_TEXTURE(Texture, 0);
+#define MAX_TEXTURES 2
+#define TU_MODE_REPLACE 0
+#define TU_MODE_COMBINE 1
+#define TU_MODE_ADD 2
+#define TU_MODE_DECAL 3
+#define TU_MODE_BLEND 4
+
+uniform int u_cc3TextureCount;
+uniform int u_cc3TextureUnitMode0;
+uniform int u_cc3TextureUnitMode1;
+uniform float4 u_cc3TextureUnitColor0;
+uniform float4 u_cc3TextureUnitColor1;
+
+DECLARE_TEXTURE(u_cc3Texture0, 0);
+DECLARE_TEXTURE(u_cc3Texture1, 1);
 
 // Structures
 
@@ -167,7 +181,7 @@ float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
    
 	if(u_cc3VertexHasTexCoord == true)
 	{
-		color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
+		color = SAMPLE_TEXTURE(u_cc3Texture0, pin.TexCoord) * pin.Diffuse;
 	}
     else
 	{
@@ -180,4 +194,62 @@ float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
     return color;
 }
 
+// Pixel shader multiple textures
+
+float4 ApplyTexture(float4 color, float4 texColor, int texUnitMode, float4 texUnitColor)
+{	
+	float4 newColor = color;
+	
+	if(texUnitMode == TU_MODE_REPLACE)
+	{
+		newColor = texColor;
+	}
+	
+	else if(texUnitMode == TU_MODE_ADD)
+	{
+		newColor.rgb += texColor.rgb;
+	}
+	
+	else if(texUnitMode == TU_MODE_DECAL)
+	{
+		newColor.rgb = (texColor.rgb * texColor.a) + (newColor.rgb * (1.0 - texColor.a));
+	}
+	
+	else if(texUnitMode == TU_MODE_BLEND)
+	{
+		newColor.rgb =  (newColor.rgb * (1.0 - (texColor.rgb * texUnitColor.a))) + (texUnitColor.rgb * texColor.rgb * texUnitColor.a);
+		//newColor.a *= texColor.a;
+	}
+	
+	return newColor;
+}
+
+float4 ApplyTextures(float4 color, float2 texCoord)
+{
+	int numOfTex = min(u_cc3TextureCount, MAX_TEXTURES);
+	float4 newColor = color;
+	
+	newColor = ApplyTexture(newColor, SAMPLE_TEXTURE(u_cc3Texture0, texCoord), u_cc3TextureUnitMode0, u_cc3TextureUnitColor0);
+	
+	if(numOfTex > 1)
+	{
+		newColor = ApplyTexture(newColor, SAMPLE_TEXTURE(u_cc3Texture1, texCoord), u_cc3TextureUnitMode1, u_cc3TextureUnitColor1);
+	}
+	
+	return newColor;
+}
+
+float4 PSBasicVertexLightingMultipleTxNoFog(VSOutputTx pin) : SV_Target0
+{
+	float4 color = 0;
+   
+	color = ApplyTextures(color, pin.TexCoord) * pin.Diffuse;
+	
+	
+    AddSpecular(color, pin.Specular.rgb);
+    
+    return color;
+}
+
 TECHNIQUE(BasicEffect_Texture, VSBasicVertexLightingTxVc, PSBasicVertexLightingTxNoFog);
+TECHNIQUE(MultiEffect_Texture, VSBasicVertexLightingTxVc, PSBasicVertexLightingMultipleTxNoFog);

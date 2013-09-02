@@ -51,7 +51,7 @@ namespace Cocos3D
 
         public override string NameSuffix
         {
-            get { return ""; }
+            get { return String.Empty; }
         }
 
         public uint BufferID
@@ -142,7 +142,7 @@ namespace Cocos3D
 
         public uint AllocatedVertexCapacity
         {
-            get { return 0; }
+            get { return _allocatedVertexCapacity; }
             set { this.AllocateVertexCapacity(value); }
         }
 
@@ -166,6 +166,7 @@ namespace Cocos3D
         public bool ShouldAllowVertexBuffering
         {
             get { return _shouldAllowVertexBuffering; }
+            set { _shouldAllowVertexBuffering = value; }
         }
 
         public bool ShouldReleaseRedundantContent

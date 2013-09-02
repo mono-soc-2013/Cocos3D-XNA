@@ -72,8 +72,9 @@ namespace Cocos3D
 #else
             shaderFileResource = "Cocos3D.Legacy.Identifiable.Shader.Resources.CC3MultiTextureConfigurable.ogl.mgfxo";
 #endif
-
-            return ProgramFromShaderFile(shaderFileResource);
+            LCC3ShaderProgram shaderProg = ProgramFromShaderFile(shaderFileResource);
+            shaderProg.XnaShaderEffect.CurrentTechnique = shaderProg.XnaShaderEffect.Techniques[1];
+            return shaderProg;
         }
 
         #endregion Program options

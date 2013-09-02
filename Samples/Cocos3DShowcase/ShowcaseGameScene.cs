@@ -51,6 +51,7 @@ namespace Cocos3DShowcase
         private LCC3ShaderProgram _materialShaderProgram;
         private LCC3NodeDrawingVisitor _drawingVisitor;
 
+        private LCC3Material _multiTextureMaterial;
 
         #region Constructors
 
@@ -74,14 +75,134 @@ namespace Cocos3DShowcase
             this.RunCameraActionForTextureTest();
             */
 
+            /*
             this.InitializeCameraForMaterialTest();
             this.InitializeMaterialCubes();
             this.InitializeMaterialShader();
             this.InitializeMaterials();
             this.InitializeMaterialDrawingData();
+            */
+
+            this.InitializeCameraForMaterialTest();
+            this.InitializeMaterialCubes();
+            this.InitializeMaterialShader();
+            this.InitializeMultiTextureMaterials();
+            this.InitializeMaterialDrawingData();
         }
 
         #endregion Constructors
+
+
+        #region Multitexture material test
+
+        private void InitializeMultiTextureMaterials()
+        {
+            _listOfMaterials = new List<LCC3Material>();
+
+            LCC3GraphicsTexture2D crateTexData = new LCC3GraphicsTexture2D("Content/crate.jpg");
+            LCC3GraphicsTexture2D logoTexData = new LCC3GraphicsTexture2D("Content/logo.gif");
+
+            LCC3Texture crateTexture = new LCC3Texture(0, "crate");
+            crateTexture.GraphicsTexture = crateTexData;
+            crateTexture.TextureUnitMode = LCC3TextureUnitMode.Replace;
+
+            LCC3Texture logoTexture = new LCC3Texture(1, "logo");
+            logoTexture.GraphicsTexture = logoTexData;
+            logoTexture.TextureUnitMode = LCC3TextureUnitMode.Blend;
+            logoTexture.TextureUnitConstantColor = new CCColor4F(0.8f, 0.8f, 0.8f, 0.5f);
+
+            LCC3Texture logoTextureDecal = new LCC3Texture(1, "logo");
+            logoTextureDecal.GraphicsTexture = logoTexData;
+            logoTextureDecal.TextureUnitMode = LCC3TextureUnitMode.Decal;
+            logoTextureDecal.TextureUnitConstantColor = new CCColor4F(0.8f, 0.8f, 0.8f, 0.5f);
+
+            LCC3Texture logoTextureReplace = new LCC3Texture(1, "logo");
+            logoTextureReplace.GraphicsTexture = logoTexData;
+            logoTextureReplace.TextureUnitMode = LCC3TextureUnitMode.Replace;
+            logoTextureReplace.TextureUnitConstantColor = new CCColor4F(0.8f, 0.8f, 0.8f, 0.5f);
+
+            LCC3Texture logoTextureBlendColor = new LCC3Texture(1, "logo");
+            logoTextureBlendColor.GraphicsTexture = logoTexData;
+            logoTextureBlendColor.TextureUnitMode = LCC3TextureUnitMode.Blend;
+            logoTextureBlendColor.TextureUnitConstantColor = new CCColor4F(0.8f, 0.3f, 0.3f, 0.6f);
+
+            LCC3Material multiTexMaterial = new LCC3Material(0, "Multitex");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.5f, 0.1f, 0.1f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(crateTexture);
+            multiTexMaterial.AddTexture(logoTextureReplace);
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "Multitex");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.5f, 0.1f, 0.1f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(crateTexture);
+            multiTexMaterial.AddTexture(logoTextureDecal);
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "Multitex");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.5f, 0.1f, 0.1f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(crateTexture);
+            multiTexMaterial.AddTexture(logoTexture);
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "Multitex");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.5f, 0.1f, 0.1f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(crateTexture);
+            multiTexMaterial.AddTexture(logoTextureBlendColor);
+
+            _listOfMaterials.Add(multiTexMaterial);
+        }
+
+        public void DrawMultiTextureMaterialTest()
+        {
+            _progPipeline.SetClearColor(new CCColor4F(0.2f, 0.5f, 0.8f, 1.0f));
+            _progPipeline.SetClearDepth(100.0f);
+            _progPipeline.ClearBuffers(LCC3BufferMask.ColorBuffer | LCC3BufferMask.DepthBuffer);
+
+            _progPipeline.EnableBlend(false);
+            _progPipeline.EnableDepthTest(true);
+            _progPipeline.SetDepthMask(true);
+            _progPipeline.SetDepthFunc(LCC3DepthStencilFuncMode.LessOrEqual);
+            _progPipeline.EnableCullFace(true);
+
+            for (int i=0; i < _numOfMaterialCubes; i++)
+            {
+                _drawingVisitor.ModelMatrix = _listOfMaterialCubeMatrices[i];
+                _drawingVisitor.ViewMatrix = new LCC3Matrix4x4(_graphicsContext.ViewMatrix.XnaMatrix);
+                _drawingVisitor.ProjMatrix = new LCC3Matrix4x4(_graphicsContext.ProjectionMatrix.XnaMatrix);
+                _drawingVisitor.CurrentMeshNode.Material = _listOfMaterials[i];
+                _progPipeline.BindProgramWithVisitor(_materialShaderProgram, _drawingVisitor);
+                _progPipeline.DrawVertices(LCC3DrawMode.TriangleList, 0, 6);
+            }
+        }
+
+        #endregion  Multitexture material test
 
 
         #region Material test
@@ -109,8 +230,8 @@ namespace Cocos3DShowcase
         {
             _progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribPosition);
             _progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribNormal);
-            //_progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribTexCoords);
-            _progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribColor);
+            _progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribTexCoords);
+            //_progPipeline.EnableVertexAttributeAtIndex(true, LCC3VertexAttrIndex.VertexAttribColor);
 
             LCC3ShaderProgramMatchers programMatchers = new LCC3ShaderProgramMatchers();
             _materialShaderProgram = programMatchers.ConfigurableProgram();
@@ -120,14 +241,27 @@ namespace Cocos3DShowcase
         {
             _listOfMaterials = new List<LCC3Material>();
 
+
+            LCC3GraphicsTexture2D tex2D = new LCC3GraphicsTexture2D("Content/crate.jpg");
+            LCC3Texture tex = new LCC3Texture(0, "tex");
+            tex.GraphicsTexture = tex2D;
+            tex.TextureUnitMode = LCC3TextureUnitMode.Replace;
+
+            LCC3GraphicsTexture2D anotherTex2D = new LCC3GraphicsTexture2D("Content/xamarin.jpeg");
+            LCC3Texture tex2 = new LCC3Texture(1, "tex2");
+            tex2.GraphicsTexture = anotherTex2D;
+            tex2.TextureUnitMode = LCC3TextureUnitMode.Decal;
+
             LCC3Material material = new LCC3Material(0, "Glowy");
             material.ShaderProgram = _materialShaderProgram;
             material.AmbientColor = new CCColor4F(0.0f, 0.1f, 0.1f, 1.0f);
-            material.DiffuseColor = new CCColor4F(0.5f, 0.5f, 1.0f, 1.0f);
+            material.DiffuseColor = new CCColor4F(0.5f, 0.5f, 1.0f, 0.5f);
             material.SpecularColor = new CCColor4F(1.0f, 1.0f, 0.0f, 1.0f);
             material.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.0f, 1.0f);
-            material.Shininess = 100.0f;
+            material.Shininess = 1.0f;
             material.ShouldUseLighting = true;
+            material.AddTexture(tex);
+            material.AddTexture(tex2);
 
             _listOfMaterials.Add(material);
 
@@ -139,6 +273,7 @@ namespace Cocos3DShowcase
             material.EmissionColor = new CCColor4F(0.0f, 0.1f, 0.0f, 1.0f);
             material.Shininess = 1.0f;
             material.ShouldUseLighting = true;
+            material.AddTexture(tex);
 
             _listOfMaterials.Add(material);
 
@@ -150,6 +285,7 @@ namespace Cocos3DShowcase
             material.EmissionColor = new CCColor4F(0.0f, 0.2f, 1.0f, 1.0f);
             material.Shininess = 100.0f;
             material.ShouldUseLighting = true;
+            material.AddTexture(tex);
 
             _listOfMaterials.Add(material);
 
@@ -161,6 +297,7 @@ namespace Cocos3DShowcase
             material.EmissionColor = new CCColor4F(0.1f, 0.15f, 0.15f, 1.0f);
             material.Shininess = 1.0f;
             material.ShouldUseLighting = true;
+            material.AddTexture(tex);
 
             _listOfMaterials.Add(material);
         }
@@ -183,7 +320,7 @@ namespace Cocos3DShowcase
         private void InitializeMaterialDrawingData()
         {
             uint numOfVertices = 18;
-            LCC3Mesh mesh = new LCC3Mesh();
+            LCC3Mesh mesh = new LCC3Mesh(0, "mymesh");
             LCC3VertexLocations locations = new LCC3VertexLocations(1, "locations");
             locations.AllocateVertexCapacity(numOfVertices);
             // Top face
@@ -274,8 +411,8 @@ namespace Cocos3DShowcase
 
             mesh.VertexLocations = locations;
             mesh.VertexNormals = normals;
-            //mesh.VertexTextureCoords = texCoords;
-            mesh.VertexColors = colors;
+            mesh.VertexTextureCoords = texCoords;
+            //mesh.VertexColors = colors;
 
             LCC3Scene scene = new LCC3Scene();
             scene.AmbientLight = new CCColor4F(0.5f, 0.5f, 0.0f, 0.5f);
@@ -756,7 +893,9 @@ namespace Cocos3DShowcase
 
             //this.DrawTextureTest();
 
-            this.DrawMaterialTest();
+            //this.DrawMaterialTest();
+
+            this.DrawMultiTextureMaterialTest();
         }
 
     }

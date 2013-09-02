@@ -479,9 +479,9 @@ namespace Cocos3D
 
         #region Textures
 
-        public uint TextureCount()
+        public int TextureCount()
         {
-            return (uint)_textureOverlays.Count + ((_texture != null) ? 1U: 0U);
+            return _textureOverlays.Count + ((_texture != null) ? 1: 0);
         }
 
         public void AddTexture(LCC3Texture texture)
@@ -497,7 +497,7 @@ namespace Cocos3D
                 Debug.Assert((this.TextureCount() < maxTexUnits),
                              String.Format("Attempt to add texture ignored because platform supports only {0} texture units.", maxTexUnits));
 
-                _textureOverlays.Add(_texture);
+                _textureOverlays.Add(texture);
             }
 
             this.TexturesHaveChanged();

@@ -98,8 +98,6 @@
     <Folder Include="Legacy\Identifiable\" />
     <Folder Include="Legacy\ProgPipeline\" />
     <Folder Include="Legacy\Identifiable\Node\" />
-    <Folder Include="Legacy\Mesh\" />
-    <Folder Include="Legacy\Mesh\VertexArrays\" />
     <Folder Include="Legacy\Matrix\" />
     <Folder Include="Legacy\Foundation\" />
     <Folder Include="Legacy\Extensions\" />
@@ -163,10 +161,6 @@
     <Compile Include="Legacy\Identifiable\LCC3Identifiable.cs" />
     <Compile Include="Legacy\ProgPipeline\LCC3ProgPipeline.cs" />
     <Compile Include="Legacy\Identifiable\Node\LCC3NodeDrawingVisitor.cs" />
-    <Compile Include="Legacy\Mesh\LCC3Mesh.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3DrawableVertexArray.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexArray.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexIndices.cs" />
     <Compile Include="Legacy\Matrix\LCC3Matrix4x3.cs" />
     <Compile Include="Legacy\Matrix\LCC3Matrix4x4.cs" />
     <Compile Include="Legacy\Foundation\LCC3Viewport.cs" />
@@ -214,20 +208,14 @@
     <Compile Include="Legacy\Foundation\LCC3BlendType.cs" />
     <Compile Include="Legacy\Foundation\LCC3AlphaTestFuncMode.cs" />
     <Compile Include="Legacy\Foundation\LCC3ColorUtil.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3ElementType.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\LCC3ElementTypeExtension.cs" />
     <Compile Include="Legacy\Foundation\LCC3BufferTarget.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexNormals.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexTangents.cs" />
     <Compile Include="Legacy\Foundation\LCC3FaceIndices.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\ILCC3ShaderSemanticDelegate.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderProgramSemanticsBase.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3Semantic.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\CCColor4FExtension.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexPointSizes.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexColors.cs" />
     <Compile Include="Legacy\Extensions\EnumExtensions\CCColor4BExtension.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexLocations.cs" />
     <Compile Include="Legacy\Foundation\LCC3BoundingBox.cs" />
     <Compile Include="Legacy\Foundation\LCC3NormalScaling.cs" />
     <Compile Include="Legacy\Identifiable\Shader\Shader program semantics\LCC3ShaderProgramSemanticsByVarName.cs" />
@@ -235,9 +223,22 @@
     <Compile Include="Legacy\Identifiable\Node\Light\LCC3Light.cs" />
     <Compile Include="Legacy\Identifiable\Node\Scene\LCC3Scene.cs" />
     <Compile Include="Legacy\Identifiable\Shader\LCC3ShaderProgramMatchers.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexTextureCoordinates.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexWeights.cs" />
-    <Compile Include="Legacy\Mesh\VertexArrays\LCC3VertexMatrixIndices.cs" />
+    <Compile Include="Legacy\Identifiable\Texture\LCC3TextureUnitMode.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\LCC3Mesh.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3DrawableVertexArray.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3ElementType.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexArray.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexColors.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexIndices.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexLocations.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexMatrixIndices.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexNormals.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexPointSizes.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexTangents.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexTextureCoordinates.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexWeights.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\LCC3FaceArray.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\LCC3VertexContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
