@@ -52,6 +52,9 @@ namespace Cocos3D
                 case LCC3ElementType.UnsignedShort:
                     csharpType = typeof(ushort);
                     break;
+                case LCC3ElementType.UnsignedInt:
+                    csharpType = typeof(uint);
+                    break;
             }
 
             return csharpType;

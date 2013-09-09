@@ -22,14 +22,26 @@ namespace Cocos3D
 {
     public struct LCC3FaceIndices
     {
-        // Instance fields
+        // static vars
 
-        private uint _index1;
-        private uint _index2;
-        private uint _index3;
+        static readonly LCC3FaceIndices _CC3FaceIndicesZero = new LCC3FaceIndices(0,0,0);
 
+        // ivars
+
+        uint _index1;
+        uint _index2;
+        uint _index3;
 
         #region Properties
+
+        // Static properties
+
+        public static LCC3FaceIndices CC3FaceIndicesZero
+        {
+            get { return _CC3FaceIndicesZero; }
+        }
+
+        // Instance properties
 
         public uint Index1
         {
@@ -57,6 +69,19 @@ namespace Cocos3D
             _index2 = index2;
             _index3 = index3;
         }
+
+        public LCC3FaceIndices(LCC3FaceIndices faceIndices, uint offset1, uint offset2, uint offset3)
+        : this(faceIndices.Index1 + offset1, faceIndices.Index2 + offset2, faceIndices.Index3 + offset3)
+        {
+
+        }
+
+        public LCC3FaceIndices(LCC3FaceIndices faceIndices, uint offset)
+        : this(faceIndices, offset, offset, offset)
+        {
+
+        }
+
 
         #endregion Constructors
     }

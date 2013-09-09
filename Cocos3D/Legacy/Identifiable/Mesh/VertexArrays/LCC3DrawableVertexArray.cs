@@ -34,6 +34,7 @@ namespace Cocos3D
         public LCC3DrawMode DrawingMode
         {
             get { return _drawingMode; }
+            set { _drawingMode = value; }
         }
 
         public uint StripCount
@@ -120,7 +121,7 @@ namespace Cocos3D
             }
         }
 
-        protected virtual void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
+        public virtual void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
         {
             // Subclasses to implement
         }
@@ -168,14 +169,66 @@ namespace Cocos3D
             }
         }
 
-        protected LCC3FaceIndices FaceIndicesAtIndex(uint faceIndex)
+        public LCC3FaceIndices FaceIndicesAtIndex(uint faceIndex)
         {
-            return new LCC3FaceIndices(0, 0, 0);
+            if (this.StripCount > 0) 
+            {
+                uint currStripStartFaceCnt = 0;
+                uint nextStripStartFaceCnt = 0;
+                uint stripStartVtxCnt = 0;
+
+                for (uint i = 0; i < this.StripCount; i++) 
+                {
+                    uint stripLen = _stripLengths[i];
+                    nextStripStartFaceCnt += this.FaceCountFromVertexIndexCount(stripLen);
+
+                    if (nextStripStartFaceCnt > faceIndex) 
+                    {
+                        LCC3FaceIndices faceIndices = this.FaceIndicesAtIndex(faceIndex - currStripStartFaceCnt, stripLen);
+
+                        return new LCC3FaceIndices(faceIndices, stripStartVtxCnt);
+                    }
+
+                    currStripStartFaceCnt = nextStripStartFaceCnt;
+                    stripStartVtxCnt += stripLen;
+                }
+
+                return LCC3FaceIndices.CC3FaceIndicesZero;
+            } 
+            else 
+            {
+                return this.FaceIndicesAtIndex( faceIndex, this.VertexCount);
+            }
         }
 
-        protected LCC3FaceIndices FaceIndicesAtIndex(uint faceIndex, uint stripLen)
+        public LCC3FaceIndices FaceIndicesAtIndex(uint faceIndex, uint stripLen)
         {
-            return new LCC3FaceIndices(0, 0, 0);
+            uint firstVtxIdx;         
+            switch (this.DrawingMode) 
+            {
+                case LCC3DrawMode.TriangleList:
+                    firstVtxIdx = faceIndex * 3;
+                    return new LCC3FaceIndices(firstVtxIdx, firstVtxIdx + 1, firstVtxIdx + 2);
+                case LCC3DrawMode.TriangleStrip:
+                    firstVtxIdx = faceIndex;
+                    if (faceIndex % 2 == 0) 
+                    {      
+                        return new LCC3FaceIndices(firstVtxIdx, firstVtxIdx + 1, firstVtxIdx + 2);
+                    } 
+                    else 
+                    {
+                        return new LCC3FaceIndices(firstVtxIdx, firstVtxIdx + 2, firstVtxIdx + 1);
+                    }
+                case LCC3DrawMode.LineList:
+                    firstVtxIdx = faceIndex * 2;
+                    return new LCC3FaceIndices(firstVtxIdx, firstVtxIdx + 1, 0);
+                case LCC3DrawMode.LineStrip:
+                    firstVtxIdx = faceIndex;
+                    return new LCC3FaceIndices(firstVtxIdx, firstVtxIdx + 1, 0);
+                default:
+                    Debug.Assert(false, String.Format("{0} encountered unknown drawing mode {1}", this.FullDescription(), this.DrawingMode));
+                    return LCC3FaceIndices.CC3FaceIndicesZero;
+            }
         }
 
         #endregion Drawing

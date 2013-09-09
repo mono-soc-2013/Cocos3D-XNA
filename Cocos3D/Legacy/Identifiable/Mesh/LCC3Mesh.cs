@@ -18,6 +18,7 @@
 //
 using System;
 using Cocos2D;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
@@ -25,9 +26,11 @@ namespace Cocos3D
     {
         // Static fields
 
-        static int _lastAssignedMeshTag = 0;
+        static int _lastAssignedMeshTag = -1;
+        static int _currentMeshTag = -1;
 
         // Instance fields
+
         float _capacityExpansionFactor;
         LCC3FaceArray _faceArray;
         LCC3VertexLocations _vertexLocations;
@@ -41,6 +44,9 @@ namespace Cocos3D
         LCC3VertexWeights _vertexWeights;
         LCC3VertexPointSizes _vertexPointSizes;
 
+        VertexBuffer _xnaVertexBuffer;
+        IndexBuffer _xnaIndexBuffer;
+
         #region Properties
 
         // Instance properties
@@ -49,12 +55,6 @@ namespace Cocos3D
         {
             get { return _capacityExpansionFactor; }
             set { _capacityExpansionFactor = value; }
-        }
-
-        public LCC3FaceArray FaceArray
-        {
-            get { return _faceArray; }
-            set { _faceArray = value; }
         }
 
         public LCC3VertexLocations VertexLocations
@@ -193,14 +193,45 @@ namespace Cocos3D
                     this.VertexLocations = new LCC3VertexLocations(0,"locations");
                 }
 
-                _vertexNormals.AllocatedVertexCapacity = value;
-                _vertexTangents.AllocatedVertexCapacity = value;
-                _vertexBitangents.AllocatedVertexCapacity = value;
-                _vertexColors.AllocatedVertexCapacity = value;
-                _vertexMatrixIndices.AllocatedVertexCapacity = value;
-                _vertexWeights.AllocatedVertexCapacity = value;
-                _vertexPointSizes.AllocatedVertexCapacity = value;
-                _vertexTexCoords.AllocatedVertexCapacity = value;
+                _vertexLocations.AllocatedVertexCapacity = value;
+
+                if(_vertexNormals != null)
+                    _vertexNormals.AllocatedVertexCapacity = value;
+
+                if(_vertexTangents != null)
+                    _vertexTangents.AllocatedVertexCapacity = value;
+
+                if(_vertexBitangents != null)
+                    _vertexBitangents.AllocatedVertexCapacity = value;
+
+                if(_vertexColors != null)
+                    _vertexColors.AllocatedVertexCapacity = value;
+
+                if(_vertexMatrixIndices != null)
+                    _vertexMatrixIndices.AllocatedVertexCapacity = value;
+
+                if(_vertexWeights != null)
+                    _vertexWeights.AllocatedVertexCapacity = value;
+
+                if(_vertexPointSizes != null)
+                    _vertexPointSizes.AllocatedVertexCapacity = value;
+
+                if(_vertexTexCoords != null)
+                    _vertexTexCoords.AllocatedVertexCapacity = value;
+            }
+        }
+
+        public uint AllocatedVertexIndexCapacity
+        {
+            get { return _vertexIndices != null ? _vertexIndices.AllocatedVertexCapacity : 0; }
+            set
+            {
+                if ( _vertexIndices == null && value > 0 ) 
+                { 
+                    this.VertexIndices = new LCC3VertexIndices(0, "indices"); 
+                }
+
+                _vertexIndices.AllocatedVertexCapacity = value;
             }
         }
 
@@ -260,6 +291,111 @@ namespace Cocos3D
             set { _vertexColors.Opacity = value; }
         }
 
+        // Textures
+
+        public bool ExpectsVerticallyFlippedTextures
+        {
+            get { return (_vertexTexCoords != null) ? _vertexTexCoords.ExpectsVerticallyFlippedTextures : false; }
+            set { _vertexTexCoords.ExpectsVerticallyFlippedTextures = value; }
+        }
+
+        public CCRect TextureRectangle
+        {
+            get { return (_vertexTexCoords != null) ? _vertexTexCoords.TextureRectangle : CCRect.Zero; }
+            set { _vertexTexCoords.TextureRectangle = value; }
+        }
+
+        // Drawing
+
+        public LCC3DrawMode DrawingMode
+        {
+            get 
+            { 
+                if (_vertexIndices != null)
+                {
+                    return _vertexIndices.DrawingMode; 
+                }
+
+                if (_vertexLocations != null)
+                {
+                    return _vertexLocations.DrawingMode;
+                }
+
+                return LCC3DrawMode.TriangleStrip;
+            }
+
+            set
+            {
+                if (_vertexIndices != null)
+                {
+                    _vertexIndices.DrawingMode = value;
+                }
+
+                if (_vertexLocations != null)
+                {
+                    _vertexLocations.DrawingMode = value;
+                }
+            }
+        }
+
+        public bool SwitchingMesh
+        {
+            get
+            {
+                bool shouldSwitch = _currentMeshTag != this.Tag;
+                _currentMeshTag = this.Tag; 
+                return shouldSwitch;
+            }
+        }
+
+        // Faces
+
+        public LCC3FaceArray Faces
+        {
+            get 
+            { 
+                if (_faceArray == null)
+                {
+                    _faceArray = new LCC3FaceArray(0, String.Format("{0]-Faces", this.Name));
+                    _faceArray.Mesh = this;
+                }
+
+                return _faceArray;
+            }
+
+            set { _faceArray = value; _faceArray.Mesh = this; }
+        }
+
+        public bool ShouldCacheFaces
+        {
+            get { return (_faceArray != null )? _faceArray.ShouldCacheFaces : false; }
+            set { _faceArray.ShouldCacheFaces = value; }
+        }
+
+        public uint FaceCount
+        {
+            get 
+            { 
+                if (_vertexIndices != null) return _vertexIndices.FaceCount;
+                if (_vertexLocations != null) return _vertexLocations.FaceCount;
+                return 0; 
+            }
+        }
+
+        // XNA properties
+
+        internal VertexBuffer XnaVertexBuffer
+        {
+            get { return _xnaVertexBuffer; }
+            set { _xnaVertexBuffer = value; }
+        }
+
+        internal IndexBuffer XnaIndexBuffer
+        {
+            get { return _xnaIndexBuffer; }
+            set { _xnaIndexBuffer = value; }
+        }
+
         #endregion Properties
 
 
@@ -274,7 +410,7 @@ namespace Cocos3D
         {
             base.PopulateFrom(anotherMesh);
 
-            this.FaceArray = anotherMesh.FaceArray;
+            this.Faces = anotherMesh.Faces;
             this.VertexLocations = anotherMesh.VertexLocations;                    
             this.VertexNormals = anotherMesh.VertexNormals;                         
             this.VertexTangents = anotherMesh.VertexTangents;                       
@@ -347,7 +483,7 @@ namespace Cocos3D
 
             if ((vtxContentTypes & LCC3VertexContent.VertexContentNormal) > 0) 
             {
-                if (_vertexLocations == null)
+                if (_vertexNormals == null)
                 {
                     this.VertexNormals = new LCC3VertexNormals(0, "normals");
                 }
@@ -760,6 +896,119 @@ namespace Cocos3D
         }
 
         #endregion Mesh geometry
+
+
+        #region Drawing
+
+        public static void ResetSwitching()
+        {
+            _currentMeshTag = 0;
+        }
+
+        public void DrawWithVisitor(LCC3NodeDrawingVisitor visitor)
+        {
+            this.BindWithVisitor(visitor);
+            this.DrawVerticesWithVisitor(visitor);
+        }
+
+        public void DrawWithVisitor(uint vertexIndex, uint count, LCC3NodeDrawingVisitor visitor)
+        {
+            this.BindWithVisitor(visitor);
+            this.DrawVerticesWithVisitor(vertexIndex, count, visitor);
+        }
+
+        public void BindWithVisitor(LCC3NodeDrawingVisitor visitor)
+        {
+            if (this.SwitchingMesh == true)
+            {
+                visitor.ProgramPipeline.BindMeshWithVisitor(this, visitor);
+            }
+        }
+
+        public void DrawVerticesWithVisitor(LCC3NodeDrawingVisitor visitor)
+        {
+            visitor.CurrentShaderProgram.PopulateDrawScopeUniformsWithVisitor(visitor);
+
+            if (_vertexIndices != null) 
+            {
+                _vertexIndices.DrawWithVisitor(visitor);
+            } 
+            else 
+            {
+                _vertexLocations.DrawWithVisitor(visitor);
+            }
+        }
+
+        public void DrawVerticesWithVisitor(uint vertexIndex, uint count, LCC3NodeDrawingVisitor visitor)
+        {
+            visitor.CurrentShaderProgram.PopulateDrawScopeUniformsWithVisitor(visitor);
+
+            if (_vertexIndices != null) 
+            {
+                _vertexIndices.DrawFromIndexWithVisitor(vertexIndex, count, visitor);
+            } 
+            else 
+            {
+                _vertexLocations.DrawFromIndexWithVisitor(vertexIndex, count, visitor);
+            }
+        }
+
+        #endregion Drawing
+
+
+        #region Faces
+
+        public LCC3Face FaceFromIndices(LCC3FaceIndices faceIndices)
+        {
+            return (_vertexLocations != null) ? _vertexLocations.FaceFromIndices(faceIndices) : LCC3Face.CC3FaceZero;
+        }
+
+        public LCC3FaceIndices UncachedFaceIndicesAtFaceIndex(uint faceIndex)
+        {
+            if (_vertexIndices != null)
+            {
+                return _vertexIndices.FaceIndicesAtIndex(faceIndex);
+            }
+
+            if (_vertexLocations != null)
+            {
+                return _vertexLocations.FaceIndicesAtIndex(faceIndex);
+            }
+
+            return LCC3FaceIndices.CC3FaceIndicesZero;
+        }
+
+        public LCC3Face FaceAtIndex(uint faceIndex)
+        {
+            return this.FaceFromIndices(this.FaceIndicesAtIndex(faceIndex));
+        }
+
+        public LCC3FaceIndices FaceIndicesAtIndex(uint faceIndex)
+        {
+            return this.Faces.IndicesAtFaceIndex(faceIndex); 
+        }
+
+        public LCC3Vector FaceCenterAtIndex(uint faceIndex)
+        {
+            return this.Faces.CenterAtFaceIndex(faceIndex);
+        }
+
+        public LCC3Vector FaceNormalAtIndex(uint faceIndex)
+        {
+            return this.Faces.NormalAtFaceIndex(faceIndex);
+        }
+
+        public LCC3Plane FacePlaneAtIndex(uint faceIndex)
+        {
+            return this.Faces.PlaneAtFaceIndex(faceIndex);
+        }
+
+        public LCC3FaceNeighbours FaceNeighbours(uint faceIndex)
+        {
+            return this.Faces.NeighboursAtFaceIndex(faceIndex);
+        }
+
+        #endregion Faces
 
     }
 }

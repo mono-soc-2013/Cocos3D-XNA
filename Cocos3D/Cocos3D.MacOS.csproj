@@ -239,6 +239,11 @@
     <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexWeights.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\LCC3FaceArray.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\LCC3VertexContent.cs" />
+    <Compile Include="Legacy\Foundation\LCC3Face.cs" />
+    <Compile Include="Legacy\Foundation\LCC3Plane.cs" />
+    <Compile Include="Legacy\Foundation\LCC3FaceNeighbours.cs" />
+    <Compile Include="Legacy\Identifiable\Mesh\LCC3ParametricMeshes.cs" />
+    <Compile Include="Legacy\Foundation\LCC3Tessellation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

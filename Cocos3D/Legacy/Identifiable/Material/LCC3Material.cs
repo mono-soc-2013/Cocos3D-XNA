@@ -129,7 +129,7 @@ namespace Cocos3D
         public float Shininess
         {
             get { return _shininess; }
-            set { _shininess = MathHelper.Clamp(value, 0.0f, LCC3Material.CC3DefaultMaterialShininess); }
+            set { _shininess = MathHelper.Clamp(value, 0.0f, _CC3MaximumMaterialShininess); }
         }
 
         public float Reflectivity

@@ -20,24 +20,24 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3ElementType
+    public struct LCC3FaceNeighbours
     {
-        None = 0,
-        Int,
-        Float,
-        FloatArray,
-        Fixed,
-        UnsignedByte,
-        UnsignedShort,
-        UnsignedInt,
-        Boolean,
-        BooleanArray,
-        Vector3,
-        Vector4,
-        Vector4Array,
-        Float4x4,
-        Float3x3,
-        Texture2D
+        // ivars
+
+        uint _neighbourIndex1;
+        uint _neighbourIndex2;
+        uint _neighbourIndex3;
+
+        #region Constructors
+
+        public LCC3FaceNeighbours(uint nIndex1, uint nIndex2, uint nIndex3)
+        {
+            _neighbourIndex1 = nIndex1;
+            _neighbourIndex2 = nIndex2;
+            _neighbourIndex3 = nIndex3;
+        }
+
+        #endregion Constructors
     }
 }
 

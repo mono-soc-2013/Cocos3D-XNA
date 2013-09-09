@@ -105,8 +105,8 @@ namespace Cocos3D
             this.MapVarNameToSemantic("u_cc3Color", LCC3Semantic.SemanticColor, LCC3ElementType.Vector4);                                 
             this.MapVarNameToSemantic("u_cc3MaterialAmbientColor", LCC3Semantic.SemanticMaterialColorAmbient, LCC3ElementType.Vector4);   
             this.MapVarNameToSemantic("u_cc3MaterialDiffuseColor", LCC3Semantic.SemanticMaterialColorDiffuse, LCC3ElementType.Vector4);   
-            this.MapVarNameToSemantic("u_cc3MaterialSpecularColor", LCC3Semantic.SemanticMaterialColorSpecular, LCC3ElementType.Vector3); 
-            this.MapVarNameToSemantic("u_cc3EmissiveColor", LCC3Semantic.SemanticMaterialColorEmission, LCC3ElementType.Vector3);
+            this.MapVarNameToSemantic("u_cc3MaterialSpecularColor", LCC3Semantic.SemanticMaterialColorSpecular, LCC3ElementType.Vector4); 
+            this.MapVarNameToSemantic("u_cc3MaterialEmissiveColor", LCC3Semantic.SemanticMaterialColorEmission, LCC3ElementType.Vector4);
             this.MapVarNameToSemantic("u_cc3MaterialOpacity", LCC3Semantic.SemanticMaterialOpacity, LCC3ElementType.Float);             
             this.MapVarNameToSemantic("u_cc3MaterialShininess", LCC3Semantic.SemanticMaterialShininess, LCC3ElementType.Float);         
             this.MapVarNameToSemantic("u_cc3MaterialReflectivity", LCC3Semantic.SemanticMaterialReflectivity, LCC3ElementType.Float);   
@@ -114,9 +114,10 @@ namespace Cocos3D
 
             // Environment
             this.MapVarNameToSemantic("u_cc3EyePosition", LCC3Semantic.SemanticEyePosition, LCC3ElementType.Vector3);
-            this.MapVarNameToSemantic("u_cc3MatrixModel", LCC3Semantic.SemanticModelMatrix, LCC3ElementType.Float4x4);
+            this.MapVarNameToSemantic("u_cc3WorldMatrix", LCC3Semantic.SemanticModelMatrix, LCC3ElementType.Float4x4);
+            this.MapVarNameToSemantic("u_cc3ViewMatrix", LCC3Semantic.SemanticViewMatrix, LCC3ElementType.Float4x4);
             this.MapVarNameToSemantic("u_cc3MatrixModelView", LCC3Semantic.SemanticModelViewMatrix, LCC3ElementType.Float4x4); 
-            this.MapVarNameToSemantic("u_cc3MatrixProj", LCC3Semantic.SemanticProjMatrix, LCC3ElementType.Float4x4);
+            this.MapVarNameToSemantic("u_cc3ProjMatrix", LCC3Semantic.SemanticProjMatrix, LCC3ElementType.Float4x4);
             this.MapVarNameToSemantic("u_cc3MatrixModelViewInvTran", LCC3Semantic.SemanticModelViewMatrixInvTran, LCC3ElementType.Float3x3);
             this.MapVarNameToSemantic("u_cc3WorldViewProj", LCC3Semantic.SemanticModelViewProjMatrix, LCC3ElementType.Float4x4);
             this.MapVarNameToSemantic("u_cc3WorldInverseTranspose", LCC3Semantic.SemanticModelMatrixInvTran, LCC3ElementType.Float3x3);
@@ -131,11 +132,11 @@ namespace Cocos3D
             this.MapVarNameToSemantic("u_cc3DirLightDirection", LCC3Semantic.SemanticLightDirection, 
                                       LCC3ElementType.Vector3);
             this.MapVarNameToSemantic("u_cc3DirLightDiffuseColor", LCC3Semantic.SemanticLightColorDiffuse, 
-                                      LCC3ElementType.Vector3);
+                                      LCC3ElementType.Vector4);
             this.MapVarNameToSemantic("u_cc3LightAmbientColor", LCC3Semantic.SemanticLightColorAmbient, 
                                       LCC3ElementType.Vector4);
             this.MapVarNameToSemantic("u_cc3DirLightSpecularColor", LCC3Semantic.SemanticLightColorSpecular, 
-                                      LCC3ElementType.Vector3);
+                                      LCC3ElementType.Vector4);
             /*
             this.MapVarNameToSemantic("u_cc3LightIsLightEnabled", LCC3Semantic.SemanticLightIsEnabled,
                                       LCC3ElementType.BooleanArray, LCC3Light.DefaultMaxNumOfLights);

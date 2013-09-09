@@ -18,11 +18,16 @@
 //
 using System;
 using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Cocos3D
 {
     public class LCC3VertexIndices : LCC3DrawableVertexArray
     {
+        IndexBuffer _xnaIndexBuffer;
+        uint _lastDrawnStartingIndex;
+        uint _lastDrawnIndicesCount;
+
         #region Properties
 
         // Static properties
@@ -51,7 +56,7 @@ namespace Cocos3D
 
         public LCC3VertexIndices(int tag, string name) : base(tag, name)
         {
-            this.ElementType = LCC3ElementType.UnsignedShort;
+            this.ElementType = LCC3ElementType.UnsignedInt;
             this.ElementSize = 1;
         }
 
@@ -123,14 +128,14 @@ namespace Cocos3D
 
         #region Drawing
 
-        protected override void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
+        public override void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
         {
             base.DrawFromIndexWithVisitor(vertexIndex, vertexCount, visitor);
 
             switch (this.ElementType)
             {
-                case LCC3ElementType.UnsignedShort:
-                    this.PrimitiveDrawFromIndexWithVisitor<ushort>(vertexIndex, vertexCount, visitor);
+                case LCC3ElementType.UnsignedInt:
+                    this.PrimitiveDrawFromIndexWithVisitor<uint>(vertexIndex, vertexCount, visitor);
                     break;
 
             }
@@ -138,9 +143,31 @@ namespace Cocos3D
 
         private void PrimitiveDrawFromIndexWithVisitor<T>(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor) where T : struct, IComparable
         {
-            T[] indices = Array.ConvertAll(_vertices, item => (T)item);
-            ArraySegment<T> arraySegment = new ArraySegment<T>(indices, (int)vertexIndex, (int)vertexCount);
-            visitor.ProgramPipeline.DrawIndices<T>(arraySegment, this.ElementType, this.DrawingMode, 0);
+            this.LoadXnaIndexBuffer<T>(vertexIndex, vertexCount);
+            visitor.ProgramPipeline.DrawIndices<T>(vertexCount, vertexIndex, this.ElementType, this.DrawingMode, 0);
+        }
+
+        private void LoadXnaIndexBuffer<T>(uint vertexIndex, uint vertexCount) where T : struct, IComparable
+        {
+            LCC3ProgPipeline progPipeline = LCC3ProgPipeline.SharedPipeline();
+
+            if (_xnaIndexBuffer == null || _lastDrawnIndicesCount != vertexCount || _lastDrawnStartingIndex != vertexIndex)
+            {
+                T[] indices = Array.ConvertAll(_vertices, item => (T)item);
+                ArraySegment<T> arraySegment = new ArraySegment<T>(indices, (int)vertexIndex, (int)vertexCount);
+                T[] subIndices = arraySegment.Array;
+
+                Type xnaType = this.ElementType.CSharpType();
+
+                _xnaIndexBuffer = new IndexBuffer(progPipeline.XnaGraphicsDevice, xnaType, subIndices.Count(), BufferUsage.WriteOnly);
+
+                _xnaIndexBuffer.SetData(subIndices);
+
+                _lastDrawnIndicesCount = vertexCount;
+                _lastDrawnStartingIndex = vertexIndex;
+            }
+
+            progPipeline.XnaIndexBuffer = _xnaIndexBuffer;
         }
 
         #endregion Drawing

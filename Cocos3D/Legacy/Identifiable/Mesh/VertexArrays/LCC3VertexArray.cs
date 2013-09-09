@@ -112,7 +112,7 @@ namespace Cocos3D
 
         public virtual LCC3ElementType ElementType
         {
-            get { return 0; }
+            get { return _elementType; }
             set
             {
                 LCC3ElementType currType = _elementType;

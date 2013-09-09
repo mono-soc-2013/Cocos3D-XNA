@@ -274,6 +274,14 @@ namespace Cocos3D
                                         LCC3NodeDrawingVisitor visitor)
         {
             mesh.VertexIndices.BindContentToAttributeAtIndexWithVisitor(LCC3ProgPipeline.VertexAttributeIndexUnavailable, visitor);
+
+            if (mesh.XnaVertexBuffer == null)
+            {
+                this.GenerateVertexBuffer();
+                mesh.XnaVertexBuffer = _xnaVertexBuffer;
+            }
+
+            _xnaVertexBuffer = mesh.XnaVertexBuffer;
         }
 
         public void BindVertexAttributeWithVisitor(LCC3ShaderAttribute attribute, 
@@ -316,7 +324,7 @@ namespace Cocos3D
             }
         }
 
-        public void GenerateVertexBuffer()
+        private void GenerateVertexBuffer()
         {
             int numOfVertices = _vertexAttributes[(int)LCC3VertexAttrIndex.VertexAttribPosition].Vertices.Length;
             _vertexData = new CC3VertexType[numOfVertices];
@@ -357,7 +365,6 @@ namespace Cocos3D
 
             _xnaVertexBuffer.SetData<CC3VertexType>( _vertexData );
 
-            _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
         }
 
         public void ClearUnboundVertexAttributes()
@@ -468,14 +475,10 @@ namespace Cocos3D
             }
         }
 
-        public void DrawIndices<T>(ArraySegment<T> arraySegment, LCC3ElementType type, LCC3DrawMode drawMode, int minVertexIndex) where T : struct
+        public void DrawIndices<T>(uint vertexCount, uint startingVertexIndex, LCC3ElementType type, LCC3DrawMode drawMode, int minVertexIndex) where T : struct
         {
-            Type xnaType = type.CSharpType();
-
-            _xnaIndexBuffer = new IndexBuffer(_xnaGraphicsDevice, xnaType, arraySegment.Array.Count(), BufferUsage.WriteOnly);
-
-            _xnaIndexBuffer.SetData(arraySegment.Array);
             _xnaGraphicsDevice.SetVertexBuffer(_xnaVertexBuffer);
+            _xnaGraphicsDevice.Indices = _xnaIndexBuffer;
 
             foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
             {
@@ -484,12 +487,13 @@ namespace Cocos3D
                     drawMode.XnaPrimitiveType(), 
                     0, 
                     minVertexIndex, 
-                    arraySegment.Array.Count(), 
-                    arraySegment.Offset, 
-                    (int)LCC3DrawableVertexArray.FaceCountFromVertexIndexCount((uint)arraySegment.Count, drawMode));
+                    (int)vertexCount, 
+                    (int)startingVertexIndex, 
+                    (int)LCC3DrawableVertexArray.FaceCountFromVertexIndexCount((uint)vertexCount, drawMode));
             }
         }
 
+        /*
         public void DrawIndices(LCC3DrawMode drawMode, int vertexOffset, int minVertexIndex, int numOfVertices, int startIndex, int primitiveCount)
         {
             foreach (EffectPass pass in _currentlyActiveShader.XnaShaderEffect.CurrentTechnique.Passes)
@@ -498,6 +502,7 @@ namespace Cocos3D
                 _xnaGraphicsDevice.DrawIndexedPrimitives(drawMode.XnaPrimitiveType(), vertexOffset, minVertexIndex, numOfVertices, startIndex, primitiveCount);
             }
         }
+        */
 
         #endregion Vertex attributes
 

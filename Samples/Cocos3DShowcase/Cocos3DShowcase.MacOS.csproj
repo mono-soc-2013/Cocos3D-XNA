@@ -113,5 +113,7 @@
     <BundleResource Include="Content\crate.jpg" />
     <BundleResource Include="Content\logo.jpg" />
     <BundleResource Include="Content\logo.gif" />
+    <BundleResource Include="Content\beachball.jpg" />
+    <BundleResource Include="Content\crate_map.jpg" />
   </ItemGroup>
 </Project>

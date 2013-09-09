@@ -1,0 +1,11 @@
+using System;
+namespace Cocos3D
+{
+	public class LCC3Mesh
+	{
+		public LCC3Mesh()
+		{
+		}
+	}
+}
+

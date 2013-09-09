@@ -281,13 +281,25 @@ namespace Cocos3D
             base.ReleaseRedundantContent();
         }
 
-        protected override void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
+        public override void DrawFromIndexWithVisitor(uint vertexIndex, uint vertexCount, LCC3NodeDrawingVisitor visitor)
         {
             base.DrawFromIndexWithVisitor(vertexIndex, vertexCount, visitor);
             visitor.ProgramPipeline.DrawVertices(this.DrawingMode, (int)(_firstVertex + vertexIndex), (int)vertexCount);
         }
 
         #endregion Drawing
+
+
+        #region Faces
+
+        public LCC3Face FaceFromIndices(LCC3FaceIndices faceIndices)
+        {
+            return new LCC3Face(this.LocationAt(faceIndices.Index1), 
+                                this.LocationAt(faceIndices.Index2), 
+                                this.LocationAt(faceIndices.Index3));
+        }
+
+        #endregion Faces
     }
 }
 

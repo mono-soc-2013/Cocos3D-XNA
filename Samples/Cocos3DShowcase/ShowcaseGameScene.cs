@@ -51,7 +51,8 @@ namespace Cocos3DShowcase
         private LCC3ShaderProgram _materialShaderProgram;
         private LCC3NodeDrawingVisitor _drawingVisitor;
 
-        private LCC3Material _multiTextureMaterial;
+        private List<LCC3Matrix4x4> _listOfShapeMatrices;
+        private List<LCC3ParametricMeshes> _listOfShapeMeshes;
 
         #region Constructors
 
@@ -83,14 +84,217 @@ namespace Cocos3DShowcase
             this.InitializeMaterialDrawingData();
             */
 
+            /*
             this.InitializeCameraForMaterialTest();
             this.InitializeMaterialCubes();
             this.InitializeMaterialShader();
             this.InitializeMultiTextureMaterials();
             this.InitializeMaterialDrawingData();
+            */
+
+            this.InitializeCameraForMaterialTest();
+            this.InitializeParametricMeshPositions();
+            this.InitializeMaterialShader();
+            this.InitializeParametricMeshMaterials();
+            this.InitializeParametricMeshDrawingData();
         }
 
         #endregion Constructors
+
+
+        #region Parametric meshes test
+
+        private void InitializeParametricMeshPositions()
+        {
+            _listOfShapeMatrices = new List<LCC3Matrix4x4>();
+
+            Vector3 shapePosition = new Vector3(-15.0f, 0.0f, 0.0f);
+
+            // Sphere transform
+            _listOfShapeMatrices.Add(
+                new LCC3Matrix4x4(Matrix.CreateRotationZ(MathHelper.ToRadians(-15.0f))  * Matrix.CreateTranslation(shapePosition)));
+
+            shapePosition.X += 10.0f;
+
+            // Cone transform
+            _listOfShapeMatrices.Add(
+                new LCC3Matrix4x4(Matrix.CreateRotationX(MathHelper.ToRadians(10.0f))  * Matrix.CreateTranslation(shapePosition)));
+            
+            shapePosition.X += 5.0f;
+
+            // Cube transform
+            _listOfShapeMatrices.Add(
+                new LCC3Matrix4x4(Matrix.CreateRotationY(MathHelper.ToRadians(10.0f))  * Matrix.CreateTranslation(shapePosition)));
+
+            shapePosition.X += 15.0f;
+
+            // Plane transform
+            _listOfShapeMatrices.Add(
+                new LCC3Matrix4x4(Matrix.CreateRotationX(MathHelper.ToRadians(-45.0f))  * Matrix.CreateTranslation(shapePosition)));
+        }
+
+        private void InitializeParametricMeshMaterials()
+        {
+            _listOfMaterials = new List<LCC3Material>();
+
+            LCC3GraphicsTexture2D crateTexData = new LCC3GraphicsTexture2D("Content/crate_map.jpg");
+            LCC3GraphicsTexture2D beachBallTexData = new LCC3GraphicsTexture2D("Content/beachball.jpg");
+            LCC3GraphicsTexture2D logoTexData = new LCC3GraphicsTexture2D("Content/logo.jpg");
+
+            LCC3Texture crateTexture = new LCC3Texture(0, "crate");
+            crateTexture.GraphicsTexture = crateTexData;
+            crateTexture.TextureUnitMode = LCC3TextureUnitMode.Replace;
+
+            LCC3Texture beachballTexture = new LCC3Texture(1, "beachball");
+            beachballTexture.GraphicsTexture = beachBallTexData;
+            beachballTexture.TextureUnitMode = LCC3TextureUnitMode.Replace;
+
+            LCC3Texture logoTexture = new LCC3Texture(1, "logo");
+            logoTexture.GraphicsTexture = logoTexData;
+            logoTexture.TextureUnitMode = LCC3TextureUnitMode.Replace;
+
+            LCC3Material multiTexMaterial = new LCC3Material(0, "sphereMaterial");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.2f, 0.2f, 0.2f, 0.5f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 3.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(beachballTexture);
+
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "coneMaterial");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.1f, 0.1f, 0.1f, 0.3f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.8f, 0.5f, 0.2f, 0.8f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.5f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.9f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.Shininess = 3.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(beachballTexture);
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "cubeMaterial");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(0.5f, 0.5f, 0.5f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(1.0f, 0.58f, 0.8f, 1.0f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.8f, 0.8f, 0.9f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.3f, 0.4f, 0.2f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(crateTexture);
+
+            _listOfMaterials.Add(multiTexMaterial);
+
+            multiTexMaterial = new LCC3Material(0, "planeMaterial");
+            multiTexMaterial.ShaderProgram = _materialShaderProgram;
+            multiTexMaterial.AmbientColor = new CCColor4F(1.0f, 1.0f, 1.0f, 1.0f);
+            multiTexMaterial.DiffuseColor = new CCColor4F(0.5f, 0.5f, 1.2f, 0.5f);
+            multiTexMaterial.SpecularColor = new CCColor4F(1.0f, 0.6f, 0.0f, 1.0f);
+            multiTexMaterial.EmissionColor = new CCColor4F(0.8f, 0.8f, 0.8f, 1.0f);
+            multiTexMaterial.Shininess = 1.0f;
+            multiTexMaterial.ShouldUseLighting = true;
+            multiTexMaterial.AddTexture(logoTexture);
+
+            _listOfMaterials.Add(multiTexMaterial);
+        }
+
+        private void InitializeParametricMeshDrawingData()
+        {
+            _listOfShapeMeshes = new List<LCC3ParametricMeshes>();
+
+            LCC3ParametricMeshes mesh = new LCC3ParametricMeshes(0, "sphere");
+            mesh.PopulateAsSphere(3.0f, new LCC3Tessellation(50,50));
+
+            _listOfShapeMeshes.Add(mesh);
+
+            mesh = new LCC3ParametricMeshes(1, "cone");
+            mesh.PopulateAsHollowCone(3.0f, 5.0f, new LCC3Tessellation(50, 50));
+
+            _listOfShapeMeshes.Add(mesh);
+
+            mesh = new LCC3ParametricMeshes(2, "box");
+            mesh.PopulateAsSolidBox(new LCC3BoundingBox(0.0f, 0.0f, 0.0f, 5.0f, 5.0f, 5.0f), false);
+
+            _listOfShapeMeshes.Add(mesh);
+
+            mesh = new LCC3ParametricMeshes(3, "plane");
+            mesh.PopulateAsRectangle(new CCSize(7.0f, 7.0f));
+            
+            _listOfShapeMeshes.Add(mesh);
+
+            LCC3Scene scene = new LCC3Scene();
+            scene.AmbientLight = new CCColor4F(1.0f, 1.0f, 1.0f, 1.0f);
+
+            LCC3Material defaultMaterial = new LCC3Material(0, "Default");
+            defaultMaterial.ShaderProgram = _materialShaderProgram;
+            defaultMaterial.AmbientColor = new CCColor4F(0.2f, 1.0f, 0.0f, 1.0f);
+            defaultMaterial.DiffuseColor = new CCColor4F(0.2f, 1.0f, 0.0f, 1.0f);
+            defaultMaterial.SpecularColor = new CCColor4F(1.0f, 1.0f, 1.0f, 1.0f);
+            defaultMaterial.EmissionColor = new CCColor4F(0.2f, 1.0f, 0.0f, 1.0f);
+            defaultMaterial.Shininess = 0.0f;
+            defaultMaterial.ShouldUseLighting = true;
+
+            LCC3MeshNode meshNode = new LCC3MeshNode();
+            meshNode.Material = defaultMaterial;
+            meshNode.Mesh = mesh;
+            meshNode.Parent = scene;
+
+            LCC3Light[] lights = new LCC3Light[(int)LCC3Light.DefaultMaxNumOfLights];
+            for (int i = 0; i < LCC3Light.DefaultMaxNumOfLights; i++)
+            {
+                lights[i] = new LCC3Light();
+                lights[i].Visible = true;
+                lights[i].Location = (new LCC3Vector(0.4f, -0.3f, -0.2f)).NormalizedVector();
+                lights[i].AmbientColor = new CCColor4F(0.2f, 0.5f, 0.2f, 1.0f);
+                lights[i].DiffuseColor = new CCColor4F(1.0f, 1.0f, 1.0f, 1.0f);
+                lights[i].SpecularColor = new CCColor4F(0.9f, 0.9f, 0.9f, 1.0f);
+            }
+
+            scene.Lights = lights;
+
+            _drawingVisitor = new LCC3NodeDrawingVisitor();
+            _drawingVisitor.CurrentColor = new CCColor4F(1.0f, 0.0f, 0.0f, 1.0f);
+            _drawingVisitor.CurrentNode = meshNode;
+            _drawingVisitor.StartingNode = meshNode;
+
+            _drawingVisitor.ModelMatrix = LCC3Matrix4x4.CC3MatrixIdentity;
+            _drawingVisitor.ViewMatrix = new LCC3Matrix4x4(_graphicsContext.ViewMatrix.XnaMatrix);
+            _drawingVisitor.ProjMatrix = new LCC3Matrix4x4(_graphicsContext.ProjectionMatrix.XnaMatrix);
+            _drawingVisitor.ProgramPipeline = _progPipeline;
+
+            //_progPipeline.BindProgramWithVisitor(_materialShaderProgram, _drawingVisitor);
+        }
+
+        public void DrawParametricMeshTest()
+        {
+            _progPipeline.SetClearColor(new CCColor4F(0.2f, 0.5f, 0.8f, 1.0f));
+            _progPipeline.SetClearDepth(100.0f);
+            _progPipeline.ClearBuffers(LCC3BufferMask.ColorBuffer | LCC3BufferMask.DepthBuffer);
+
+            _progPipeline.EnableBlend(false);
+            _progPipeline.EnableDepthTest(true);
+            _progPipeline.SetDepthMask(true);
+            _progPipeline.SetDepthFunc(LCC3DepthStencilFuncMode.LessOrEqual);
+            _progPipeline.EnableCullFace(true);
+
+            for (int i=0; i < 4; i++)
+            {
+                _drawingVisitor.ModelMatrix = _listOfShapeMatrices[i];
+                _drawingVisitor.ViewMatrix = new LCC3Matrix4x4(_graphicsContext.ViewMatrix.XnaMatrix);
+                _drawingVisitor.ProjMatrix = new LCC3Matrix4x4(_graphicsContext.ProjectionMatrix.XnaMatrix);
+                _drawingVisitor.CurrentMeshNode.Material = _listOfMaterials[i];
+                _drawingVisitor.CurrentMeshNode.Mesh = _listOfShapeMeshes[i];
+                _progPipeline.BindProgramWithVisitor(_materialShaderProgram, _drawingVisitor);
+                _listOfShapeMeshes[i].DrawWithVisitor(_drawingVisitor);
+            }
+        }
+
+        #endregion  Parametric meshes test
 
 
         #region Multitexture material test
@@ -457,16 +661,7 @@ namespace Cocos3DShowcase
 
             _progPipeline.BindProgramWithVisitor(_materialShaderProgram, _drawingVisitor);
 
-            /*
-            _tankTexture = new LCC3GraphicsTexture2D("turret_alt_diff_tex_0");
-
-            LCC3ShaderUniform textureUniform = _materialShaderProgram.UniformNamed("Texture");
-            textureUniform.SetValue(_tankTexture);
-            textureUniform.UpdateShaderValue();
-            */
-
-            _progPipeline.GenerateVertexBuffer();
-
+            //_progPipeline.GenerateVertexBuffer();
         }
 
         
@@ -665,7 +860,7 @@ namespace Cocos3DShowcase
                     _progPipeline.XnaVertexBuffer = part.VertexBuffer;
                     _progPipeline.XnaIndexBuffer = part.IndexBuffer;
 
-                    _progPipeline.DrawIndices(LCC3DrawMode.TriangleList, part.VertexOffset, 0, part.NumVertices, part.StartIndex, part.PrimitiveCount);
+                    //_progPipeline.DrawIndices(LCC3DrawMode.TriangleList, part.VertexOffset, 0, part.NumVertices, part.StartIndex, part.PrimitiveCount);
                 }
             }
         }
@@ -895,7 +1090,9 @@ namespace Cocos3DShowcase
 
             //this.DrawMaterialTest();
 
-            this.DrawMultiTextureMaterialTest();
+            //this.DrawMultiTextureMaterialTest();
+
+            this.DrawParametricMeshTest();
         }
 
     }

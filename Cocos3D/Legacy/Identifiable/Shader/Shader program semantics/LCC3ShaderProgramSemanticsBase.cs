@@ -181,6 +181,9 @@ namespace Cocos3D
                 case LCC3Semantic.SemanticModelViewProjMatrix:
                     uniform.SetValue(visitor.ModelViewProjMatrix);
                     return true;
+                case LCC3Semantic.SemanticViewMatrix:
+                    uniform.SetValue(visitor.ViewMatrix);
+                    return true;
                 case LCC3Semantic.SemanticProjMatrix:
                     uniform.SetValue(visitor.ProjMatrix);
                     return true;
@@ -206,10 +209,10 @@ namespace Cocos3D
                     uniform.SetValue(visitor.CurrentMaterial.EffectiveDiffuseColor.ToVector4());
                     return true;
                 case LCC3Semantic.SemanticMaterialColorSpecular:
-                    uniform.SetValue(visitor.CurrentMaterial.EffectiveSpecularColor.ToVector4().TruncateToCC3Vector());
+                    uniform.SetValue(visitor.CurrentMaterial.EffectiveSpecularColor.ToVector4());
                     return true;
                 case LCC3Semantic.SemanticMaterialColorEmission:
-                    uniform.SetValue(visitor.CurrentMaterial.EffectiveEmissionColor.ToVector4().TruncateToCC3Vector());
+                    uniform.SetValue(visitor.CurrentMaterial.EffectiveEmissionColor.ToVector4());
                     return true;
                 case LCC3Semantic.SemanticMaterialOpacity:
                     uniform.SetValue(visitor.CurrentMaterial.EffectiveDiffuseColor.A);
@@ -322,7 +325,7 @@ namespace Cocos3D
                     {
                         LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
                         CCColor4F ltColor = light.Visible ? light.DiffuseColor : LCC3ColorUtil.CCC4FBlackTransparent;
-                        uniform.SetValueAtIndex(ltColor.ToVector4().TruncateToCC3Vector(), i);
+                        uniform.SetValueAtIndex(ltColor.ToVector4(), i);
                     }
                     return true;
                 case LCC3Semantic.SemanticLightColorAmbient:
@@ -338,7 +341,7 @@ namespace Cocos3D
                     {
                         LCC3Light light = visitor.LightAtIndex(uniform.SemanticIndex + i);
                         CCColor4F ltColor = light.Visible ? light.SpecularColor : LCC3ColorUtil.CCC4FBlackTransparent;
-                        uniform.SetValueAtIndex(ltColor.ToVector4().TruncateToCC3Vector(), i);
+                        uniform.SetValueAtIndex(ltColor.ToVector4(), i);
                     }
                     return true;
 

@@ -20,24 +20,40 @@ using System;
 
 namespace Cocos3D
 {
-    public enum LCC3ElementType
+    public struct LCC3Tessellation
     {
-        None = 0,
-        Int,
-        Float,
-        FloatArray,
-        Fixed,
-        UnsignedByte,
-        UnsignedShort,
-        UnsignedInt,
-        Boolean,
-        BooleanArray,
-        Vector3,
-        Vector4,
-        Vector4Array,
-        Float4x4,
-        Float3x3,
-        Texture2D
+        // ivars
+
+        uint _xDiv;
+        uint _yDiv;
+
+
+        #region Properties
+
+        public uint X
+        {
+            get { return _xDiv; }
+            set { _xDiv = value; }
+        }
+
+        public uint Y
+        {
+            get { return _yDiv; }
+            set { _yDiv = value; }
+        }
+
+        #endregion Properties
+
+
+        #region Constructors
+
+        public LCC3Tessellation(uint xDiv, uint yDiv)
+        {
+            _xDiv = xDiv;
+            _yDiv = yDiv;
+        }
+
+        #endregion Constructors
     }
 }
 

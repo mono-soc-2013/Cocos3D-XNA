@@ -112,7 +112,7 @@ namespace Cocos3D
 
         #region Configuring texture rectangle
 
-        private void AlignWithTextureRectangle(CCRect newRect, CCRect oldRect)
+        public void AlignWithTextureRectangle(CCRect newRect, CCRect oldRect)
         {
             float mw = _mapSize.Width;
             float mh = _mapSize.Height;
