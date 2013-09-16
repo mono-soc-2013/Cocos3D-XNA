@@ -23,15 +23,15 @@ namespace Cocos3D
 {
     public struct LCC3Vector4 : IEquatable<LCC3Vector4>
     {
-        // Private static fields
+        // static vars
 
-        private static readonly LCC3Vector4 _CC3Vector4Zero = new LCC3Vector4(0f);
-        private static readonly LCC3Vector4 _CC3Vector4One = new LCC3Vector4(1f);
-        private static readonly LCC3Vector4 _CC3Vector4Null = new LCC3Vector4(float.PositiveInfinity);
+        static readonly LCC3Vector4 _CC3Vector4Zero = new LCC3Vector4(0f);
+        static readonly LCC3Vector4 _CC3Vector4One = new LCC3Vector4(1f);
+        static readonly LCC3Vector4 _CC3Vector4Null = new LCC3Vector4(float.PositiveInfinity);
 
-        // Private instance fields
+        // ivars
 
-        private Vector4 _xnaVec4;
+        Vector4 _xnaVec4;
 
 
         #region Properties

@@ -23,11 +23,10 @@ namespace Cocos3D
 {
     public class LCC3DrawableVertexArray : LCC3VertexArray
     {
-        // Instance fields
+        // ivars
 
-        private LCC3DrawMode _drawingMode;
         protected uint[] _stripLengths;
-
+        LCC3DrawMode _drawingMode;
 
         #region Properties
 

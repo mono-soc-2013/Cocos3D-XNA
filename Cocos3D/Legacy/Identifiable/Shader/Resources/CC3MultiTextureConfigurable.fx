@@ -14,45 +14,32 @@
 // limitations under the License.
 //
 //
-// Please see README.md to locate the external API documentation.
-//
 
-#include "Macros.fxh"
-
-#define SetCommonVSOutputParams \
-    vout.PositionPS = cout.Pos_ps; \
-    vout.Diffuse = cout.Diffuse; \
-    vout.Specular = float4(cout.Specular, cout.FogFactor);
-
-
-#define SetCommonVSOutputParamsNoFog \
-    vout.PositionPS = cout.Pos_ps; \
+#include "CC3ShaderMacros.fxh"
+#include "CC3ShaderStructures.fxh"
 
 // Uniforms
 
-uniform float4x4 u_cc3MatrixModel; 
+// Environment uniforms
+uniform float4x4 u_cc3WorldMatrix;
+uniform float4x4 u_cc3ViewMatrix;
+uniform float4x4 u_cc3ProjMatrix;
 uniform float3  u_cc3EyePosition;
-uniform float3x3 u_cc3WorldInverseTranspose;
-uniform float4x4 u_cc3WorldViewProj;
 
+// Material uniforms
+uniform float4 u_cc3MaterialAmbientColor;
 uniform float4 u_cc3MaterialDiffuseColor;	
-uniform float3 u_cc3MaterialSpecularColor;
-uniform float3 u_cc3EmissiveColor;
+uniform float4 u_cc3MaterialSpecularColor;
+uniform float4 u_cc3MaterialEmissiveColor;
 uniform float  u_cc3MaterialShininess;
 
+// Lighting uniforms
+uniform float4 u_cc3LightSceneAmbientLightColor;
 uniform float3 u_cc3DirLightDirection;
-uniform float3 u_cc3DirLightDiffuseColor;
-uniform float3 u_cc3DirLightSpecularColor;
+uniform float4 u_cc3DirLightDiffuseColor;
+uniform float4 u_cc3DirLightSpecularColor;
 
-uniform bool u_cc3VertexHasTexCoord;
-
-#define MAX_TEXTURES 2
-#define TU_MODE_REPLACE 0
-#define TU_MODE_COMBINE 1
-#define TU_MODE_ADD 2
-#define TU_MODE_DECAL 3
-#define TU_MODE_BLEND 4
-
+// Texture uniforms
 uniform int u_cc3TextureCount;
 uniform int u_cc3TextureUnitMode0;
 uniform int u_cc3TextureUnitMode1;
@@ -62,140 +49,27 @@ uniform float4 u_cc3TextureUnitColor1;
 DECLARE_TEXTURE(u_cc3Texture0, 0);
 DECLARE_TEXTURE(u_cc3Texture1, 1);
 
-// Structures
 
-struct CommonVSOutput
+//--------------------------------------------------------------------------------------
+// PER PIXEL PHONG
+//--------------------------------------------------------------------------------------
+float4 CalcPhongLighting(Material material, DirectionalLight light, float3 surfaceNormal, float3 eyeVector, float4 sceneAmbientColor)
 {
-    float4 Pos_ps;
-    float4 Diffuse;
-    float3 Specular;
-    float  FogFactor;
-};
-
-struct VSInputNmTxVc
-{
-    float4 Position : SV_Position;
-    float3 Normal   : NORMAL;
-    float2 TexCoord : TEXCOORD0;
-    float4 Color    : COLOR;
-};
-
-
-struct VSOutputTx
-{
-    float4 PositionPS : SV_Position;
-    float4 Diffuse    : COLOR0;
-    float4 Specular   : COLOR1;
-    float2 TexCoord   : TEXCOORD0;
-};
-
-struct ColorPair
-{
-    float3 Diffuse;
-    float3 Specular;
-};
-
-// Functions
-
-void AddSpecular(inout float4 color, float3 specular)
-{
-    color.rgb += specular * color.a;
-}
-
-ColorPair ComputeLights(float3 eyeVector, float3 worldNormal, uniform int numLights)
-{
-    float3x3 lightDirections = 0;
-    float3x3 lightDiffuse = 0;
-    float3x3 lightSpecular = 0;
-    float3x3 halfVectors = 0;
-    
-    [unroll]
-    for (int i = 0; i < numLights; i++)
-    {
-        lightDirections[i] = float3x3(u_cc3DirLightDirection,     0.0, 0.0, 0.0 ,     0.0, 0.0, 0.0)    [i];
-        lightDiffuse[i]    = float3x3(u_cc3DirLightDiffuseColor,  1.0, 1.0, 1.0 ,  1.0, 1.0, 1.0) [i];
-        lightSpecular[i]   = float3x3(u_cc3DirLightSpecularColor, 1.0, 1.0, 1.0 , 1.0, 1.0, 1.0)[i];
-        
-        halfVectors[i] = normalize(eyeVector - lightDirections[i]);
-    }
-
-    float3 dotL = mul(-lightDirections, worldNormal);
-    float3 dotH = abs(mul(halfVectors, worldNormal));
-    
-    float3 zeroL = step(0, dotL);
-
-    float3 diffuse  = zeroL * dotL;
-    float3 specular = pow(max(dotH, 0) * zeroL, u_cc3MaterialShininess);
-
-    ColorPair result;
-    
-    result.Diffuse  = mul(diffuse,  lightDiffuse)  * u_cc3MaterialDiffuseColor.rgb + u_cc3EmissiveColor;
-    result.Specular = max(mul(specular, lightSpecular),0) * u_cc3MaterialSpecularColor;
-
-    return result;
-}
-
-
-CommonVSOutput ComputeCommonVSOutputWithLighting(float4 position, float3 normal, uniform int numLights)
-{
-    CommonVSOutput vout;
-    
-    float4 pos_ws = mul(position, u_cc3MatrixModel);
-    float3 eyeVector = normalize(u_cc3EyePosition - pos_ws.xyz);
-    float3 worldNormal = normalize(mul(normal, u_cc3WorldInverseTranspose));
-
-    ColorPair lightResult = ComputeLights(eyeVector, worldNormal, numLights);
-    
-    vout.Pos_ps = mul(position, u_cc3WorldViewProj);
-    vout.Diffuse = float4(lightResult.Diffuse, u_cc3MaterialDiffuseColor.a);
-    vout.Specular = lightResult.Specular;
-    vout.FogFactor = 0.0;
-    
-    return vout;
-}
-
-// Vertex shader
-
-VSOutputTx VSBasicVertexLightingTxVc(VSInputNmTxVc vin)
-{
-    VSOutputTx vout;
-    
-    CommonVSOutput cout = ComputeCommonVSOutputWithLighting(vin.Position, vin.Normal, 1);
-    SetCommonVSOutputParams;
-    
-    vout.TexCoord = vin.TexCoord;
+    float3 L = - light.Direction;
+	float3 N = surfaceNormal;
+	float3 R = reflect( light.Direction, N);
+	float3 V = eyeVector;
 	
-	if(u_cc3VertexHasTexCoord == false)
-	{
-		vout.Diffuse *= vin.Color;
-	}
-    
-    return vout;
+	float4 Ia = material.AmbientColor * sceneAmbientColor;
+    float4 Id = (material.DiffuseColor * saturate( dot(N,L) ) * light.DiffuseColor) + material.EmissiveColor;
+    float4 Is = material.SpecularColor * light.SpecularColor * pow(saturate(dot(R,V)), material.Shininess);
+ 
+    return Ia + (Id + Is);
 }
 
-// Pixel shader
-
-float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
-{
-	float4 color;
-   
-	if(u_cc3VertexHasTexCoord == true)
-	{
-		color = SAMPLE_TEXTURE(u_cc3Texture0, pin.TexCoord) * pin.Diffuse;
-	}
-    else
-	{
-		color = pin.Diffuse;
-	}
-	
-	
-    AddSpecular(color, pin.Specular.rgb);
-    
-    return color;
-}
-
-// Pixel shader multiple textures
-
+//--------------------------------------------------------------------------------------
+// MULTI TEXTURING
+//--------------------------------------------------------------------------------------
 float4 ApplyTexture(float4 color, float4 texColor, int texUnitMode, float4 texUnitColor)
 {	
 	float4 newColor = color;
@@ -218,7 +92,6 @@ float4 ApplyTexture(float4 color, float4 texColor, int texUnitMode, float4 texUn
 	else if(texUnitMode == TU_MODE_BLEND)
 	{
 		newColor.rgb =  (newColor.rgb * (1.0 - (texColor.rgb * texUnitColor.a))) + (texUnitColor.rgb * texColor.rgb * texUnitColor.a);
-		//newColor.a *= texColor.a;
 	}
 	
 	return newColor;
@@ -227,9 +100,8 @@ float4 ApplyTexture(float4 color, float4 texColor, int texUnitMode, float4 texUn
 float4 ApplyTextures(float4 color, float2 texCoord)
 {
 	int numOfTex = min(u_cc3TextureCount, MAX_TEXTURES);
-	float4 newColor = color;
 	
-	newColor = ApplyTexture(newColor, SAMPLE_TEXTURE(u_cc3Texture0, texCoord), u_cc3TextureUnitMode0, u_cc3TextureUnitColor0);
+	float4 newColor = ApplyTexture(color, SAMPLE_TEXTURE(u_cc3Texture0, texCoord), u_cc3TextureUnitMode0, u_cc3TextureUnitColor0);
 	
 	if(numOfTex > 1)
 	{
@@ -239,17 +111,59 @@ float4 ApplyTextures(float4 color, float2 texCoord)
 	return newColor;
 }
 
-float4 PSBasicVertexLightingMultipleTxNoFog(VSOutputTx pin) : SV_Target0
+//--------------------------------------------------------------------------------------
+// PER PIXEL LIGHTING
+//--------------------------------------------------------------------------------------
+
+// Vertex shader
+PsInputPerPixelPhong VS_PIXEL_LIGHTING_PHONG( VSInputNmTxVc input )
 {
-	float4 color = 0;
-   
-	color = ApplyTextures(color, pin.TexCoord) * pin.Diffuse;
+    PsInputPerPixelPhong output;
+ 
+    output.WorldPosition = mul( input.Position, u_cc3WorldMatrix );
+    output.Position = mul( output.WorldPosition, u_cc3ViewMatrix );
+    output.Position = mul( output.Position, u_cc3ProjMatrix );
+ 
+    //set texture coords
+    output.TexCoord = input.TexCoord;
+ 
+    //set required lighting vectors for interpolation
+    output.Normal = normalize( mul(float4(input.Normal,0), u_cc3WorldMatrix)).xyz;
 	
-	
-    AddSpecular(color, pin.Specular.rgb);
-    
-    return color;
+	return output;
 }
 
-TECHNIQUE(BasicEffect_Texture, VSBasicVertexLightingTxVc, PSBasicVertexLightingTxNoFog);
-TECHNIQUE(MultiEffect_Texture, VSBasicVertexLightingTxVc, PSBasicVertexLightingMultipleTxNoFog);
+// Pixel shader - first pass (multi-texturing)
+float4 PS_PIXEL_MULTITEX( PsInputPerPixelPhong input ) : SV_Target0
+{
+	float4 color = 0;
+        
+    return  ApplyTextures(color, input.TexCoord);
+}
+
+// Pixel shader - second pass (lighting)
+float4 PS_PIXEL_LIGHTING_PHONG( PsInputPerPixelPhong input ) : SV_Target0
+{
+    //calculate lighting vectors - renormalize vectors
+    input.Normal = normalize( input.Normal );
+	
+    float3 eyeVector = normalize(u_cc3EyePosition - input.WorldPosition.xyz);
+
+	Material material;
+	material.AmbientColor = u_cc3MaterialAmbientColor;
+	material.DiffuseColor = u_cc3MaterialDiffuseColor;
+	material.EmissiveColor = u_cc3MaterialEmissiveColor;
+	material.SpecularColor = u_cc3MaterialSpecularColor;
+	material.Shininess = u_cc3MaterialShininess;
+ 
+	DirectionalLight light;
+	light.Direction = u_cc3DirLightDirection;
+	light.DiffuseColor = u_cc3DirLightDiffuseColor;
+	light.SpecularColor = u_cc3DirLightSpecularColor;
+ 
+    //calculate lighting
+    return CalcPhongLighting( material, light, input.Normal, eyeVector, u_cc3LightSceneAmbientLightColor);
+}
+
+// Two pass technique - second pass color is multiplied by first
+TECHNIQUE_2PS(MultiTexPerPixelShader, VS_PIXEL_LIGHTING_PHONG, PS_PIXEL_MULTITEX, PS_PIXEL_LIGHTING_PHONG);

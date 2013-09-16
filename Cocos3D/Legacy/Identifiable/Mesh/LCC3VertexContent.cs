@@ -24,7 +24,7 @@ namespace Cocos3D
     public enum LCC3VertexContent
     {
         VertexContentNone = 0,
-        VertexContentLocation = 1 << 0,
+        VertexContentLocation = 1,
         VertexContentNormal = 1 << 1,
         VertexContentTangent = 1 << 2,
         VertexContentBitangent = 1 << 3,

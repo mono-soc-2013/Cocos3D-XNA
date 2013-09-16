@@ -24,9 +24,9 @@ namespace Cocos3D
 {
     public struct LCC3Viewport : IEquatable<LCC3Viewport>
     {
-        // Private instance fields
+        // ivars
 
-        private Viewport _xnaViewport;
+        Viewport _xnaViewport;
 
         #region Properties
 

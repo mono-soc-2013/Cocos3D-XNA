@@ -105,9 +105,10 @@
     <Folder Include="Legacy\Identifiable\Material\" />
     <Folder Include="Legacy\Identifiable\Texture\GraphicsTexture\" />
     <Folder Include="Legacy\Identifiable\Shader\Shader program semantics\" />
-    <Folder Include="Legacy\Identifiable\Shader\Resources\" />
     <Folder Include="Legacy\Identifiable\Node\Light\" />
     <Folder Include="Legacy\Identifiable\Node\Scene\" />
+    <Folder Include="Legacy\Identifiable\Resource\" />
+    <Folder Include="Legacy\Identifiable\Shader\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -226,7 +227,6 @@
     <Compile Include="Legacy\Identifiable\Texture\LCC3TextureUnitMode.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\LCC3Mesh.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3DrawableVertexArray.cs" />
-    <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3ElementType.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexArray.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexColors.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\VertexArrays\LCC3VertexIndices.cs" />
@@ -244,6 +244,8 @@
     <Compile Include="Legacy\Foundation\LCC3FaceNeighbours.cs" />
     <Compile Include="Legacy\Identifiable\Mesh\LCC3ParametricMeshes.cs" />
     <Compile Include="Legacy\Foundation\LCC3Tessellation.cs" />
+    <Compile Include="Legacy\Identifiable\Resource\LCC3Resource.cs" />
+    <Compile Include="Legacy\Foundation\LCC3ElementType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">
@@ -257,12 +259,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.fx" />
-    <None Include="Legacy\Identifiable\Shader\Resources\Structures.fxh" />
-    <None Include="Legacy\Identifiable\Shader\Resources\Common.fxh" />
-    <None Include="Legacy\Identifiable\Shader\Resources\Macros.fxh" />
+    <None Include="Legacy\Identifiable\Shader\Resources\CC3ShaderMacros.fxh" />
+    <None Include="Legacy\Identifiable\Shader\Resources\CC3ShaderStructures.fxh" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.ogl.mgfxo" />
-    <EmbeddedResource Include="Legacy\Identifiable\Shader\Resources\CC3MultiTextureConfigurable.dx11.mgfxo" />
   </ItemGroup>
 </Project>

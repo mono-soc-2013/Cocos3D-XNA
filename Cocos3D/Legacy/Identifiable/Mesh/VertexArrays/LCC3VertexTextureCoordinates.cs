@@ -23,15 +23,15 @@ namespace Cocos3D
 {
     public class LCC3VertexTextureCoordinates : LCC3VertexArray
     {
-        // Static fields
+        // Static vars
 
         private static bool _defaultExpectsVerticallyFlippedTextures;
 
-        // Instance fields
+        // ivars
 
-        private CCSize _mapSize;
-        private CCRect _textureRectangle;
-        private bool _expectsVerticallyFlippedTextures;
+        CCSize _mapSize;
+        CCRect _textureRectangle;
+        bool _expectsVerticallyFlippedTextures;
 
 
         #region Properties

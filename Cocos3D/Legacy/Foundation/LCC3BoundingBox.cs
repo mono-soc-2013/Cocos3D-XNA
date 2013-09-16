@@ -23,19 +23,18 @@ namespace Cocos3D
 {
     public struct LCC3BoundingBox : IEquatable<LCC3BoundingBox>
     {
-        // Private static fields
+        // Static vars
 
-        private static LCC3BoundingBox _CC3BoundingBoxZero 
+        static LCC3BoundingBox _CC3BoundingBoxZero 
         = new LCC3BoundingBox(LCC3Vector.CC3VectorZero, LCC3Vector.CC3VectorZero);
-        private static LCC3BoundingBox _CC3BoundingBoxNull
+        static LCC3BoundingBox _CC3BoundingBoxNull
         = new LCC3BoundingBox(LCC3Vector.CC3VectorNull, LCC3Vector.CC3VectorNull);
 
-        // Private instance fields
+        // ivars
 
-        private BoundingBox _xnaBoundingBox;
-        private LCC3Vector _min;
-        private LCC3Vector _max;
-
+        BoundingBox _xnaBoundingBox;
+        LCC3Vector _min;
+        LCC3Vector _max;
 
         #region Properties
 

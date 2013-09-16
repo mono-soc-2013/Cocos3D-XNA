@@ -23,7 +23,9 @@ namespace Cocos3D
 {
     public class LCC3VertexColors : LCC3VertexArray
     {
-        private readonly static CCColor3B _CCColor3BBlack = new CCColor3B(0,0,0);
+        // Static vars
+
+        readonly static CCColor3B _CCColor3BBlack = new CCColor3B(0,0,0);
 
         #region Properties
 

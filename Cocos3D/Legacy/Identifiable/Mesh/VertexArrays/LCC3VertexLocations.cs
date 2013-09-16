@@ -23,14 +23,14 @@ namespace Cocos3D
 {
     public class LCC3VertexLocations : LCC3DrawableVertexArray
     {
-        // Instance fields
+        // ivars
 
-        private uint _firstVertex;
-        private LCC3BoundingBox _boundingBox;
-        private LCC3Vector _centerOfGeometry;
-        private float _radius;
-        private bool _boundaryIsDirty;
-        private bool _radiusIsDirty;
+        uint _firstVertex;
+        LCC3BoundingBox _boundingBox;
+        LCC3Vector _centerOfGeometry;
+        float _radius;
+        bool _boundaryIsDirty;
+        bool _radiusIsDirty;
 
         #region Properties
 

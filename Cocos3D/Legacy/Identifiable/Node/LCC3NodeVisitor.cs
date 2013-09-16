@@ -22,10 +22,10 @@ namespace Cocos3D
 {
     public class LCC3NodeVisitor
     {
-        // Instance fields
-        private LCC3Node _startingNode;
-        private LCC3Node _currentNode;
+        // ivars
 
+        LCC3Node _startingNode;
+        LCC3Node _currentNode;
 
         #region Properties
 

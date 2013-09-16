@@ -22,10 +22,10 @@ namespace Cocos3D
 {
     public struct LCC3IntSize
     {
-        // Instance fields
+        // ivars
 
-        private int _width;
-        private int _height;
+        int _width;
+        int _height;
 
         #region Properties
 

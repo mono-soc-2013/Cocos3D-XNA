@@ -23,14 +23,14 @@ namespace Cocos3D
 {
     public struct LCC3Plane: IEquatable<LCC3Plane>
     {
-        // Private static fields
+        // static vars
 
-        private static readonly LCC3Plane _CC3PlaneZero = new LCC3Plane(0.0f);
+        static readonly LCC3Plane _CC3PlaneZero = new LCC3Plane(0.0f);
 
-        // Private instance fields
+        // ivars
 
-        private Plane _xnaPlane;
-        private LCC3Vector _unitLengthNormalVec;
+        Plane _xnaPlane;
+        LCC3Vector _unitLengthNormalVec;
 
         #region Properties
 
@@ -77,12 +77,6 @@ namespace Cocos3D
         }
 
         #endregion Operators
-
-
-        #region Static methods
-
-
-        #endregion Static methods
 
 
         #region Constructors

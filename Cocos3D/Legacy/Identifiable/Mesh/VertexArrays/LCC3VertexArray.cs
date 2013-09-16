@@ -23,26 +23,25 @@ namespace Cocos3D
 {
     public class LCC3VertexArray : LCC3Identifiable
     {
-        // Static fields
+        // Static vars
 
-        private static int _lastAssignedVertexArrayTag = 0;
+        static int _lastAssignedVertexArrayTag = 0;
 
-        // Instance fields
-
-        private uint _bufferID;
+        // ivars
         protected object[] _vertices;
-        private uint _vertexCount;
-        private uint _elementOffset;
-        private int _elementSize;
-        private uint _vertexStride;
         protected LCC3ElementType _elementType;
-        private uint _allocatedVertexCapacity;
-        private LCC3Semantic _semantic;
+        uint _bufferID;
+        uint _vertexCount;
+        uint _elementOffset;
+        int _elementSize;
+        uint _vertexStride;
+        uint _allocatedVertexCapacity;
+        LCC3Semantic _semantic;
 
-        private bool _shouldNormalizeContent;
-        private bool _shouldAllowVertexBuffering;
-        private bool _shouldReleaseRedundantContent;
-        private bool _isUsingGraphicsBuffer;
+        bool _shouldNormalizeContent;
+        bool _shouldAllowVertexBuffering;
+        bool _shouldReleaseRedundantContent;
+        bool _isUsingGraphicsBuffer;
 
 
         #region Properties

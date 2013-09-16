@@ -24,13 +24,22 @@ namespace Cocos3D
 {
     public static class LCC3ColorUtil
     {
-        private static readonly CCColor4F _CCC4FBlackTransparent = new CCColor4F(0.0f,0.0f,0.0f,0.0f);
-        private const float _CC3OneOver255 = 0.00392156862745098f;
+        // Static cars
+
+        static readonly CCColor4F _CCC4FBlackTransparent = new CCColor4F(0.0f,0.0f,0.0f,0.0f);
+        const float _CC3OneOver255 = 0.00392156862745098f;
+
+        #region Properties
 
         public static CCColor4F CCC4FBlackTransparent
         {
             get { return _CCC4FBlackTransparent; }
         }
+
+        #endregion Properties
+
+
+        #region Static color constructors
 
         public static CCColor4F CCC4FBlendAlpha(CCColor4F rgba)
         {
@@ -84,6 +93,8 @@ namespace Cocos3D
         {
             return colorValue * _CC3OneOver255;
         }
+
+        #endregion Static color constructors
     }
 }
 

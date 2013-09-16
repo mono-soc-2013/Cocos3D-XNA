@@ -68,7 +68,6 @@ namespace Cocos3D
             }
         }
 
-
         #endregion Properties
 
 

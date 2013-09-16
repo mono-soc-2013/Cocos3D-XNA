@@ -23,7 +23,7 @@ namespace Cocos3D
 {
     public class LCC3Node
     {
-        // Instance fields
+        // ivars
        
         LCC3Node _parent;
         List<LCC3Node> _children;
@@ -91,6 +91,7 @@ namespace Cocos3D
         public LCC3Node()
         {
             _transformMatrix = LCC3Matrix4x4.CC3MatrixIdentity;
+            _children = new List<LCC3Node>();
         }
 
         private void MarkTransformDirty()

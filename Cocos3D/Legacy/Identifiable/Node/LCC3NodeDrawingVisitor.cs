@@ -23,24 +23,24 @@ namespace Cocos3D
 {
     public class LCC3NodeDrawingVisitor : LCC3NodeVisitor
     {
-        // Instance fields
+        // ivars
 
-        private LCC3ProgPipeline _progPipeline;
-        private LCC3ShaderProgram _currentShaderProgram;
-        private uint _currentTextureUnitIndex;
-        private CCColor4F _currentColor;
-        private uint _textureUnitCount;
+        LCC3ProgPipeline _progPipeline;
+        LCC3ShaderProgram _currentShaderProgram;
+        uint _currentTextureUnitIndex;
+        CCColor4F _currentColor;
+        uint _textureUnitCount;
 
-        private LCC3Matrix4x4 _viewMatrix;
-        private LCC3Matrix4x4 _projMatrix;
-        private LCC3Matrix4x4 _modelMatrix;
-        private LCC3Matrix4x4 _modelViewMatrix;
-        private LCC3Matrix4x4 _viewProjMatrix;
-        private LCC3Matrix4x4 _modelViewProjMatrix;
+        LCC3Matrix4x4 _viewMatrix;
+        LCC3Matrix4x4 _projMatrix;
+        LCC3Matrix4x4 _modelMatrix;
+        LCC3Matrix4x4 _modelViewMatrix;
+        LCC3Matrix4x4 _viewProjMatrix;
+        LCC3Matrix4x4 _modelViewProjMatrix;
 
-        private bool _isVPMtxDirty;
-        private bool _isMVMtxDirty;
-        private bool _isMVPMtxDirty;
+        bool _isVPMtxDirty;
+        bool _isMVMtxDirty;
+        bool _isMVPMtxDirty;
 
         #region Properties
 
@@ -142,8 +142,8 @@ namespace Cocos3D
             }
         }
 
-
         #endregion Properties
+       
 
         public LCC3NodeDrawingVisitor()
         {

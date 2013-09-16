@@ -344,7 +344,6 @@ namespace Cocos3D
             var assembly = typeof(LCC3ShaderProgram).Assembly;
             #endif
 
-            string[] resourceNames = assembly.GetManifestResourceNames();
 
             var stream = isInternalResource == false ? File.OpenRead(name) : assembly.GetManifestResourceStream(name);
             using (var ms = new MemoryStream())

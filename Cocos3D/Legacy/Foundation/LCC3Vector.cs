@@ -23,22 +23,22 @@ namespace Cocos3D
 {
     public struct LCC3Vector : IEquatable<LCC3Vector>
     {
-        // Private static fields
+        // static vars
 
-        private static readonly LCC3Vector _CC3VectorZero = new LCC3Vector(0f);
-        private static readonly LCC3Vector _CC3VectorUnitCube = new LCC3Vector(1f);
-        private static readonly LCC3Vector _CC3VectorNull = new LCC3Vector(float.PositiveInfinity);
-        private static readonly LCC3Vector _CC3VectorUp = new LCC3Vector(Vector3.Up);
-        private static readonly LCC3Vector _CC3VectorUnitXPositive = new LCC3Vector(1.0f, 0.0f, 0.0f);
-        private static readonly LCC3Vector _CC3VectorUnitYPositive = new LCC3Vector(0.0f, 1.0f, 0.0f);
-        private static readonly LCC3Vector _CC3VectorUnitZPositive = new LCC3Vector(0.0f, 0.0f, 1.0f);
-        private static readonly LCC3Vector _CC3VectorUnitXNegative = new LCC3Vector(-1.0f, 0.0f, 0.0f);
-        private static readonly LCC3Vector _CC3VectorUnitYNegative = new LCC3Vector(0.0f, -1.0f, 0.0f);
-        private static readonly LCC3Vector _CC3VectorUnitZNegative = new LCC3Vector(0.0f, 0.0f, -1.0f);
+        static readonly LCC3Vector _CC3VectorZero = new LCC3Vector(0f);
+        static readonly LCC3Vector _CC3VectorUnitCube = new LCC3Vector(1f);
+        static readonly LCC3Vector _CC3VectorNull = new LCC3Vector(float.PositiveInfinity);
+        static readonly LCC3Vector _CC3VectorUp = new LCC3Vector(Vector3.Up);
+        static readonly LCC3Vector _CC3VectorUnitXPositive = new LCC3Vector(1.0f, 0.0f, 0.0f);
+        static readonly LCC3Vector _CC3VectorUnitYPositive = new LCC3Vector(0.0f, 1.0f, 0.0f);
+        static readonly LCC3Vector _CC3VectorUnitZPositive = new LCC3Vector(0.0f, 0.0f, 1.0f);
+        static readonly LCC3Vector _CC3VectorUnitXNegative = new LCC3Vector(-1.0f, 0.0f, 0.0f);
+        static readonly LCC3Vector _CC3VectorUnitYNegative = new LCC3Vector(0.0f, -1.0f, 0.0f);
+        static readonly LCC3Vector _CC3VectorUnitZNegative = new LCC3Vector(0.0f, 0.0f, -1.0f);
 
-        // Private instance fields
+        // ivars
 
-        private Vector3 _xnaVec3;
+        Vector3 _xnaVec3;
 
         #region Properties
         

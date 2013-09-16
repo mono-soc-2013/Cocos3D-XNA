@@ -23,7 +23,8 @@ namespace Cocos3D
 {
     public class LCC3Scene : LCC3Node
     {
-        // Instance fields
+        // ivars
+
         LCC3Light[] _lights;
         CCColor4F _ambientLight;
 

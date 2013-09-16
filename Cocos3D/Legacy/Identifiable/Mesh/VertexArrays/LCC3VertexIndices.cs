@@ -24,6 +24,8 @@ namespace Cocos3D
 {
     public class LCC3VertexIndices : LCC3DrawableVertexArray
     {
+        // ivars
+
         IndexBuffer _xnaIndexBuffer;
         uint _lastDrawnStartingIndex;
         uint _lastDrawnIndicesCount;

@@ -27,38 +27,37 @@ namespace Cocos3D
 {
     public class LCC3Material : LCC3Identifiable, ICCBlendProtocol, ICCRGBAProtocol
     {
-        // Static fields
+        // Static vars
 
-        private static int _lastAssignedMaterialTag = 0;
-        private static int _currentMaterialTag = 0;
-        private static readonly CCColor4F _CC3DefaultMaterialColorAmbient 
-            = new CCColor4F(0.2f, 0.2f, 0.2f, 1.0f);
-        private static readonly CCColor4F _CC3DefaultMaterialColorDiffuse 
-            = new CCColor4F(0.8f, 0.8f, 0.8f, 1.0f);
-        private static readonly CCColor4F _CC3DefaultMaterialColorSpecular 
-            = new CCColor4F(0.0f, 0.0f, 0.0f, 1.0f);
-        private static readonly CCColor4F _CC3DefaultMaterialColorEmission 
-            = new CCColor4F(0.0f, 0.0f, 0.0f, 1.0f);
-        private const float _CC3DefaultMaterialShininess = 0.0f;
-        private const float _CC3MaximumMaterialShininess = 128.0f;
-        private const float _CC3DefaultMaterialReflectivity = 128.0f;
+        static int _lastAssignedMaterialTag = 0;
+        static int _currentMaterialTag = 0;
+
+        static readonly CCColor4F _CC3DefaultMaterialColorAmbient = new CCColor4F(0.2f, 0.2f, 0.2f, 1.0f);
+        static readonly CCColor4F _CC3DefaultMaterialColorDiffuse = new CCColor4F(0.8f, 0.8f, 0.8f, 1.0f);
+        static readonly CCColor4F _CC3DefaultMaterialColorSpecular = new CCColor4F(0.0f, 0.0f, 0.0f, 1.0f);
+        static readonly CCColor4F _CC3DefaultMaterialColorEmission = new CCColor4F(0.0f, 0.0f, 0.0f, 1.0f);
+
+        const float _CC3DefaultMaterialShininess = 0.0f;
+        const float _CC3MaximumMaterialShininess = 128.0f;
+        const float _CC3DefaultMaterialReflectivity = 128.0f;
   
-        // Instance fields
+        // ivars
 
-        private LCC3Texture _texture;
-        private List<LCC3Texture> _textureOverlays;
-        private LCC3ShaderProgramContext _shaderContext;
-        private CCColor4F _ambientColor;
-        private CCColor4F _diffuseColor;
-        private CCColor4F _specularColor;
-        private CCColor4F _emissionColor;
-        private float _shininess;
-        private float _reflectivity;
-        private LCC3AlphaTestFuncMode _alphaTestFunc;
-        private float _alphaTestReference;
-        private LCC3BlendType _srcBlendType;
-        private LCC3BlendType _dstBlendType;
-        private bool _shouldUseLighting;
+        LCC3Texture _texture;
+        List<LCC3Texture> _textureOverlays;
+        LCC3ShaderProgramContext _shaderContext;
+        CCColor4F _ambientColor;
+        CCColor4F _diffuseColor;
+        CCColor4F _specularColor;
+        CCColor4F _emissionColor;
+        float _shininess;
+        float _reflectivity;
+        LCC3AlphaTestFuncMode _alphaTestFunc;
+        float _alphaTestReference;
+        LCC3BlendType _srcBlendType;
+        LCC3BlendType _dstBlendType;
+        bool _shouldUseLighting;
+
 
         #region Properties
 

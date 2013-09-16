@@ -14,26 +14,32 @@
 // limitations under the License.
 //
 //
-// Please see README.md to locate the external API documentation.
-//
-using System;
 
-namespace Cocos3D
+struct Material
 {
-    public enum LCC3BlendType
-    {
-        Zero = 0,                
-        One,               
-        SourceColor,        
-        InverseSourceColor, 
-        SourceAlpha,        
-        InverseSourceAlpha, 
-        DestinationColor,   
-        InverseDestinationColor,    
-        InverseDestinationAlpha,   
-        BlendFactor,        
-        InverseBlendFactor, 
-        SourceAlphaSaturation
-    }
-}
+    float4 AmbientColor, DiffuseColor, SpecularColor, EmissiveColor;
+	float Shininess;
+};
 
+struct DirectionalLight
+{
+	float4 DiffuseColor;
+	float4 SpecularColor;
+	float3 Direction;
+};
+
+struct VSInputNmTxVc
+{
+    float4 Position : SV_Position;
+    float3 Normal   : NORMAL;
+    float2 TexCoord : TEXCOORD0;
+    float4 Color    : COLOR;
+};
+
+struct PsInputPerPixelPhong
+{
+	float4 Position : SV_Position;   
+	float4 WorldPosition : TEXCOORD2;
+	float2 TexCoord : TEXCOORD;	
+	float3 Normal : TEXCOORD1;		
+};

@@ -55,18 +55,12 @@ namespace Cocos3D
             return new LCC3ShaderProgram(LCC3ShaderProgram.NextTag(), shaderFileResource, _semanticDelegate, shaderFileResource, true);
         }
 
-        public LCC3ShaderProgram SingleTextureProgram(bool shouldAlphaTest=false)
-        {
-            // TBA
-            return null;
-        }
-
         public LCC3ShaderProgram ConfigurableProgram(bool shouldAlphaTest=false)
         {
             string shaderFileResource = null;
 
 #if DIRECTX
-            shaderFileResource = "Cocos3D.Legacy.Identifiable.Shader.Resources.CC3MultiTextureConfigurable.dx11.mgfxo";
+            throw new NotImplementedException("PSM shader not implemented");
 #elif PSM 
             throw new NotImplementedException("PSM shader not implemented");
 #else

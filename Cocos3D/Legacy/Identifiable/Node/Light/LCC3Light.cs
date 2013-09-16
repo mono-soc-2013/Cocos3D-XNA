@@ -23,12 +23,12 @@ namespace Cocos3D
 {
     public class LCC3Light : LCC3Node
     {
-        // Instance fields
+        // ivars
 
-        private bool _isVisible;
-        private CCColor4F _ambientColor;
-        private CCColor4F _diffuseColor;
-        private CCColor4F _specularColor;
+        bool _isVisible;
+        CCColor4F _ambientColor;
+        CCColor4F _diffuseColor;
+        CCColor4F _specularColor;
 
         #region Properties
 

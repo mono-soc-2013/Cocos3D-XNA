@@ -28,6 +28,27 @@ namespace Cocos3D
         uint _neighbourIndex2;
         uint _neighbourIndex3;
 
+
+        #region Properties
+
+        public uint NeighbourIndex1
+        {
+            get { return _neighbourIndex1; }
+        }
+
+        public uint NeighbourIndex2
+        {
+            get { return _neighbourIndex2; }
+        }
+
+        public uint NeighbourIndex3
+        {
+            get { return _neighbourIndex3; }
+        }
+
+        #endregion Properties
+
+
         #region Constructors
 
         public LCC3FaceNeighbours(uint nIndex1, uint nIndex2, uint nIndex3)
