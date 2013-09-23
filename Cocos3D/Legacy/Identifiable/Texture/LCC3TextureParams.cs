@@ -22,12 +22,12 @@ namespace Cocos3D
 {
     public struct LCC3TextureParams
     {
-        // Instance fields
+        // ivars
 
-        private LCC3TextureFilter _minifyingFilter;
-        private LCC3TextureFilter _magnifyingFilter;
-        private LCC3TextureWrapMode _horizontalWrapMode;
-        private LCC3TextureWrapMode _verticalWrapMode;
+        LCC3TextureFilter _minifyingFilter;
+        LCC3TextureFilter _magnifyingFilter;
+        LCC3TextureWrapMode _horizontalWrapMode;
+        LCC3TextureWrapMode _verticalWrapMode;
 
 
         #region Properties

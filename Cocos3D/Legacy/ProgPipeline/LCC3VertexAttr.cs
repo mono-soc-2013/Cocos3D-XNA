@@ -23,17 +23,17 @@ namespace Cocos3D
 {
     public class LCC3VertexAttr
     {
-        // Instance fields
+        // ivars
 
-        private LCC3ElementType _elementType;
-        private uint _elementSize;
-        private uint _vertexStride;
-        private object[] _vertices;
-        private bool _shouldNormalize;
-        private bool _isKnown;
-        private bool _isEnabled;
-        private bool _isEnabledKnown;
-        private bool _wasBound;
+        LCC3ElementType _elementType;
+        uint _elementSize;
+        uint _vertexStride;
+        object[] _vertices;
+        bool _shouldNormalize;
+        bool _isKnown;
+        bool _isEnabled;
+        bool _isEnabledKnown;
+        bool _wasBound;
 
 
         #region Properties

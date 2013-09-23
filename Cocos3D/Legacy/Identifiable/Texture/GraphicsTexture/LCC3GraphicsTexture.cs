@@ -25,30 +25,29 @@ namespace Cocos3D
 {
     public class LCC3GraphicsTexture : LCC3Identifiable
     {
-        // Static fields
+        // Static vars
 
-        private static int _lastAssignedGraphicsTextureTag = 0;
-        private static LCC3TextureParams _defaultTextureParameters 
-            = new LCC3TextureParams(LCC3TextureFilter.LinearMipPoint, LCC3TextureFilter.Linear, 
-                                    LCC3TextureWrapMode.Wrap, LCC3TextureWrapMode.Wrap);
-        private static Dictionary<string, LCC3GraphicsTexture> _texturesByName 
-            = new Dictionary<string, LCC3GraphicsTexture>();
+        static int _lastAssignedGraphicsTextureTag = 0;
+        static LCC3TextureParams _defaultTextureParameters = new LCC3TextureParams(
+            LCC3TextureFilter.LinearMipPoint, LCC3TextureFilter.Linear, 
+            LCC3TextureWrapMode.Wrap, LCC3TextureWrapMode.Wrap);
+        static Dictionary<string, LCC3GraphicsTexture> _texturesByName = new Dictionary<string, LCC3GraphicsTexture>();
 
-        // Instance fields
+        // ivars
 
         protected Texture _xnaTexture;
 
-        private LCC3IntSize _size;
-        private bool _hasPremultipliedAlpha;
-        private bool _isFlippedVertically;
-        private bool _hasMipmap;
-        private CCSize _coverage;
+        LCC3IntSize _size;
+        bool _hasPremultipliedAlpha;
+        bool _isFlippedVertically;
+        bool _hasMipmap;
+        CCSize _coverage;
 
-        private bool _texParametersAreDirty;
-        private LCC3TextureFilter _minifyingFunction;
-        private LCC3TextureFilter _magnifyingFunction;
-        private LCC3TextureWrapMode _horizontalWrapMode;
-        private LCC3TextureWrapMode _verticalWrapMode;
+        bool _texParametersAreDirty;
+        LCC3TextureFilter _minifyingFunction;
+        LCC3TextureFilter _magnifyingFunction;
+        LCC3TextureWrapMode _horizontalWrapMode;
+        LCC3TextureWrapMode _verticalWrapMode;
        
 
         #region Properties

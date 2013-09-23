@@ -22,14 +22,13 @@ namespace Cocos3D
 {
     public class LCC3ShaderVariableConfiguration
     {
-        // Instance variables
+        // ivars
 
-        private string _name;
-        private LCC3Semantic _semantic;
-        private uint _semanticIndex;
-        private LCC3ElementType _type;
-        private uint _size;
-
+        string _name;
+        LCC3Semantic _semantic;
+        uint _semanticIndex;
+        LCC3ElementType _type;
+        uint _size;
 
         #region Properties
 

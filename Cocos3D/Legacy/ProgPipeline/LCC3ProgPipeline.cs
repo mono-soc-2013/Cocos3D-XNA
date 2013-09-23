@@ -28,38 +28,38 @@ namespace Cocos3D
 {
     public class LCC3ProgPipeline : ICC3VertexTypeDataSource
     {
-        // Static fields
+        // Static vars
 
         public const LCC3VertexAttrIndex VertexAttributeIndexUnavailable = LCC3VertexAttrIndex.VertexAttribUnavailable;
-        private const int _defaultNumberOfBuffers = 5;
-        private static LCC3ProgPipeline _sharedProgPipeline;
+        const int _defaultNumberOfBuffers = 5;
+        static LCC3ProgPipeline _sharedProgPipeline;
 
-        // Instance fields
+        // ivars
 
-        private Game _xnaGame;
-        private GraphicsDevice _xnaGraphicsDevice;
-        private VertexBuffer _xnaVertexBuffer;
-        private IndexBuffer _xnaIndexBuffer;
-        private BlendState _xnaBlendState;
-        private CullMode _xnaCullMode;
-        private DepthStencilState _xnaDepthStencilState;
-        private float _xnaDepthBias;
-        private float _xnaSlopeScaleDepthBias;
+        Game _xnaGame;
+        GraphicsDevice _xnaGraphicsDevice;
+        VertexBuffer _xnaVertexBuffer;
+        IndexBuffer _xnaIndexBuffer;
+        BlendState _xnaBlendState;
+        CullMode _xnaCullMode;
+        DepthStencilState _xnaDepthStencilState;
+        float _xnaDepthBias;
+        float _xnaSlopeScaleDepthBias;
 
-        private Color _xnaClearColor;
-        private float _xnaClearDepth;
-        private int _xnaClearStencil;
+        Color _xnaClearColor;
+        float _xnaClearDepth;
+        int _xnaClearStencil;
 
-        private int _xnaCurrentlyActiveTextureUnitIndex;
+        int _xnaCurrentlyActiveTextureUnitIndex;
 
-        private LCC3ShaderProgram _currentlyActiveShader;
-        private LCC3VertexAttr[] _vertexAttributes;
-        private CC3VertexType[] _vertexData;
-        private CC3BufferAndTarget[] _buffers;
+        LCC3ShaderProgram _currentlyActiveShader;
+        LCC3VertexAttr[] _vertexAttributes;
+        CC3VertexType[] _vertexData;
+        CC3BufferAndTarget[] _buffers;
 
-        private Stack<LCC3Matrix4x4> _modelMatrixStack;
-        private Stack<LCC3Matrix4x4> _viewMatrixStack;
-        private Stack<LCC3Matrix4x4> _projMatrixStack;
+        Stack<LCC3Matrix4x4> _modelMatrixStack;
+        Stack<LCC3Matrix4x4> _viewMatrixStack;
+        Stack<LCC3Matrix4x4> _projMatrixStack;
 
 
         #region Properties
@@ -815,6 +815,7 @@ namespace Cocos3D
 
     #endregion Private struct holding buffer and target info
 
+
     #region Internal custom vertex declaration
 
     internal interface ICC3VertexTypeDataSource
@@ -848,29 +849,17 @@ namespace Cocos3D
 
                 List<VertexElement> vertexElements = new List<VertexElement>();
 
-                //if (_dataSource.VertexPositionEnabled() == true)
-                //{
                 vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Position, 0));
                 currentOffset += sizeof(float) * 3; 
-                //}
 
-                //if (_dataSource.VertexTexCoordEnabled() == true)
-                //{
-                    vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0));
-                    currentOffset += sizeof(float) * 2;
-                //}
+                vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0));
+                currentOffset += sizeof(float) * 2;
 
-                //if (_dataSource.VertexColorEnabled() == true)
-                //{
                 vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector4, VertexElementUsage.Color, 0));
                 currentOffset += sizeof(float) * 4; 
-                //}
 
-                //if (_dataSource.VertexNormalEnabled() == true)
-                //{
                 vertexElements.Add(new VertexElement(currentOffset, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0));
                 currentOffset += sizeof(float) * 4; 
-                //}
 
                 VertexDeclaration vertexDec = new VertexDeclaration(vertexElements.ToArray());
 

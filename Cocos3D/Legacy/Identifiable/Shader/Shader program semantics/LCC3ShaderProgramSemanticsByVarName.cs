@@ -23,10 +23,9 @@ namespace Cocos3D
 {
     public class LCC3ShaderProgramSemanticsByVarName : LCC3ShaderProgramSemanticsBase
     {
-        // Instance fields
+        // ivars
 
-        private Dictionary<string, LCC3ShaderVariableConfiguration> _varConfigsByName;
-
+        Dictionary<string, LCC3ShaderVariableConfiguration> _varConfigsByName;
 
         #region Allocation and initialization
 

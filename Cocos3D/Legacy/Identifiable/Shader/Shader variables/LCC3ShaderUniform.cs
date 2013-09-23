@@ -26,9 +26,9 @@ namespace Cocos3D
    
     public class LCC3ShaderUniform : LCC3ShaderVariable
     {
-        // Instance fields
+        // ivars
 
-        private object _varValue;
+        object _varValue;
 
 
         #region Properties

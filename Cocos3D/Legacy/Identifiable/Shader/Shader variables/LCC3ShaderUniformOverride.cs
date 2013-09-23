@@ -22,7 +22,7 @@ namespace Cocos3D
 {
     public class LCC3ShaderUniformOverride : LCC3ShaderUniform
     {
-        public LCC3ShaderUniformOverride()
+        public LCC3ShaderUniformOverride() : base()
         {
         }
 

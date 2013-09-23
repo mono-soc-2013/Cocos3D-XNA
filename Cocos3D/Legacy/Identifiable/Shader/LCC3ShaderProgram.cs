@@ -28,27 +28,26 @@ namespace Cocos3D
 {
     public class LCC3ShaderProgram : LCC3Identifiable
     {
-        // Static fields
+        // Static vars
 
-        private static int _lastAssignedProgramTag = 0;
-        private static Dictionary<string, LCC3ShaderProgram> _programsByName 
-            = new Dictionary<string, LCC3ShaderProgram>();
+        static int _lastAssignedProgramTag = 0;
+        static Dictionary<string, LCC3ShaderProgram> _programsByName = new Dictionary<string, LCC3ShaderProgram>();
 
-        // Instance fields
+        // ivars
 
-        private Effect _xnaShaderEffect;
-        private byte[] _shaderByteCode; 
+        Effect _xnaShaderEffect;
+        byte[] _shaderByteCode; 
 
-        private ILCC3ShaderSemanticDelegate _semanticDelegate;
+        ILCC3ShaderSemanticDelegate _semanticDelegate;
 
-        private List<LCC3ShaderUniform> _uniformsSceneScope;
-        private List<LCC3ShaderUniform> _uniformsNodeScope;
-        private List<LCC3ShaderUniform> _uniformsDrawScope;
-        private List<LCC3ShaderAttribute> _attributes;
+        List<LCC3ShaderUniform> _uniformsSceneScope;
+        List<LCC3ShaderUniform> _uniformsNodeScope;
+        List<LCC3ShaderUniform> _uniformsDrawScope;
+        List<LCC3ShaderAttribute> _attributes;
 
-        private string _shaderPreamble;
+        string _shaderPreamble;
 
-        private bool _isSceneScopeDirty;
+        bool _isSceneScopeDirty;
 
         #region Properties
        

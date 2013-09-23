@@ -23,11 +23,11 @@ namespace Cocos3D
 {
     public class LCC3ShaderProgramContext
     {
-        // Instance fields
+        // ivars
 
-        private LCC3ShaderProgram _program;
-        private List<LCC3ShaderUniform> _uniforms;
-        private Dictionary<string, LCC3ShaderUniform> _uniformsByName;
+        LCC3ShaderProgram _program;
+        List<LCC3ShaderUniform> _uniforms;
+        Dictionary<string, LCC3ShaderUniform> _uniformsByName;
 
         #region Properties
 

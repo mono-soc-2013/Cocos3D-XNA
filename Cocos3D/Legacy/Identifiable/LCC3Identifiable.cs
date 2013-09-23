@@ -23,16 +23,17 @@ namespace Cocos3D
 {
     public class LCC3Identifiable
     {
-        // Static fields
+        // Static vars
 
-        private static int _instanceCount = 0;
-        private static int _lastAssignedTag = 0;
+        static int _instanceCount = 0;
+        static int _lastAssignedTag = 0;
 
-        // Instance fields
+        // ivars
 
-        private int _tag;
-        private string _name;
-        private object _userData;
+        int _tag;
+        string _name;
+        object _userData;
+
 
         #region Properties
 

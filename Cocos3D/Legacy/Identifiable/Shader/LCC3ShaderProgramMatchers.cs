@@ -22,7 +22,7 @@ namespace Cocos3D
 {
     public class LCC3ShaderProgramMatchers
     {
-        // Instance fields
+        // ivars
 
         ILCC3ShaderSemanticDelegate _semanticDelegate;
 
@@ -60,7 +60,7 @@ namespace Cocos3D
             string shaderFileResource = null;
 
 #if DIRECTX
-            throw new NotImplementedException("PSM shader not implemented");
+            throw new NotImplementedException("DirectX shader not implemented");
 #elif PSM 
             throw new NotImplementedException("PSM shader not implemented");
 #else

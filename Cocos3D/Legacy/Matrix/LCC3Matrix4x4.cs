@@ -23,13 +23,13 @@ namespace Cocos3D
 {
     public class LCC3Matrix4x4
     {
-        // Static fields
+        // Static vars
 
-        private static readonly LCC3Matrix4x4 _identity = new LCC3Matrix4x4(Matrix.Identity);
+        static readonly LCC3Matrix4x4 _identity = new LCC3Matrix4x4(Matrix.Identity);
 
-        // Instance fields
+        // ivars
 
-        private Matrix _xnaMatrix;
+        Matrix _xnaMatrix;
 
 
         #region Properties
@@ -115,11 +115,11 @@ namespace Cocos3D
 
         public LCC3Matrix4x4(Matrix xnaMatrix)
         {
-            // Structs copy by value
             _xnaMatrix = xnaMatrix;
         }
 
         #endregion Constructors
+
 
         #region Calculation methods
 

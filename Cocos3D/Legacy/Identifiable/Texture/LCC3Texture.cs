@@ -23,15 +23,18 @@ namespace Cocos3D
 {
     public class LCC3Texture : LCC3Identifiable
     {
-        // Static fields
-        private static int _lastAssignedTextureTag = 0;
+        // Static vars
 
-        // Instance fields
+        static int _lastAssignedTextureTag = 0;
 
-        private LCC3GraphicsTexture _graphicsTexture;
-        private LCC3TextureUnit _textureUnit;
-        private LCC3TextureUnitMode _textureUnitMode;
-        private CCColor4F _texUnitConstantColor;
+        // ivars
+
+        LCC3GraphicsTexture _graphicsTexture;
+        LCC3TextureUnitMode _textureUnitMode;
+        CCColor4F _texUnitConstantColor;
+        LCC3Vector _lightDirection;
+        bool _isBumpMap;
+
 
         #region Properties
 
@@ -46,12 +49,6 @@ namespace Cocos3D
                     this.Name = _graphicsTexture.Name;
                 }
             }
-        }
-
-        public LCC3TextureUnit TextureUnit
-        {
-            get { return _textureUnit; }
-            set { _textureUnit = value; }
         }
 
         public LCC3TextureUnitMode TextureUnitMode
@@ -94,13 +91,14 @@ namespace Cocos3D
             
         public LCC3Vector LightDirection
         {
-            get { return (_textureUnit != null ? _textureUnit.LightDirection : LCC3Vector.CC3VectorZero); }
-            set { _textureUnit.LightDirection = value; }
+            get { return _lightDirection; }
+            set { _lightDirection = value; }
         }
 
         public bool IsBumpMap
         {
-            get { return (_textureUnit != null) && _textureUnit.IsBumpMap; }
+            get { return _isBumpMap; }
+            set { _isBumpMap = value; }
         }
 
         #endregion Properties
@@ -123,7 +121,8 @@ namespace Cocos3D
             base.PopulateFrom(texture);
 
             _graphicsTexture = texture.GraphicsTexture;
-            _textureUnit = texture.TextureUnit;
+            _lightDirection = texture.LightDirection;
+            _isBumpMap = texture.IsBumpMap;
         }
 
         #endregion Allocation and initialization
@@ -170,19 +169,6 @@ namespace Cocos3D
         public void BindGraphicsTextureWithVisitor(LCC3NodeDrawingVisitor visitor)
         {
             _graphicsTexture.BindWithVisitor(visitor);
-            this.BindTextureEnvironmentWithVisitor(visitor);
-        }
-
-        public void BindTextureEnvironmentWithVisitor(LCC3NodeDrawingVisitor visitor)
-        {
-            if (_textureUnit != null)
-            {
-                _textureUnit.BindWithVisitor(visitor);
-            }
-            else
-            {
-                LCC3TextureUnit.BindDefaultWithVisitor(visitor);
-            }
         }
 
         #endregion Drawing

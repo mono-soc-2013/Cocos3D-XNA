@@ -22,17 +22,17 @@ namespace Cocos3D
 {
     public class LCC3ShaderVariable
     {
-        // Instance fields
+        // ivars
 
         protected LCC3ShaderProgram _program;
         protected LCC3ElementType _type;
         protected string _name;
-        private LCC3VertexAttrIndex _location;
         protected int _index;
         protected LCC3Semantic _semantic;
         protected uint _semanticIndex;
-        private LCC3ShaderVariableScope _scope;
         protected uint _size;
+        LCC3VertexAttrIndex _location;
+        LCC3ShaderVariableScope _scope;
 
         #region Properties
 
