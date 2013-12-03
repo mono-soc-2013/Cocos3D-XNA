@@ -94,7 +94,7 @@ namespace Cocos3D
             _children = new List<LCC3Node>();
         }
 
-        private void MarkTransformDirty()
+		public void MarkTransformDirty()
         {
             _isTransformDirty = true;
         }
