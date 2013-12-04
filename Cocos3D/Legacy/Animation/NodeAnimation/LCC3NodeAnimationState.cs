@@ -23,6 +23,10 @@ namespace Cocos3D
 {
     public class LCC3NodeAnimationState
     {
+		// static vars
+
+		static uint _lastTrackID = 0;
+
 		// ivars
 
 		bool _isEnabled;
@@ -30,7 +34,10 @@ namespace Cocos3D
 		bool _isQuaternionAnimationEnabled;
 		bool _isScaleAnimationEnabled;
 
+		uint _trackID;
+
 		float _blendingWeight;
+		float _animationTime;
 
 		LCC3Vector _location;
 		LCC3Quaternion _quaternion;
@@ -39,7 +46,23 @@ namespace Cocos3D
 		LCC3Node _node;
 		LCC3NodeAnimation _animation;
 
+
 		#region Properties
+
+		public LCC3Node Node
+		{
+			get { return _node; }
+		}
+
+		public LCC3NodeAnimation Animation
+		{
+			get { return _animation; }
+		}
+
+		public uint TrackID
+		{
+			get { return _trackID; }
+		}
 
 		public bool IsEnabled
 		{
@@ -115,15 +138,50 @@ namespace Cocos3D
 
 		#endregion Properties
 
-		public LCC3NodeAnimationState()
+
+		#region Allocation and initialization
+
+		public static uint GenerateTrackID() { return ++_lastTrackID; }
+
+
+		public LCC3NodeAnimationState(LCC3NodeAnimation animation, uint trackID, LCC3Node node)
         {
+			_node = node;					
+			_animation = animation;
+			_trackID = trackID;
+			_blendingWeight = 1.0f;
+			_animationTime = 0.0f;
+			_location = LCC3Vector.CC3VectorZero;
+			_quaternion = LCC3Quaternion.CC3QuaternionIdentity;
+			_scale = LCC3Vector.CC3VectorUnitCube;
+			_isEnabled = true;
+			_isLocationAnimationEnabled = true;
+			_isQuaternionAnimationEnabled = true;
+			_isScaleAnimationEnabled = true;
+
+			this.EstablishFrame(0.0f);
         }
+
+		#endregion Allocation and initialization
+
+
+		#region Updating
+
+		public void EstablishFrame(float time)
+		{
+			_animationTime = time;
+			if (this.IsEnabled)
+			{
+				_animation.EstablishFrame(time, this);
+			}
+		}
 
 		private void MarkDirty()
 		{
 			_node.MarkTransformDirty();
 		}
 
+		#endregion Updating
     }
 }
 

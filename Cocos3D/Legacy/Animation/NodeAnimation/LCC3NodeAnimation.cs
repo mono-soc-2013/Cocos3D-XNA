@@ -18,6 +18,7 @@
 //
 using System;
 using Cocos2D;
+using Microsoft.Xna.Framework;
 
 namespace Cocos3D
 {
@@ -95,6 +96,94 @@ namespace Cocos3D
         }
 
 		#endregion Allocation and initialization
+
+
+		#region Frame state
+
+		private float TimeAtFrame(uint frameIndex) 
+		{
+			float currIdx = frameIndex;
+			float lastIdx = _frameCount - 1;
+
+			return MathHelper.Clamp(currIdx / lastIdx, 0.0f, 1.0f);
+		}
+
+		protected uint FrameIndexAtTime(float time) { return (uint)((_frameCount - 1) * time); }
+
+		protected virtual LCC3Vector LocationAtFrame(uint frameIndex) { return LCC3Vector.CC3VectorZero; }
+
+		protected virtual LCC3Quaternion QuaternionAtFrame(uint frameIndex) { return LCC3Quaternion.CC3QuaternionIdentity; }
+
+		protected virtual LCC3Vector ScaleAtFrame(uint frameIndex) { return LCC3Vector.CC3VectorUnitCube; }
+
+		#endregion Frame state
+
+
+		#region Updating
+
+		public void EstablishFrame(float time, LCC3NodeAnimationState animState)
+		{
+			uint frameIndex = this.FrameIndexAtTime(time);
+			float frameInterpolation = 0.0f;
+
+			if (_shouldInterpolate && (frameIndex < _frameCount - 1)) 
+			{
+				float frameTime = this.TimeAtFrame(frameIndex);
+				float nextFrameTime = this.TimeAtFrame(frameIndex + 1);
+				float frameDur = nextFrameTime - frameTime;
+
+				if (frameDur != 0.0f)
+				{
+					frameInterpolation = (time - frameTime) / frameDur;
+				}
+
+				if (frameInterpolation < _interpolationEpsilon) 
+				{
+					frameInterpolation = 0.0f;
+				} 
+
+				else if ((1.0f - frameInterpolation) < _interpolationEpsilon) 
+				{
+					frameInterpolation = 0.0f;
+					frameIndex++;					
+				}
+			}
+
+			this.EstablishFrame(frameIndex, frameInterpolation, animState);
+		}
+
+		private void EstablishFrame(uint frameIndex, float frameInterpolation, LCC3NodeAnimationState animState)
+		{
+			this.EstablishLocationAtFrame(frameIndex, frameInterpolation, animState);
+			this.EstablishQuaternionAtFrame(frameIndex, frameInterpolation, animState);
+			this.EstablishScaleAtFrame(frameIndex, frameInterpolation, animState);
+		}
+
+		private void EstablishLocationAtFrame(uint frameIndex, float frameInterpolation, LCC3NodeAnimationState animState)
+		{
+			if(animState.IsAnimatingLocation) 
+			{
+				animState.Location = LCC3Vector.CC3VectorLerp(this.LocationAtFrame(frameIndex), this.LocationAtFrame(frameIndex + 1), frameInterpolation);
+			}
+		}
+
+		private void EstablishQuaternionAtFrame(uint frameIndex, float frameInterpolation, LCC3NodeAnimationState animState)
+		{
+			if(animState.IsAnimatingQuaternion) 
+			{
+				animState.Quaternion = LCC3Quaternion.CC3QuaternionSlerp(this.QuaternionAtFrame(frameIndex), this.QuaternionAtFrame(frameIndex + 1), frameInterpolation);
+			}
+		}
+
+		private void EstablishScaleAtFrame(uint frameIndex, float frameInterpolation, LCC3NodeAnimationState animState)
+		{
+			if(animState.IsAnimatingScale) 
+			{
+				animState.Scale = LCC3Vector.CC3VectorLerp(this.ScaleAtFrame(frameIndex), this.ScaleAtFrame(frameIndex + 1), frameInterpolation);
+			}
+		}
+
+		#endregion Updating
     }
 }
 
