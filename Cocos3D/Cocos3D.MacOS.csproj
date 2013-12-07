@@ -250,6 +250,7 @@
     <Compile Include="Legacy\Animation\NodeAnimation\LCC3NodeAnimation.cs" />
     <Compile Include="Legacy\Animation\NodeAnimation\LCC3NodeAnimationState.cs" />
     <Compile Include="Legacy\Foundation\LCC3Quaternion.cs" />
+    <Compile Include="Legacy\Animation\NodeAnimation\LCC3ArrayNodeAnimation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cocos2d-xna\cocos2d\cocos2d.MacOS.csproj">

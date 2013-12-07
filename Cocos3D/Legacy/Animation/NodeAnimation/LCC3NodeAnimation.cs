@@ -100,7 +100,7 @@ namespace Cocos3D
 
 		#region Frame state
 
-		private float TimeAtFrame(uint frameIndex) 
+		protected virtual float TimeAtFrame(uint frameIndex) 
 		{
 			float currIdx = frameIndex;
 			float lastIdx = _frameCount - 1;
@@ -108,7 +108,7 @@ namespace Cocos3D
 			return MathHelper.Clamp(currIdx / lastIdx, 0.0f, 1.0f);
 		}
 
-		protected uint FrameIndexAtTime(float time) { return (uint)((_frameCount - 1) * time); }
+		protected virtual uint FrameIndexAtTime(float time) { return (uint)((_frameCount - 1) * time); }
 
 		protected virtual LCC3Vector LocationAtFrame(uint frameIndex) { return LCC3Vector.CC3VectorZero; }
 
